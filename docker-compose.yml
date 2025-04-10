@@ -1,0 +1,35 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb_critical_dog
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: CriticalDogDB
+      MYSQL_USER: demo
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"  # Map host port 3307 to container port 3306
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  biermantech.criticaldog:
+    image: ${DOCKER_REGISTRY-}biermantechcriticaldog
+    build:
+      context: .
+      dockerfile: BiermanTech.CriticalDog/Dockerfile
+    depends_on:
+      - mariadb  # Ensure MariaDB starts first
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Server=mariadb;Database=CriticalDogDB;User=demo;Password=password;"
+    networks:
+      - app-network
+
+volumes:
+  mariadb_data:
+
+networks:
+  app-network:
