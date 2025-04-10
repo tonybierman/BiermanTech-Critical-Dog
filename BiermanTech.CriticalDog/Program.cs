@@ -8,19 +8,21 @@ var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 
+// Lob
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 
+// Identity
+builder.Services.AddDbContext<IdentityDbContext>(options =>
+    options.UseSqlServer(connectionString));
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<IdentityDbContext>();
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
