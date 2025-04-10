@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "Server=localhost;Port=3307;Database=CriticalDogDB;User=demo;Password=password;" "Pomelo.EntityFrameworkCore.MySql" --context AppDbContext -o Data --force --no-onconfiguring
