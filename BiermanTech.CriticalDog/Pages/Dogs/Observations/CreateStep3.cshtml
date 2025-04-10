@@ -1,0 +1,59 @@
+﻿@page "{dogId:int}/Step3"
+@model BiermanTech.CriticalDog.Pages.Dogs.Observations.CreateStep3Model
+@{
+    ViewData["Title"] = "Add Observation - Step 3";
+}
+
+<h1>Add Observation for @Model.Observation.DogName - Step 3: Add Meta Tags and Finalize</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Observation.DogId" />
+    <input type="hidden" asp-for="Observation.ObservationDefinitionId" />
+    <input type="hidden" asp-for="Observation.IsQualitative" />
+    <input type="hidden" asp-for="Observation.MetricTypeId" />
+    <input type="hidden" asp-for="Observation.MetricValue" />
+    <input type="hidden" asp-for="Observation.Note" />
+    <input type="hidden" asp-for="Observation.RecordTime" />
+
+    <h3>Review Observation Details</h3>
+    <div class="form-group">
+        <label>Observation Type</label>
+        <p>@Model.ObservationDefinitionName</p>
+    </div>
+
+    @if (!Model.Observation.IsQualitative)
+    {
+        <div class="form-group">
+            <label>Metric Type</label>
+            <p>@Model.MetricTypeDescription</p>
+        </div>
+        <div class="form-group">
+            <label>Value</label>
+            <p>@Model.Observation.MetricValue</p>
+        </div>
+    }
+
+    <div class="form-group">
+        <label>Note</label>
+        <p>@Model.Observation.Note</p>
+    </div>
+
+    <div class="form-group">
+        <label>Record Time</label>
+        <p>@Model.Observation.RecordTime</p>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Observation.SelectedMetaTagIds">Meta Tags</label>
+        <select asp-for="Observation.SelectedMetaTagIds" multiple class="form-control" asp-items="Model.Observation.MetaTags"></select>
+        <span asp-validation-for="Observation.SelectedMetaTagIds" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="CreateStep2" asp-route-dogId="@Model.Observation.DogId" class="btn btn-secondary">Back</a>
+    <a asp-page="/Dogs/Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

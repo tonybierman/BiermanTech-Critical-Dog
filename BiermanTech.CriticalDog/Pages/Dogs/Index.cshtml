@@ -27,7 +27,7 @@
                 <td>@(dog.Sex == 0 ? "Male" : dog.Sex == 1 ? "Female" : "Unknown")</td>
                 <td>@dog.ArrivalDate?.ToShortDateString()</td>
                 <td>
-                    <a asp-page="/Dogs/Observations/Create" asp-route-dogId="@dog.Id">Add Observation</a>
+                    <a asp-page="/Dogs/Observations/CreateStep1" asp-route-dogId="@dog.Id">Add Observation</a>
                 </td>
             </tr>
         }

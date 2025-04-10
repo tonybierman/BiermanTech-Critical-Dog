@@ -1,0 +1,26 @@
+﻿@page "{dogId:int}/Step1"
+@model BiermanTech.CriticalDog.Pages.Dogs.Observations.CreateStep1Model
+@{
+    ViewData["Title"] = "Add Observation - Step 1";
+}
+
+<h1>Add Observation for @Model.Observation.DogName - Step 1: Select Observation Type</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Observation.DogId" />
+
+    <div class="form-group">
+        <label asp-for="Observation.ObservationDefinitionId">Observation Type</label>
+        <select asp-for="Observation.ObservationDefinitionId" asp-items="Model.Observation.ObservationDefinitions" class="form-control">
+            <option value="">-- Select Observation --</option>
+        </select>
+        <span asp-validation-for="Observation.ObservationDefinitionId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Next</button>
+    <a asp-page="/Dogs/Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
