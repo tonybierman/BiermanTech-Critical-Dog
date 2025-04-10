@@ -21,13 +21,12 @@ namespace BiermanTech.CriticalDog.Models
 
         public string? Note { get; set; }
 
-        public DateTime? RecordTime { get; set; }
+        public DateTime? RecordTime { get; set; } = DateTime.Now; // Default to current time
 
         public List<int> SelectedMetaTagIds { get; set; } = new List<int>();
 
         public bool IsQualitative { get; set; }
 
-        // Dropdowns for UI
         public SelectList ObservationDefinitions { get; set; } = null!;
         public SelectList MetricTypes { get; set; } = null!;
         public SelectList MetaTags { get; set; } = null!;
