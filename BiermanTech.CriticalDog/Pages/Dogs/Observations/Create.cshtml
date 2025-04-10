@@ -4,51 +4,51 @@
     ViewData["Title"] = "Add Observation";
 }
 
-<h1>Add Observation for @Model.DogName</h1>
+<h1>Add Observation for @Model.Observation.DogName</h1>
 
 <form method="post">
-    <input type="hidden" asp-for="DogId" />
+    <input type="hidden" asp-for="Observation.DogId" />
 
     <div class="form-group">
-        <label asp-for="ObservationDefinitionId">Observation Type</label>
-        <select asp-for="ObservationDefinitionId" asp-items="Model.ObservationDefinitions" class="form-control" onchange="this.form.submit()">
+        <label asp-for="Observation.ObservationDefinitionId">Observation Type</label>
+        <select asp-for="Observation.ObservationDefinitionId" asp-items="Model.Observation.ObservationDefinitions" class="form-control" onchange="this.form.submit()">
             <option value="">-- Select Observation --</option>
         </select>
-        <span asp-validation-for="ObservationDefinitionId" class="text-danger"></span>
+        <span asp-validation-for="Observation.ObservationDefinitionId" class="text-danger"></span>
     </div>
 
-    @if (Model.ObservationDefinitionId.HasValue && !Model.IsQualitative)
+    @if (Model.Observation.ObservationDefinitionId.HasValue && !Model.Observation.IsQualitative)
     {
         <div class="form-group">
-            <label asp-for="MetricTypeId">Metric Type</label>
-            <select asp-for="MetricTypeId" asp-items="Model.MetricTypes" class="form-control">
+            <label asp-for="Observation.MetricTypeId">Metric Type</label>
+            <select asp-for="Observation.MetricTypeId" asp-items="Model.Observation.MetricTypes" class="form-control">
                 <option value="">-- Select Unit --</option>
             </select>
-            <span asp-validation-for="MetricTypeId" class="text-danger"></span>
+            <span asp-validation-for="Observation.MetricTypeId" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="MetricValue">Value</label>
-            <input asp-for="MetricValue" class="form-control" />
-            <span asp-validation-for="MetricValue" class="text-danger"></span>
+            <label asp-for="Observation.MetricValue">Value</label>
+            <input asp-for="Observation.MetricValue" class="form-control" />
+            <span asp-validation-for="Observation.MetricValue" class="text-danger"></span>
         </div>
     }
 
     <div class="form-group">
-        <label asp-for="Note">Note</label>
-        <textarea asp-for="Note" class="form-control"></textarea>
-        <span asp-validation-for="Note" class="text-danger"></span>
+        <label asp-for="Observation.Note">Note</label>
+        <textarea asp-for="Observation.Note" class="form-control"></textarea>
+        <span asp-validation-for="Observation.Note" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="RecordTime">Record Time</label>
-        <input asp-for="RecordTime" class="form-control" type="datetime-local" />
-        <span asp-validation-for="RecordTime" class="text-danger"></span>
+        <label asp-for="Observation.RecordTime">Record Time</label>
+        <input asp-for="Observation.RecordTime" class="form-control" type="datetime-local" />
+        <span asp-validation-for="Observation.RecordTime" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label>Meta Tags</label>
-        <select asp-for="SelectedMetaTagIds" multiple class="form-control" asp-items="Model.MetaTags"></select>
+        <select asp-for="Observation.SelectedMetaTagIds" multiple class="form-control" asp-items="Model.Observation.MetaTags"></select>
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>

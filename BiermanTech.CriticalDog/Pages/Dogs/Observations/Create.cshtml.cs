@@ -1,9 +1,9 @@
 using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
@@ -17,34 +17,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         }
 
         [BindProperty]
-        public int DogId { get; set; }
-
-        public string DogName { get; set; } = string.Empty;
-
-        [BindProperty]
-        [Required(ErrorMessage = "Please select an observation type.")]
-        public int? ObservationDefinitionId { get; set; }
-
-        [BindProperty]
-        public int? MetricTypeId { get; set; }
-
-        [BindProperty]
-        public decimal? MetricValue { get; set; }
-
-        [BindProperty]
-        public string? Note { get; set; }
-
-        [BindProperty]
-        public DateTime? RecordTime { get; set; }
-
-        [BindProperty]
-        public List<int> SelectedMetaTagIds { get; set; } = new List<int>();
-
-        public bool IsQualitative { get; set; }
-
-        public SelectList ObservationDefinitions { get; set; } = null!;
-        public SelectList MetricTypes { get; set; } = null!;
-        public SelectList MetaTags { get; set; } = null!;
+        public CreateObservationViewModel Observation { get; set; } = new CreateObservationViewModel();
 
         public async Task<IActionResult> OnGetAsync(int dogId)
         {
@@ -54,8 +27,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 return NotFound();
             }
 
-            DogId = dogId;
-            DogName = dog.Name ?? "Unknown";
+            Observation.DogId = dogId;
+            Observation.DogName = dog.Name ?? "Unknown";
 
             await LoadDropdownsAsync();
             return Page();
@@ -63,34 +36,34 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ObservationDefinitionId.HasValue)
+            if (!Observation.ObservationDefinitionId.HasValue)
             {
                 await LoadDropdownsAsync();
                 return Page();
             }
 
             var observationDefinition = await _context.ObservationDefinitions
-                .FirstOrDefaultAsync(od => od.Id == ObservationDefinitionId);
+                .FirstOrDefaultAsync(od => od.Id == Observation.ObservationDefinitionId);
             if (observationDefinition == null)
             {
                 return NotFound();
             }
 
-            IsQualitative = observationDefinition.IsQualitative;
+            Observation.IsQualitative = observationDefinition.IsQualitative;
 
-            if (!IsQualitative)
+            if (!Observation.IsQualitative)
             {
-                if (!MetricTypeId.HasValue || !MetricValue.HasValue)
+                if (!Observation.MetricTypeId.HasValue || !Observation.MetricValue.HasValue)
                 {
-                    ModelState.AddModelError("MetricTypeId", "Please select a metric type for quantitative observations.");
-                    ModelState.AddModelError("MetricValue", "Please enter a value for quantitative observations.");
+                    ModelState.AddModelError("Observation.MetricTypeId", "Please select a metric type for quantitative observations.");
+                    ModelState.AddModelError("Observation.MetricValue", "Please enter a value for quantitative observations.");
                     await LoadDropdownsAsync();
                     return Page();
                 }
 
-                if (MetricValue < observationDefinition.MinimumValue || MetricValue > observationDefinition.MaximumValue)
+                if (Observation.MetricValue < observationDefinition.MinimumValue || Observation.MetricValue > observationDefinition.MaximumValue)
                 {
-                    ModelState.AddModelError("MetricValue", $"Value must be between {observationDefinition.MinimumValue} and {observationDefinition.MaximumValue}.");
+                    ModelState.AddModelError("Observation.MetricValue", $"Value must be between {observationDefinition.MinimumValue} and {observationDefinition.MaximumValue}.");
                     await LoadDropdownsAsync();
                     return Page();
                 }
@@ -98,21 +71,21 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             var dogRecord = new DogRecord
             {
-                DogId = DogId,
-                MetricTypeId = MetricTypeId,
-                MetricValue = MetricValue,
-                Note = Note,
-                RecordTime = RecordTime ?? DateTime.Now,
+                DogId = Observation.DogId,
+                MetricTypeId = Observation.MetricTypeId,
+                MetricValue = Observation.MetricValue,
+                Note = Observation.Note,
+                RecordTime = Observation.RecordTime ?? DateTime.Now,
                 CreatedBy = User.Identity?.Name ?? "Unknown"
             };
 
             _context.DogRecords.Add(dogRecord);
             await _context.SaveChangesAsync();
 
-            if (SelectedMetaTagIds.Any())
+            if (Observation.SelectedMetaTagIds.Any())
             {
                 var metaTags = await _context.MetaTags
-                    .Where(mt => SelectedMetaTagIds.Contains(mt.Id))
+                    .Where(mt => Observation.SelectedMetaTagIds.Contains(mt.Id))
                     .ToListAsync();
                 foreach (var metaTag in metaTags)
                 {
@@ -126,36 +99,36 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         private async Task LoadDropdownsAsync()
         {
-            ObservationDefinitions = new SelectList(
+            Observation.ObservationDefinitions = new SelectList(
                 await _context.ObservationDefinitions
                     .Where(od => od.IsActive == true)
                     .Select(od => new SelectListItem { Value = od.Id.ToString(), Text = od.DefinitionName })
                     .ToListAsync(),
                 "Value",
                 "Text",
-                ObservationDefinitionId?.ToString());
+                Observation.ObservationDefinitionId?.ToString());
 
-            if (ObservationDefinitionId.HasValue)
+            if (Observation.ObservationDefinitionId.HasValue)
             {
                 var observationDefinition = await _context.ObservationDefinitions
-                    .FirstOrDefaultAsync(od => od.Id == ObservationDefinitionId);
-                IsQualitative = observationDefinition?.IsQualitative ?? false;
+                    .FirstOrDefaultAsync(od => od.Id == Observation.ObservationDefinitionId);
+                Observation.IsQualitative = observationDefinition?.IsQualitative ?? false;
 
-                MetricTypes = new SelectList(
+                Observation.MetricTypes = new SelectList(
                     await _context.MetricTypes
-                        .Where(mt => mt.ObservationDefinitionId == ObservationDefinitionId && mt.IsActive == true)
+                        .Where(mt => mt.ObservationDefinitionId == Observation.ObservationDefinitionId && mt.IsActive == true)
                         .Select(mt => new SelectListItem { Value = mt.Id.ToString(), Text = mt.Description })
                         .ToListAsync(),
                     "Value",
                     "Text",
-                    MetricTypeId?.ToString());
+                    Observation.MetricTypeId?.ToString());
             }
             else
             {
-                MetricTypes = new SelectList(Enumerable.Empty<SelectListItem>());
+                Observation.MetricTypes = new SelectList(Enumerable.Empty<SelectListItem>());
             }
 
-            MetaTags = new SelectList(
+            Observation.MetaTags = new SelectList(
                 await _context.MetaTags
                     .Where(mt => mt.IsActive == true)
                     .Select(mt => new SelectListItem { Value = mt.Id.ToString(), Text = mt.TagName })
