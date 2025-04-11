@@ -1,4 +1,5 @@
 ﻿using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Helpers;
 using UniversalReportCore.ViewModels;
 
 namespace BiermanTech.CriticalDog.ViewModels
@@ -27,7 +28,7 @@ namespace BiermanTech.CriticalDog.ViewModels
 
         public string? UnitSymbol => MetricType?.Unit?.UnitSymbol;
 
-        public string? ObservationName => MetricType?.ObservationDefinition?.DefinitionName;
+        public string? ObservationName => Note ?? StringHelper.SplitPascalCase(MetricType?.ObservationDefinition?.DefinitionName);
 
         public string? MetricValueWithSymbol => $"{MetricValue} {UnitSymbol}";
 

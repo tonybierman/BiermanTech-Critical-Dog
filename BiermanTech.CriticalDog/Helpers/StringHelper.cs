@@ -33,7 +33,7 @@ namespace BiermanTech.CriticalDog.Helpers
         /// // result3 is null
         /// </code>
         /// </example>
-        public static string SplitPascalCase(string input)
+        public static string SplitPascalCase(string? input)
         {
             if (string.IsNullOrEmpty(input))
                 return input;
