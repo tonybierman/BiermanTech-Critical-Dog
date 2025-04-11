@@ -1,20 +1,19 @@
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Models;
+using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep3Model : PageModel
     {
-        private readonly AppDbContext _context;
+        private readonly IDogObservationService _service;
         private readonly ILogger<CreateStep3Model> _logger;
 
-        public CreateStep3Model(AppDbContext context, ILogger<CreateStep3Model> logger)
+        public CreateStep3Model(IDogObservationService service, ILogger<CreateStep3Model> logger)
         {
-            _context = context;
+            _service = service;
             _logger = logger;
         }
 
@@ -34,15 +33,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             Observation = System.Text.Json.JsonSerializer.Deserialize<CreateObservationViewModel>(TempData["Observation"].ToString());
             Observation.DogId = dogId;
 
-            var dog = await _context.Dogs.FindAsync(dogId);
+            var dog = await _service.GetDogByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
             }
             Observation.DogName = dog.Name ?? "Unknown";
 
-            var observationDefinition = await _context.ObservationDefinitions
-                .FirstOrDefaultAsync(od => od.Id == Observation.ObservationDefinitionId);
+            var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
             if (observationDefinition == null)
             {
                 return NotFound();
@@ -51,12 +49,11 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             if (!Observation.IsQualitative && Observation.MetricTypeId.HasValue)
             {
-                var metricType = await _context.MetricTypes
-                    .FirstOrDefaultAsync(mt => mt.Id == Observation.MetricTypeId);
+                var metricType = await _service.GetMetricTypeByIdAsync(Observation.MetricTypeId);
                 MetricTypeDescription = metricType?.Description ?? "Unknown";
             }
 
-            await LoadDropdownsAsync();
+            Observation.MetaTags = await _service.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
             TempData.Keep("Observation");
             return Page();
         }
@@ -79,44 +76,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                     CreatedBy = User.Identity?.Name ?? "Unknown"
                 };
 
-                _context.DogRecords.Add(dogRecord);
-                await _context.SaveChangesAsync();
-
-                if (Observation.SelectedMetaTagIds?.Any() == true)
-                {
-                    foreach (var tagId in Observation.SelectedMetaTagIds)
-                    {
-                        var metaTagExists = await _context.MetaTags.FirstOrDefaultAsync(mt => mt.Id == tagId);
-                        if (metaTagExists != null)
-                        {
-                            dogRecord.MetaTags.Add(metaTagExists);
-                        }
-                        else
-                        {
-                            _logger.LogWarning("MetaTag with Id {TagId} not found.", tagId);
-                        }
-                    }
-                    await _context.SaveChangesAsync();
-                }
+                await _service.SaveDogRecordAsync(dogRecord, Observation.SelectedMetaTagIds);
 
                 TempData.Remove("Observation");
                 return RedirectToPage("/Dogs/Index");
             }
 
-            await LoadDropdownsAsync();
+            Observation.MetaTags = await _service.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
             return Page();
-        }
-
-        private async Task LoadDropdownsAsync()
-        {
-            Observation.MetaTags = new SelectList(
-                await _context.MetaTags
-                    .Where(mt => mt.IsActive == true)
-                    .Select(mt => new SelectListItem { Value = mt.Id.ToString(), Text = mt.TagName })
-                    .ToListAsync(),
-                "Value",
-                "Text",
-                Observation.SelectedMetaTagIds);
         }
     }
 }

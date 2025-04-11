@@ -1,20 +1,18 @@
-using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Models;
+using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep1Model : PageModel
     {
-        private readonly AppDbContext _context;
+        private readonly IDogObservationService _service;
         private readonly ILogger<CreateStep1Model> _logger;
 
-        public CreateStep1Model(AppDbContext context, ILogger<CreateStep1Model> logger)
+        public CreateStep1Model(IDogObservationService service, ILogger<CreateStep1Model> logger)
         {
-            _context = context;
+            _service = service;
             _logger = logger;
         }
 
@@ -23,7 +21,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public async Task<IActionResult> OnGetAsync(int dogId)
         {
-            var dog = await _context.Dogs.FindAsync(dogId);
+            var dog = await _service.GetDogByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
@@ -32,7 +30,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             Observation.DogId = dogId;
             Observation.DogName = dog.Name ?? "Unknown";
 
-            await LoadDropdownsAsync();
+            Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
             return Page();
         }
 
@@ -41,25 +39,12 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             if (!Observation.ObservationDefinitionId.HasValue)
             {
                 ModelState.AddModelError("Observation.ObservationDefinitionId", "Please select an observation type.");
-                await LoadDropdownsAsync();
+                Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
                 return Page();
             }
 
-            // Store the observation in TempData or session to pass to the next step
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(Observation);
             return RedirectToPage("CreateStep2", new { dogId });
-        }
-
-        private async Task LoadDropdownsAsync()
-        {
-            Observation.ObservationDefinitions = new SelectList(
-                await _context.ObservationDefinitions
-                    .Where(od => od.IsActive == true)
-                    .Select(od => new SelectListItem { Value = od.Id.ToString(), Text = od.DefinitionName })
-                    .ToListAsync(),
-                "Value",
-                "Text",
-                Observation.ObservationDefinitionId?.ToString());
         }
     }
 }

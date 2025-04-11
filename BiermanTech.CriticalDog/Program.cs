@@ -1,11 +1,12 @@
 using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddScoped<IDogObservationService, DogObservationService>();
 
 // Lob
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")

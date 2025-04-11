@@ -1,20 +1,18 @@
-using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Models;
+using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep2Model : PageModel
     {
-        private readonly AppDbContext _context;
+        private readonly IDogObservationService _service;
         private readonly ILogger<CreateStep2Model> _logger;
 
-        public CreateStep2Model(AppDbContext context, ILogger<CreateStep2Model> logger)
+        public CreateStep2Model(IDogObservationService service, ILogger<CreateStep2Model> logger)
         {
-            _context = context;
+            _service = service;
             _logger = logger;
         }
 
@@ -31,15 +29,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             Observation = System.Text.Json.JsonSerializer.Deserialize<CreateObservationViewModel>(TempData["Observation"].ToString());
             Observation.DogId = dogId;
 
-            var dog = await _context.Dogs.FindAsync(dogId);
+            var dog = await _service.GetDogByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
             }
             Observation.DogName = dog.Name ?? "Unknown";
 
-            var observationDefinition = await _context.ObservationDefinitions
-                .FirstOrDefaultAsync(od => od.Id == Observation.ObservationDefinitionId);
+            var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
             if (observationDefinition == null)
             {
                 return NotFound();
@@ -50,15 +47,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             Observation.RecordTime = DateTime.Now;
 
-            await LoadDropdownsAsync();
-            TempData.Keep("Observation"); // Keep TempData for the next step
+            Observation.MetricTypes = await _service.GetMetricTypesSelectListAsync(Observation.ObservationDefinitionId.Value);
+            TempData.Keep("Observation");
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
-            var observationDefinition = await _context.ObservationDefinitions
-                .FirstOrDefaultAsync(od => od.Id == Observation.ObservationDefinitionId);
+            var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
             if (observationDefinition == null)
             {
                 return NotFound();
@@ -78,33 +74,20 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                     {
                         ModelState.AddModelError("Observation.MetricValue", "Please enter a value for quantitative observations.");
                     }
-                    await LoadDropdownsAsync();
+                    Observation.MetricTypes = await _service.GetMetricTypesSelectListAsync(Observation.ObservationDefinitionId.Value);
                     return Page();
                 }
 
                 if (Observation.MetricValue < observationDefinition.MinimumValue || Observation.MetricValue > observationDefinition.MaximumValue)
                 {
                     ModelState.AddModelError("Observation.MetricValue", $"Value must be between {observationDefinition.MinimumValue} and {observationDefinition.MaximumValue}.");
-                    await LoadDropdownsAsync();
+                    Observation.MetricTypes = await _service.GetMetricTypesSelectListAsync(Observation.ObservationDefinitionId.Value);
                     return Page();
                 }
             }
 
-            // Store the updated observation in TempData
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(Observation);
             return RedirectToPage("CreateStep3", new { dogId });
-        }
-
-        private async Task LoadDropdownsAsync()
-        {
-            Observation.MetricTypes = new SelectList(
-                await _context.MetricTypes
-                    .Where(mt => mt.ObservationDefinitionId == Observation.ObservationDefinitionId && mt.IsActive == true)
-                    .Select(mt => new SelectListItem { Value = mt.Id.ToString(), Text = mt.Description })
-                    .ToListAsync(),
-                "Value",
-                "Text",
-                Observation.MetricTypeId?.ToString());
         }
     }
 }
