@@ -9,7 +9,7 @@ namespace BiermanTech.CriticalDog.Reports.Kennel
     {
         public string Slug => "Kennel";
 
-        public override string CategorySlug => "DogRecordReports";
+        public override string CategorySlug => "SubjectRecordReports";
 
         public PageMetaViewModel GetPageMeta()
         {

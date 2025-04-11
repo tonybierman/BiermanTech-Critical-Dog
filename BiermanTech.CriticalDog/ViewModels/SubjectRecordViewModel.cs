@@ -4,11 +4,11 @@ using UniversalReportCore.ViewModels;
 
 namespace BiermanTech.CriticalDog.ViewModels
 {
-    public class DogRecordViewModel : IEntityViewModel<int>
+    public class SubjectRecordViewModel : IEntityViewModel<int>
     {
         public int Id { get; set; }
 
-        public int DogId { get; set; }
+        public int SubjectId { get; set; }
 
         public int? MetricTypeId { get; set; }
 
@@ -20,9 +20,9 @@ namespace BiermanTech.CriticalDog.ViewModels
 
         public string? CreatedBy { get; set; }
 
-        public string? DogName => Dog?.Name;
+        public string? SubjectName => Subject?.Name;
 
-        public virtual Dog Dog { get; set; } = null!;
+        public virtual Subject Subject { get; set; } = null!;
 
         public virtual MetricType? MetricType { get; set; }
 

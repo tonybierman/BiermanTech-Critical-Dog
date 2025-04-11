@@ -3,10 +3,10 @@ using System.Linq.Expressions;
 
 namespace BiermanTech.CriticalDog.Reports.Domain;
 
-public interface IDogRecordFilterProvider
+public interface ISubjectRecordFilterProvider
 {
-    Dictionary<string, Expression<Func<DogRecord, bool>>> Filters { get; }
+    Dictionary<string, Expression<Func<SubjectRecord, bool>>> Filters { get; }
 
     IEnumerable<IEnumerable<string>> GetFacetKeys();
-    Expression<Func<DogRecord, bool>> GetFilter(string key);
+    Expression<Func<SubjectRecord, bool>> GetFilter(string key);
 }

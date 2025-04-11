@@ -12,7 +12,7 @@ namespace BiermanTech.CriticalDog.Reports
         {
             _helperMap = new Dictionary<string, (Type, Type)>
             {
-                { "DogRecordReports", (typeof(DogRecord), typeof(DogRecordViewModel)) }
+                { "SubjectRecordReports", (typeof(SubjectRecord), typeof(SubjectRecordViewModel)) }
             };
         }
     }

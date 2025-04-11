@@ -4,14 +4,14 @@ using UniversalReportCore;
 
 namespace BiermanTech.CriticalDog.Reports.Domain
 {
-    public class DogRecordFilterProvider : BaseFilterProvider<DogRecord>
+    public class SubjectRecordFilterProvider : BaseFilterProvider<SubjectRecord>
     {
-        public DogRecordFilterProvider() : base(new List<Facet<DogRecord>>
+        public SubjectRecordFilterProvider() : base(new List<Facet<SubjectRecord>>
         {
             new("Sex", new()
             {
-                new("Male", p => p.Dog.Sex == 0),
-                new("Female", p => p.Dog.Sex == 1),
+                new("Male", p => p.Subject.Sex == 0),
+                new("Female", p => p.Subject.Sex == 1),
             })
         })
         { }

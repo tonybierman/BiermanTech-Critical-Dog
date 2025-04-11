@@ -8,10 +8,10 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep3Model : PageModel
     {
-        private readonly IDogObservationService _service;
+        private readonly ISubjectObservationService _service;
         private readonly ILogger<CreateStep3Model> _logger;
 
-        public CreateStep3Model(IDogObservationService service, ILogger<CreateStep3Model> logger)
+        public CreateStep3Model(ISubjectObservationService service, ILogger<CreateStep3Model> logger)
         {
             _service = service;
             _logger = logger;
@@ -31,14 +31,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             }
 
             Observation = System.Text.Json.JsonSerializer.Deserialize<CreateObservationViewModel>(TempData["Observation"].ToString());
-            Observation.DogId = dogId;
-            var dog = await _service.GetDogByIdAsync(dogId);
+            Observation.SubjectId = dogId;
+            var dog = await _service.GetByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
             }
 
-            Observation.DogName = dog.Name ?? "Unknown";
+            Observation.SubjectName = dog.Name ?? "Unknown";
 
             var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
             if (observationDefinition == null)
@@ -63,11 +63,11 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
             _logger.LogInformation("Saving observation for DogId: {DogId}, ObservationDefinitionId: {ObservationDefinitionId}, SelectedMetaTagIds: {SelectedMetaTagIds}",
-                    Observation.DogId, Observation.ObservationDefinitionId, string.Join(", ", Observation.SelectedMetaTagIds ?? new List<int>()));
+                    Observation.SubjectId, Observation.ObservationDefinitionId, string.Join(", ", Observation.SelectedMetaTagIds ?? new List<int>()));
 
-            var dogRecord = new DogRecord
+            var dogRecord = new SubjectRecord
             {
-                DogId = Observation.DogId,
+                SubjectId = Observation.SubjectId,
                 MetricTypeId = Observation.MetricTypeId,
                 MetricValue = Observation.MetricValue,
                 Note = Observation.Note,
@@ -75,7 +75,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 CreatedBy = User.Identity?.Name ?? "Unknown"
             };
 
-            await _service.SaveDogRecordAsync(dogRecord, Observation.SelectedMetaTagIds);
+            await _service.SaveSubjectRecordAsync(dogRecord, Observation.SelectedMetaTagIds);
             TempData.Remove("Observation");
 
             return RedirectToPage("/Dogs/Index");

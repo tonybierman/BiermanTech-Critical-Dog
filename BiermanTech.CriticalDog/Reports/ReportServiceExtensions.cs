@@ -22,14 +22,14 @@ namespace BiermanTech.CriticalDog.Reports
         /// </summary>
         public static IServiceCollection AddCityPopDemoReport(this IServiceCollection services) =>
             services.AddEntityReportServices<
-                DogRecord,
-                DogRecordViewModel,
-                DogRecordQueryFactory,
+                SubjectRecord,
+                SubjectRecordViewModel,
+                SubjectRecordQueryFactory,
                 KennelPageMetaProvider,
                 KennelReportColumnProvider,
                 KennelQueryProvider,
                 KennelPageHelper,
-                DogRecordFilterProvider>();
+                SubjectRecordFilterProvider>();
 
         public static IServiceCollection AddUniversalReportServices(this IServiceCollection services)
         {

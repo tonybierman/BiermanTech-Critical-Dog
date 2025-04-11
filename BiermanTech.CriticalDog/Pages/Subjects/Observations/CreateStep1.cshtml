@@ -4,10 +4,10 @@
     ViewData["Title"] = "Add Observation - Step 1";
 }
 
-<h1>Add Observation for @Model.Observation.DogName - Step 1: Select Observation Type</h1>
+<h1>Add Observation for @Model.Observation.SubjectName - Step 1: Select Observation Type</h1>
 
 <form method="post">
-    <input type="hidden" asp-for="Observation.DogId" />
+    <input type="hidden" asp-for="Observation.SubjectId" />
 
     <div class="form-group">
         <label asp-for="Observation.ObservationDefinitionId">Observation Type</label>

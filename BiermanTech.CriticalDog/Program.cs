@@ -32,7 +32,7 @@ IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 // Add services to the container.
-builder.Services.AddScoped<IDogObservationService, DogObservationService>();
+builder.Services.AddScoped<ISubjectObservationService, SubjectObservationService>();
 
 // Lob
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")

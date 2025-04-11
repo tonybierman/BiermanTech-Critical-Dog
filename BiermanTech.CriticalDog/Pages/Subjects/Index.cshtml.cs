@@ -13,11 +13,11 @@ namespace BiermanTech.CriticalDog.Pages.Dogs
             _context = context;
         }
 
-        public IList<Dog> Dogs { get; set; } = new List<Dog>();
+        public IList<Subject> Dogs { get; set; } = new List<Subject>();
 
         public async Task OnGetAsync()
         {
-            Dogs = await _context.Dogs.ToListAsync();
+            Dogs = await _context.Subjects.ToListAsync();
         }
     }
 }

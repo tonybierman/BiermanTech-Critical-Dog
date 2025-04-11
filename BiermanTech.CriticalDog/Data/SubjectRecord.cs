@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace BiermanTech.CriticalDog.Data;
 
-public partial class DogRecord
+public partial class SubjectRecord
 {
     public int Id { get; set; }
 
-    public int DogId { get; set; }
+    public int SubjectId { get; set; }
 
     public int? MetricTypeId { get; set; }
 
@@ -19,9 +19,9 @@ public partial class DogRecord
 
     public string? CreatedBy { get; set; }
 
-    public virtual Dog Dog { get; set; } = null!;
-
     public virtual MetricType? MetricType { get; set; }
+
+    public virtual Subject Subject { get; set; } = null!;
 
     public virtual ICollection<MetaTag> MetaTags { get; set; } = new List<MetaTag>();
 }

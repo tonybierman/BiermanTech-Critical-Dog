@@ -4,10 +4,10 @@
     ViewData["Title"] = "Add Observation - Step 3";
 }
 
-<h1>Add Observation for @Model.Observation.DogName - Step 3: Add Meta Tags and Finalize</h1>
+<h1>Add Observation for @Model.Observation.SubjectName - Step 3: Add Meta Tags and Finalize</h1>
 
 <form method="post">
-    <input type="hidden" asp-for="Observation.DogId" />
+    <input type="hidden" asp-for="Observation.SubjectId" />
     <input type="hidden" asp-for="Observation.ObservationDefinitionId" />
     <input type="hidden" asp-for="Observation.IsQualitative" />
     <input type="hidden" asp-for="Observation.MetricTypeId" />
@@ -50,7 +50,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-page="CreateStep2" asp-route-dogId="@Model.Observation.DogId" class="btn btn-secondary">Back</a>
+    <a asp-page="CreateStep2" asp-route-dogId="@Model.Observation.SubjectId" class="btn btn-secondary">Back</a>
     <a asp-page="/Dogs/Index" class="btn btn-secondary">Cancel</a>
 </form>
 

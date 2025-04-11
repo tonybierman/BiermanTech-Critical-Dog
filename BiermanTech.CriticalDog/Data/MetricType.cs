@@ -15,9 +15,9 @@ public partial class MetricType
 
     public bool? IsActive { get; set; }
 
-    public virtual ICollection<DogRecord> DogRecords { get; set; } = new List<DogRecord>();
-
     public virtual ObservationDefinition ObservationDefinition { get; set; } = null!;
+
+    public virtual ICollection<SubjectRecord> SubjectRecords { get; set; } = new List<SubjectRecord>();
 
     public virtual Unit Unit { get; set; } = null!;
 }

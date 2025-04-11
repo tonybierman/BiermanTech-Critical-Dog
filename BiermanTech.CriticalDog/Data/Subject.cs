@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BiermanTech.CriticalDog.Data;
 
-public partial class Dog
+public partial class Subject
 {
     public int Id { get; set; }
 
@@ -21,5 +21,5 @@ public partial class Dog
 
     public string? Notes { get; set; }
 
-    public virtual ICollection<DogRecord> DogRecords { get; set; } = new List<DogRecord>();
+    public virtual ICollection<SubjectRecord> SubjectRecords { get; set; } = new List<SubjectRecord>();
 }

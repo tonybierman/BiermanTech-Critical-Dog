@@ -6,20 +6,20 @@ using Microsoft.Extensions.Logging;
 
 namespace BiermanTech.CriticalDog.Services
 {
-    public class DogObservationService : IDogObservationService
+    public class SubjectObservationService : ISubjectObservationService
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<DogObservationService> _logger;
+        private readonly ILogger<SubjectObservationService> _logger;
 
-        public DogObservationService(AppDbContext context, ILogger<DogObservationService> logger)
+        public SubjectObservationService(AppDbContext context, ILogger<SubjectObservationService> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        public async Task<Dog?> GetDogByIdAsync(int dogId)
+        public async Task<Subject?> GetByIdAsync(int id)
         {
-            return await _context.Dogs.FindAsync(dogId);
+            return await _context.Subjects.FindAsync(id);
         }
 
         public async Task<ObservationDefinition?> GetObservationDefinitionByIdAsync(int? observationDefinitionId)
@@ -81,9 +81,9 @@ namespace BiermanTech.CriticalDog.Services
             return new SelectList(items, "Value", "Text", selectedIds);
         }
 
-        public async Task SaveDogRecordAsync(DogRecord dogRecord, IEnumerable<int>? selectedMetaTagIds)
+        public async Task SaveSubjectRecordAsync(SubjectRecord record, IEnumerable<int>? selectedMetaTagIds)
         {
-            _context.DogRecords.Add(dogRecord);
+            _context.SubjectRecords.Add(record);
             await _context.SaveChangesAsync();
 
             if (selectedMetaTagIds?.Any() == true)
@@ -93,7 +93,7 @@ namespace BiermanTech.CriticalDog.Services
                     var metaTag = await _context.MetaTags.FirstOrDefaultAsync(mt => mt.Id == tagId);
                     if (metaTag != null)
                     {
-                        dogRecord.MetaTags.Add(metaTag);
+                        record.MetaTags.Add(metaTag);
                     }
                     else
                     {

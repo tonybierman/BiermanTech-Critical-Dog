@@ -27,9 +27,9 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                 ,
                 new ReportColumnDefinition
                 {
-                    DisplayName = "Dog",
-                    PropertyName = "Dog.Name",
-                    ViewModelName = "DogName",
+                    DisplayName = "Subject",
+                    PropertyName = "Subject.Name",
+                    ViewModelName = "SubjectName",
                     IsSortable = true
                 }
                 ,

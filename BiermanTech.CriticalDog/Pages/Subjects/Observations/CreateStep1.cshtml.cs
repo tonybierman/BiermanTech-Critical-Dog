@@ -8,10 +8,10 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep1Model : PageModel
     {
-        private readonly IDogObservationService _service;
+        private readonly ISubjectObservationService _service;
         private readonly ILogger<CreateStep1Model> _logger;
 
-        public CreateStep1Model(IDogObservationService service, ILogger<CreateStep1Model> logger)
+        public CreateStep1Model(ISubjectObservationService service, ILogger<CreateStep1Model> logger)
         {
             _service = service;
             _logger = logger;
@@ -22,14 +22,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public async Task<IActionResult> OnGetAsync(int dogId)
         {
-            var dog = await _service.GetDogByIdAsync(dogId);
+            var dog = await _service.GetByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
             }
 
-            Observation.DogId = dogId;
-            Observation.DogName = dog.Name ?? "Unknown";
+            Observation.SubjectId = dogId;
+            Observation.SubjectName = dog.Name ?? "Unknown";
             Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
 
             return Page();

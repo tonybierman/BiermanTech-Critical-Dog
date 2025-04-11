@@ -8,11 +8,11 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep2Model : PageModel
     {
-        private readonly IDogObservationService _service;
+        private readonly ISubjectObservationService _service;
         private readonly ILogger<CreateStep2Model> _logger;
         private readonly IMapper _mapper;
 
-        public CreateStep2Model(IDogObservationService service, ILogger<CreateStep2Model> logger, IMapper mapper)
+        public CreateStep2Model(ISubjectObservationService service, ILogger<CreateStep2Model> logger, IMapper mapper)
         {
             _service = service;
             _logger = logger;
@@ -29,7 +29,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             if (observationDefinitionId.HasValue)
             {
                 // Deep link: Initialize Observation from query parameters
-                var dog = await _service.GetDogByIdAsync(dogId);
+                var dog = await _service.GetByIdAsync(dogId);
                 if (dog == null)
                 {
                     _logger.LogWarning("Dog with ID {DogId} not found.", dogId);
@@ -45,8 +45,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
                 ObservationDefinitionName = observationDefinition.DefinitionName;
                 ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
-                ObservationVM.DogId = dogId;
-                ObservationVM.DogName = dog.Name ?? "Unknown";
+                ObservationVM.SubjectId = dogId;
+                ObservationVM.SubjectName = dog.Name ?? "Unknown";
                 ObservationVM.RecordTime = DateTime.Now;
             }
             else
@@ -60,9 +60,9 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 }
 
                 ObservationVM = System.Text.Json.JsonSerializer.Deserialize<CreateObservationViewModel>(TempData["Observation"].ToString())!;
-                ObservationVM.DogId = dogId;
+                ObservationVM.SubjectId = dogId;
 
-                var dog = await _service.GetDogByIdAsync(dogId);
+                var dog = await _service.GetByIdAsync(dogId);
                 if (dog == null)
                 {
                     _logger.LogWarning("Dog with ID {DogId} not found.", dogId);
@@ -80,7 +80,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
                 ObservationDefinitionName = observationDefinition.DefinitionName;
                 ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
-                ObservationVM.DogName = dog.Name ?? "Unknown";
+                ObservationVM.SubjectName = dog.Name ?? "Unknown";
                 ObservationVM.RecordTime = DateTime.Now;
                 TempData.Keep("Observation");
             }

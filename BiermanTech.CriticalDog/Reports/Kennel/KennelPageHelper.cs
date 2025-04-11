@@ -12,34 +12,34 @@ using BiermanTech.CriticalDog.ViewModels;
 
 namespace BiermanTech.CriticalDog.Reports.Kennel
 {
-    public class KennelPageHelper : PageHelperBase<DogRecord, DogRecordViewModel>
+    public class KennelPageHelper : PageHelperBase<SubjectRecord, SubjectRecordViewModel>
     {
         private readonly AppDbContext _dbContext;
 
         public KennelPageHelper(
             IUniversalReportService reportService,
             IReportColumnFactory reportColumnFactory,
-            IQueryFactory<DogRecord> queryFactory,
+            IQueryFactory<SubjectRecord> queryFactory,
             AppDbContext dbContext,
-            IFilterProvider<DogRecord> filterProvider,
-            FilterFactory<DogRecord> filterFactory,
+            IFilterProvider<SubjectRecord> filterProvider,
+            FilterFactory<SubjectRecord> filterFactory,
             IMapper mapper) : base(reportService, reportColumnFactory, queryFactory, filterProvider, filterFactory, mapper)
         {
             _dbContext = dbContext;
             DefaultSort = "CityAsc";
         }
 
-        public override async Task<PaginatedList<DogRecordViewModel>> GetPagedDataAsync(
-            PagedQueryParameters<DogRecord> parameters,
+        public override async Task<PaginatedList<SubjectRecordViewModel>> GetPagedDataAsync(
+            PagedQueryParameters<SubjectRecord> parameters,
             int totalCount)
         {
-            return await _reportService.GetPagedAsync<DogRecord, DogRecordViewModel>(
+            return await _reportService.GetPagedAsync<SubjectRecord, SubjectRecordViewModel>(
                 parameters, totalCount);
         }
 
         //public override async Task<ICohort[]?> GetCohortsAsync(int[] cohortIds)
         //{
-        //    var cohorts = await _dbContext.DogRecordCohorts
+        //    var cohorts = await _dbContext.SubjectRecordCohorts
         //                    .Where(c => cohortIds.Contains(c.Id))
         //                    .Cast<ICohort>() // Ensure conversion to ICohort
         //                    .ToArrayAsync();
@@ -61,7 +61,7 @@ namespace BiermanTech.CriticalDog.Reports.Kennel
             return columns;
         }
 
-        public override PagedQueryParameters<DogRecord> CreateQueryParameters(string queryType, IReportColumnDefinition[] columns, int? pageIndex, string? sort, int? ipp, int[]? cohortIds)
+        public override PagedQueryParameters<SubjectRecord> CreateQueryParameters(string queryType, IReportColumnDefinition[] columns, int? pageIndex, string? sort, int? ipp, int[]? cohortIds)
         {
             return _queryFactory.CreateQueryParameters(queryType, columns, pageIndex, sort, ipp, cohortIds);
         }

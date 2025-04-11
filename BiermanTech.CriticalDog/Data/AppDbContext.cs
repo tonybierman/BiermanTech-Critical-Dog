@@ -11,10 +11,6 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Dog> Dogs { get; set; }
-
-    public virtual DbSet<DogRecord> DogRecords { get; set; }
-
     public virtual DbSet<MetaTag> MetaTags { get; set; }
 
     public virtual DbSet<MetricType> MetricTypes { get; set; }
@@ -25,6 +21,10 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<ScientificDiscipline> ScientificDisciplines { get; set; }
 
+    public virtual DbSet<Subject> Subjects { get; set; }
+
+    public virtual DbSet<SubjectRecord> SubjectRecords { get; set; }
+
     public virtual DbSet<Unit> Units { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,78 +32,6 @@ public partial class AppDbContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_uca1400_ai_ci")
             .HasCharSet("utf8mb4");
-
-        modelBuilder.Entity<Dog>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("Dog");
-
-            entity.HasIndex(e => e.Name, "IDX_Dog_Name");
-
-            entity.HasIndex(e => new { e.Name, e.Breed, e.ArrivalDate }, "Name").IsUnique();
-
-            entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.Age).HasColumnType("int(11)");
-            entity.Property(e => e.Breed).HasMaxLength(50);
-            entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.Notes).HasColumnType("text");
-            entity.Property(e => e.Sex).HasColumnType("tinyint(4)");
-            entity.Property(e => e.WeightKg).HasPrecision(5, 2);
-        });
-
-        modelBuilder.Entity<DogRecord>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("DogRecord");
-
-            entity.HasIndex(e => e.DogId, "IDX_DogRecord_DogId");
-
-            entity.HasIndex(e => e.MetricTypeId, "IDX_DogRecord_MetricTypeId");
-
-            entity.HasIndex(e => e.RecordTime, "IDX_DogRecord_RecordTime");
-
-            entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.CreatedBy).HasMaxLength(50);
-            entity.Property(e => e.DogId).HasColumnType("int(11)");
-            entity.Property(e => e.MetricTypeId).HasColumnType("int(11)");
-            entity.Property(e => e.MetricValue).HasPrecision(10, 2);
-            entity.Property(e => e.Note).HasColumnType("text");
-            entity.Property(e => e.RecordTime)
-                .HasDefaultValueSql("current_timestamp()")
-                .HasColumnType("datetime");
-
-            entity.HasOne(d => d.Dog).WithMany(p => p.DogRecords)
-                .HasForeignKey(d => d.DogId)
-                .HasConstraintName("FK_DogRecord_Dog");
-
-            entity.HasOne(d => d.MetricType).WithMany(p => p.DogRecords)
-                .HasForeignKey(d => d.MetricTypeId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_DogRecord_MetricType");
-
-            entity.HasMany(d => d.MetaTags).WithMany(p => p.DogRecords)
-                .UsingEntity<Dictionary<string, object>>(
-                    "DogRecordMetaTag",
-                    r => r.HasOne<MetaTag>().WithMany()
-                        .HasForeignKey("MetaTagId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_DogRecordMetaTag_MetaTag"),
-                    l => l.HasOne<DogRecord>().WithMany()
-                        .HasForeignKey("DogRecordId")
-                        .HasConstraintName("FK_DogRecordMetaTag_DogRecord"),
-                    j =>
-                    {
-                        j.HasKey("DogRecordId", "MetaTagId")
-                            .HasName("PRIMARY")
-                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
-                        j.ToTable("DogRecordMetaTag");
-                        j.HasIndex(new[] { "MetaTagId" }, "FK_DogRecordMetaTag_MetaTag");
-                        j.IndexerProperty<int>("DogRecordId").HasColumnType("int(11)");
-                        j.IndexerProperty<int>("MetaTagId").HasColumnType("int(11)");
-                    });
-        });
 
         modelBuilder.Entity<MetaTag>(entity =>
         {
@@ -248,6 +176,78 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IsActive)
                 .IsRequired()
                 .HasDefaultValueSql("'1'");
+        });
+
+        modelBuilder.Entity<Subject>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Subject");
+
+            entity.HasIndex(e => e.Name, "IDX_Subject_Name");
+
+            entity.HasIndex(e => new { e.Name, e.Breed, e.ArrivalDate }, "Name").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.Age).HasColumnType("int(11)");
+            entity.Property(e => e.Breed).HasMaxLength(50);
+            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Notes).HasColumnType("text");
+            entity.Property(e => e.Sex).HasColumnType("tinyint(4)");
+            entity.Property(e => e.WeightKg).HasPrecision(5, 2);
+        });
+
+        modelBuilder.Entity<SubjectRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("SubjectRecord");
+
+            entity.HasIndex(e => e.MetricTypeId, "IDX_SubjectRecord_MetricTypeId");
+
+            entity.HasIndex(e => e.RecordTime, "IDX_SubjectRecord_RecordTime");
+
+            entity.HasIndex(e => e.SubjectId, "IDX_SubjectRecord_SubjectId");
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.CreatedBy).HasMaxLength(50);
+            entity.Property(e => e.MetricTypeId).HasColumnType("int(11)");
+            entity.Property(e => e.MetricValue).HasPrecision(10, 2);
+            entity.Property(e => e.Note).HasColumnType("text");
+            entity.Property(e => e.RecordTime)
+                .HasDefaultValueSql("current_timestamp()")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SubjectId).HasColumnType("int(11)");
+
+            entity.HasOne(d => d.MetricType).WithMany(p => p.SubjectRecords)
+                .HasForeignKey(d => d.MetricTypeId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_SubjectRecord_MetricType");
+
+            entity.HasOne(d => d.Subject).WithMany(p => p.SubjectRecords)
+                .HasForeignKey(d => d.SubjectId)
+                .HasConstraintName("FK_SubjectRecord_Subject");
+
+            entity.HasMany(d => d.MetaTags).WithMany(p => p.SubjectRecords)
+                .UsingEntity<Dictionary<string, object>>(
+                    "SubjectRecordMetaTag",
+                    r => r.HasOne<MetaTag>().WithMany()
+                        .HasForeignKey("MetaTagId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_SubjectRecordMetaTag_MetaTag"),
+                    l => l.HasOne<SubjectRecord>().WithMany()
+                        .HasForeignKey("SubjectRecordId")
+                        .HasConstraintName("FK_SubjectRecordMetaTag_SubjectRecord"),
+                    j =>
+                    {
+                        j.HasKey("SubjectRecordId", "MetaTagId")
+                            .HasName("PRIMARY")
+                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        j.ToTable("SubjectRecordMetaTag");
+                        j.HasIndex(new[] { "MetaTagId" }, "FK_SubjectRecordMetaTag_MetaTag");
+                        j.IndexerProperty<int>("SubjectRecordId").HasColumnType("int(11)");
+                        j.IndexerProperty<int>("MetaTagId").HasColumnType("int(11)");
+                    });
         });
 
         modelBuilder.Entity<Unit>(entity =>

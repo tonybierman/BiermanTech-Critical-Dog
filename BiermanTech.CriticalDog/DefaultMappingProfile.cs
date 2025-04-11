@@ -30,7 +30,7 @@ namespace BiermanTech.CriticalDog
     {
         public DefaultMappingProfile()
         {
-            CreateMap<DogRecord, DogRecordViewModel>()
+            CreateMap<SubjectRecord, SubjectRecordViewModel>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<ICollection<MetricType>, SelectList>()

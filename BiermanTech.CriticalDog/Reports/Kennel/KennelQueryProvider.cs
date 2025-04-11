@@ -4,18 +4,18 @@ using BiermanTech.CriticalDog.Reports.Domain;
 
 namespace BiermanTech.CriticalDog.Reports.Kennel
 {
-    public class KennelQueryProvider : PagedDogRecordQueryProvider
+    public class KennelQueryProvider : PagedSubjectRecordQueryProvider
     {
         public override string Slug => "Kennel";
 
         public KennelQueryProvider(AppDbContext dbContext) : base(dbContext) { }
 
-        public override IQueryable<DogRecord> EnsureReportQuery()
+        public override IQueryable<SubjectRecord> EnsureReportQuery()
         {
-            IQueryable<DogRecord> query = _dbContext.DogRecords;
+            IQueryable<SubjectRecord> query = _dbContext.SubjectRecords;
 
             var optimizedQuery = query
-                .Include(a => a.Dog)
+                .Include(a => a.Subject)
                 .Include(a => a.MetricType)
                 .ThenInclude(mt => mt.ObservationDefinition)
                 .Include(a => a.MetricType)

@@ -3,9 +3,9 @@ using UniversalReportCore.PagedQueries;
 
 namespace BiermanTech.CriticalDog.Reports.Domain
 {
-    public class DogRecordQueryFactory : QueryFactory<DogRecord>
+    public class SubjectRecordQueryFactory : QueryFactory<SubjectRecord>
     {
-        public DogRecordQueryFactory(IEnumerable<IPagedQueryProvider<DogRecord>> providers) : base(providers)
+        public SubjectRecordQueryFactory(IEnumerable<IPagedQueryProvider<SubjectRecord>> providers) : base(providers)
         {
         }
     }
