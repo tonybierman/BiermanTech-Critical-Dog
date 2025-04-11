@@ -25,6 +25,8 @@ public partial class ObservationDefinition
 
     public virtual ObservationType ObservationType { get; set; } = null!;
 
+    public virtual ICollection<SubjectRecord> SubjectRecords { get; set; } = new List<SubjectRecord>();
+
     public virtual ICollection<ScientificDiscipline> ScientificDisciplines { get; set; } = new List<ScientificDiscipline>();
 
     public virtual ICollection<Unit> Units { get; set; } = new List<Unit>();

@@ -35,6 +35,14 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                 ,
                 new ReportColumnDefinition
                 {
+                    DisplayName = "Sex",
+                    PropertyName = "Subject.Sex",
+                    ViewModelName = "SubjectSex",
+                    IsSortable = true
+                }
+                ,
+                new ReportColumnDefinition
+                {
                     DisplayName = "Observation",
                     PropertyName = "MetricType.ObservationDefinition.DefinitionName",
                     ViewModelName = "ObservationName",
@@ -46,6 +54,13 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                     DisplayName = "Value",
                     PropertyName = "MetricValue",
                     ViewModelName = "MetricValueWithSymbol",
+                    IsSortable = true
+                }
+                ,
+                new ReportColumnDefinition
+                {
+                    DisplayName = "Note",
+                    PropertyName = "Note",
                     IsSortable = true
                 }
             };

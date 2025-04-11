@@ -205,6 +205,8 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.MetricTypeId, "IDX_SubjectRecord_MetricTypeId");
 
+            entity.HasIndex(e => e.ObservationDefinitionId, "IDX_SubjectRecord_ObservationDefinitionId");
+
             entity.HasIndex(e => e.RecordTime, "IDX_SubjectRecord_RecordTime");
 
             entity.HasIndex(e => e.SubjectId, "IDX_SubjectRecord_SubjectId");
@@ -214,6 +216,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.MetricTypeId).HasColumnType("int(11)");
             entity.Property(e => e.MetricValue).HasPrecision(10, 2);
             entity.Property(e => e.Note).HasColumnType("text");
+            entity.Property(e => e.ObservationDefinitionId).HasColumnType("int(11)");
             entity.Property(e => e.RecordTime)
                 .HasDefaultValueSql("current_timestamp()")
                 .HasColumnType("datetime");
@@ -223,6 +226,11 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.MetricTypeId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_SubjectRecord_MetricType");
+
+            entity.HasOne(d => d.ObservationDefinition).WithMany(p => p.SubjectRecords)
+                .HasForeignKey(d => d.ObservationDefinitionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SubjectRecord_ObservationDefinition");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.SubjectRecords)
                 .HasForeignKey(d => d.SubjectId)

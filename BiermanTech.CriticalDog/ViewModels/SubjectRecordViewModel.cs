@@ -22,13 +22,17 @@ namespace BiermanTech.CriticalDog.ViewModels
 
         public string? SubjectName => Subject?.Name;
 
+        public string? SubjectSex => Subject?.Sex == 0 ? "M" : "F";
+
         public virtual Subject Subject { get; set; } = null!;
 
         public virtual MetricType? MetricType { get; set; }
 
+        public virtual ObservationDefinition ObservationDefinition { get; set; } = null!;
+
         public string? UnitSymbol => MetricType?.Unit?.UnitSymbol;
 
-        public string? ObservationName => Note ?? StringHelper.SplitPascalCase(MetricType?.ObservationDefinition?.DefinitionName);
+        public string? ObservationName => StringHelper.SplitPascalCase(ObservationDefinition?.DefinitionName);
 
         public string? MetricValueWithSymbol => $"{MetricValue} {UnitSymbol}";
 

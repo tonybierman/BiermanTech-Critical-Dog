@@ -9,6 +9,8 @@ public partial class SubjectRecord
 
     public int SubjectId { get; set; }
 
+    public int ObservationDefinitionId { get; set; }
+
     public int? MetricTypeId { get; set; }
 
     public decimal? MetricValue { get; set; }
@@ -20,6 +22,8 @@ public partial class SubjectRecord
     public string? CreatedBy { get; set; }
 
     public virtual MetricType? MetricType { get; set; }
+
+    public virtual ObservationDefinition ObservationDefinition { get; set; } = null!;
 
     public virtual Subject Subject { get; set; } = null!;
 

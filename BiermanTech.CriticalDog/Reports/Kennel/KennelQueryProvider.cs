@@ -16,8 +16,7 @@ namespace BiermanTech.CriticalDog.Reports.Kennel
 
             var optimizedQuery = query
                 .Include(a => a.Subject)
-                .Include(a => a.MetricType)
-                .ThenInclude(mt => mt.ObservationDefinition)
+                .Include(a => a.ObservationDefinition)
                 .Include(a => a.MetricType)
                 .ThenInclude(mt => mt.Unit)
                 .Include(a => a.MetaTags);
