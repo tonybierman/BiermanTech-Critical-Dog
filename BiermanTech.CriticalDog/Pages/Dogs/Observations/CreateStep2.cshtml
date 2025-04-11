@@ -1,10 +1,12 @@
 ﻿@page "{dogId:int}/Step2"
+@using BiermanTech.CriticalDog.Helpers
 @model BiermanTech.CriticalDog.Pages.Dogs.Observations.CreateStep2Model
 @{
     ViewData["Title"] = "Add Observation - Step 2";
+    var definitionName = StringHelper.SplitPascalCase(Model.ObservationDefinitionName);
 }
 
-<h1>Add Observation for @Model.ObservationVM.DogName - Step 2: Enter Details</h1>
+<h1>Add @definitionName for @Model.ObservationVM.DogName - Step 2: Enter Details</h1>
 
 <form method="post">
     <input type="hidden" asp-for="ObservationVM.DogId" />

@@ -21,6 +21,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         [BindProperty]
         public CreateObservationViewModel ObservationVM { get; set; } = new CreateObservationViewModel();
+        public string ObservationDefinitionName { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int dogId, int? observationDefinitionId = null)
         {
@@ -42,6 +43,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                     return NotFound();
                 }
 
+                ObservationDefinitionName = observationDefinition.DefinitionName;
                 ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
                 ObservationVM.DogId = dogId;
                 ObservationVM.DogName = dog.Name ?? "Unknown";
@@ -68,16 +70,17 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                     return NotFound();
                 }
 
-                ObservationVM.DogName = dog.Name ?? "Unknown";
                 var observationDefinition = await _service.GetObservationDefinitionByIdAsync(ObservationVM.ObservationDefinitionId);
                 if (observationDefinition == null)
                 {
-                    _logger.LogWarning("ObservationDefinition with ID {ObservationDefinitionId} not found.", ObservationVM.ObservationDefinitionId);
+                    _logger.LogWarning("ObservationDefinition with ID {ObservationDefinitionId} not found.", observationDefinitionId);
 
                     return NotFound();
                 }
 
+                ObservationDefinitionName = observationDefinition.DefinitionName;
                 ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
+                ObservationVM.DogName = dog.Name ?? "Unknown";
                 ObservationVM.RecordTime = DateTime.Now;
                 TempData.Keep("Observation");
             }
