@@ -1,0 +1,9 @@
+﻿@model UniversalReportCore.ViewModels.PageMetaViewModel
+<h1>@Model.Title</h1>
+@if (!string.IsNullOrEmpty(Model.Subtitle))
+{
+    <h2 class="text-muted">@Model.Subtitle</h2>
+}
+<hr />
+
+

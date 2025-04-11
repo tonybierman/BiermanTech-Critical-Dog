@@ -1,0 +1,9 @@
+﻿@page "{slug}"
+@model BiermanTech.CriticalDog.Pages.Reports.IndexModel
+@{
+    ViewData["Title"] = $"{Model.PageMeta.Title} {Model.PageMeta.Subtitle}";
+}
+<partial name="_PageHeadingPartial" model="@Model.PageMeta" />
+<div class="container mt-4">
+    <partial name="_ReportTablePartial"/>
+</div>

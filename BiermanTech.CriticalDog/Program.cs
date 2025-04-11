@@ -1,11 +1,22 @@
 using AutoMapper;
 using BiermanTech.CriticalDog;
 using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Reports;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+var options = new WebApplicationOptions
+{
+    ContentRootPath = Path.GetFullPath(Directory.GetCurrentDirectory()),
+    WebRootPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+};
+
+var builder = WebApplication.CreateBuilder(options);
+
+// Log paths for debugging
+Console.WriteLine($"ContentRootPath: {builder.Environment.ContentRootPath}");
+Console.WriteLine($"WebRootPath: {builder.Environment.WebRootPath}");
 
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
@@ -37,6 +48,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<IdentityDbContext>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Add Universal Report services
+builder.Services.AddUniversalReportServices();
 
 builder.Services.AddRazorPages();
 

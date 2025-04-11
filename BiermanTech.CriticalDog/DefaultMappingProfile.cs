@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Models;
+using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 
@@ -29,6 +30,9 @@ namespace BiermanTech.CriticalDog
     {
         public DefaultMappingProfile()
         {
+            CreateMap<DogRecord, DogRecordViewModel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
             CreateMap<ICollection<MetricType>, SelectList>()
                 .ConvertUsing<MetricTypesConverter>();
 
