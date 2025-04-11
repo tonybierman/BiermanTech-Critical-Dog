@@ -1,3 +1,4 @@
+using AutoMapper;
 using BiermanTech.CriticalDog.Models;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +10,13 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
     {
         private readonly IDogObservationService _service;
         private readonly ILogger<CreateStep1Model> _logger;
+        private readonly IMapper _mapper;
 
-        public CreateStep1Model(IDogObservationService service, ILogger<CreateStep1Model> logger)
+        public CreateStep1Model(IDogObservationService service, ILogger<CreateStep1Model> logger, IMapper mapper)
         {
             _service = service;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [BindProperty]

@@ -1,3 +1,5 @@
+using AutoMapper;
+using BiermanTech.CriticalDog;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
+
+builder.Services.AddHttpContextAccessor();
+
+// Auto Mapper Configurations
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new DefaultMappingProfile());
+});
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 // Add services to the container.
 builder.Services.AddScoped<IDogObservationService, DogObservationService>();
