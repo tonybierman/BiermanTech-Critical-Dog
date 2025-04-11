@@ -21,5 +21,9 @@ public partial class Subject
 
     public string? Notes { get; set; }
 
+    public int? SubjectTypeId { get; set; }
+
     public virtual ICollection<SubjectRecord> SubjectRecords { get; set; } = new List<SubjectRecord>();
+
+    public virtual SubjectType? SubjectType { get; set; }
 }

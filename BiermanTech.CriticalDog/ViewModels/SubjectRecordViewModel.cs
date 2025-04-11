@@ -21,6 +21,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public string? CreatedBy { get; set; }
 
         public string? SubjectName => Subject?.Name;
+        public string? SubjectTypeName => Subject?.SubjectType?.TypeName;
 
         public string? SubjectSex => Subject?.Sex == 0 ? "M" : "F";
 

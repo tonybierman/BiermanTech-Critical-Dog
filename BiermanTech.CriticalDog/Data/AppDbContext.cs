@@ -25,6 +25,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<SubjectRecord> SubjectRecords { get; set; }
 
+    public virtual DbSet<SubjectType> SubjectTypes { get; set; }
+
     public virtual DbSet<Unit> Units { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -184,6 +186,8 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("Subject");
 
+            entity.HasIndex(e => e.SubjectTypeId, "FK_Subject_SubjectType");
+
             entity.HasIndex(e => e.Name, "IDX_Subject_Name");
 
             entity.HasIndex(e => new { e.Name, e.Breed, e.ArrivalDate }, "Name").IsUnique();
@@ -194,7 +198,12 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Notes).HasColumnType("text");
             entity.Property(e => e.Sex).HasColumnType("tinyint(4)");
+            entity.Property(e => e.SubjectTypeId).HasColumnType("int(11)");
             entity.Property(e => e.WeightKg).HasPrecision(5, 2);
+
+            entity.HasOne(d => d.SubjectType).WithMany(p => p.Subjects)
+                .HasForeignKey(d => d.SubjectTypeId)
+                .HasConstraintName("FK_Subject_SubjectType");
         });
 
         modelBuilder.Entity<SubjectRecord>(entity =>
@@ -256,6 +265,19 @@ public partial class AppDbContext : DbContext
                         j.IndexerProperty<int>("SubjectRecordId").HasColumnType("int(11)");
                         j.IndexerProperty<int>("MetaTagId").HasColumnType("int(11)");
                     });
+        });
+
+        modelBuilder.Entity<SubjectType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("SubjectType");
+
+            entity.HasIndex(e => e.TypeName, "TypeName").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.TypeName).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Unit>(entity =>

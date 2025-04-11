@@ -35,6 +35,14 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                 ,
                 new ReportColumnDefinition
                 {
+                    DisplayName = "Subject Type",
+                    PropertyName = "Subject.SubjectType.TypeName",
+                    ViewModelName = "SubjectTypeName",
+                    IsSortable = true
+                }
+                ,
+                new ReportColumnDefinition
+                {
                     DisplayName = "Sex",
                     PropertyName = "Subject.Sex",
                     ViewModelName = "SubjectSex",
