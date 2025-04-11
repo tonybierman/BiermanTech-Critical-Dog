@@ -32,12 +32,12 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             Observation = System.Text.Json.JsonSerializer.Deserialize<CreateObservationViewModel>(TempData["Observation"].ToString());
             Observation.DogId = dogId;
-
             var dog = await _service.GetDogByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
             }
+
             Observation.DogName = dog.Name ?? "Unknown";
 
             var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
@@ -45,6 +45,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             {
                 return NotFound();
             }
+
             ObservationDefinitionName = observationDefinition.DefinitionName;
 
             if (!Observation.IsQualitative && Observation.MetricTypeId.HasValue)
@@ -55,35 +56,29 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             Observation.MetaTags = await _service.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
             TempData.Keep("Observation");
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
-            //if (ModelState.IsValid)
-            if (true)
-            {
-                _logger.LogInformation("Saving observation for DogId: {DogId}, ObservationDefinitionId: {ObservationDefinitionId}, SelectedMetaTagIds: {SelectedMetaTagIds}",
+            _logger.LogInformation("Saving observation for DogId: {DogId}, ObservationDefinitionId: {ObservationDefinitionId}, SelectedMetaTagIds: {SelectedMetaTagIds}",
                     Observation.DogId, Observation.ObservationDefinitionId, string.Join(", ", Observation.SelectedMetaTagIds ?? new List<int>()));
 
-                var dogRecord = new DogRecord
-                {
-                    DogId = Observation.DogId,
-                    MetricTypeId = Observation.MetricTypeId,
-                    MetricValue = Observation.MetricValue,
-                    Note = Observation.Note,
-                    RecordTime = Observation.RecordTime ?? DateTime.Now,
-                    CreatedBy = User.Identity?.Name ?? "Unknown"
-                };
+            var dogRecord = new DogRecord
+            {
+                DogId = Observation.DogId,
+                MetricTypeId = Observation.MetricTypeId,
+                MetricValue = Observation.MetricValue,
+                Note = Observation.Note,
+                RecordTime = Observation.RecordTime ?? DateTime.Now,
+                CreatedBy = User.Identity?.Name ?? "Unknown"
+            };
 
-                await _service.SaveDogRecordAsync(dogRecord, Observation.SelectedMetaTagIds);
+            await _service.SaveDogRecordAsync(dogRecord, Observation.SelectedMetaTagIds);
+            TempData.Remove("Observation");
 
-                TempData.Remove("Observation");
-                return RedirectToPage("/Dogs/Index");
-            }
-
-            Observation.MetaTags = await _service.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
-            return Page();
+            return RedirectToPage("/Dogs/Index");
         }
     }
 }

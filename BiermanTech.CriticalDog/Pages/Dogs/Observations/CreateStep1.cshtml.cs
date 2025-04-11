@@ -29,8 +29,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             Observation.DogId = dogId;
             Observation.DogName = dog.Name ?? "Unknown";
-
             Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
+
             return Page();
         }
 
@@ -40,10 +40,12 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             {
                 ModelState.AddModelError("Observation.ObservationDefinitionId", "Please select an observation type.");
                 Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
+
                 return Page();
             }
 
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(Observation);
+
             return RedirectToPage("CreateStep2", new { dogId });
         }
     }
