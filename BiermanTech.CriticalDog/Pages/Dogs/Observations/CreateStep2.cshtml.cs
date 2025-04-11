@@ -43,17 +43,9 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 }
 
                 ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
-
                 ObservationVM.DogId = dogId;
                 ObservationVM.DogName = dog.Name ?? "Unknown";
-
-                //ObservationVM.ObservationDefinitionId = observationDefinition.Id;
-                //ObservationVM.IsQualitative = observationDefinition.IsQualitative;
-                //ObservationVM.MinimumValue = observationDefinition.MinimumValue;
-                //ObservationVM.MaximumValue = observationDefinition.MaximumValue;
-                
                 ObservationVM.RecordTime = DateTime.Now;
-                ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(observationDefinitionId.Value);
             }
             else
             {
@@ -61,6 +53,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 if (TempData["Observation"] == null)
                 {
                     _logger.LogInformation("TempData['Observation'] is null. Redirecting to CreateStep1 for DogId {DogId}.", dogId);
+
                     return RedirectToPage("CreateStep1", new { dogId });
                 }
 
@@ -71,6 +64,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 if (dog == null)
                 {
                     _logger.LogWarning("Dog with ID {DogId} not found.", dogId);
+
                     return NotFound();
                 }
 
@@ -79,14 +73,12 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 if (observationDefinition == null)
                 {
                     _logger.LogWarning("ObservationDefinition with ID {ObservationDefinitionId} not found.", ObservationVM.ObservationDefinitionId);
+
                     return NotFound();
                 }
 
-                ObservationVM.IsQualitative = observationDefinition.IsQualitative;
-                ObservationVM.MinimumValue = observationDefinition.MinimumValue;
-                ObservationVM.MaximumValue = observationDefinition.MaximumValue;
+                ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
                 ObservationVM.RecordTime = DateTime.Now;
-                ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
                 TempData.Keep("Observation");
             }
 
@@ -99,13 +91,11 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             if (observationDefinition == null)
             {
                 _logger.LogWarning("ObservationDefinition with ID {ObservationDefinitionId} not found.", ObservationVM.ObservationDefinitionId);
+
                 return NotFound();
             }
 
-            ObservationVM.IsQualitative = observationDefinition.IsQualitative;
-            ObservationVM.MinimumValue = observationDefinition.MinimumValue;
-            ObservationVM.MaximumValue = observationDefinition.MaximumValue;
-
+            ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
             if (!ObservationVM.IsQualitative)
             {
                 if (!ObservationVM.MetricTypeId.HasValue || !ObservationVM.MetricValue.HasValue)
@@ -121,6 +111,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                     }
 
                     ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
+
                     return Page();
                 }
 
@@ -128,6 +119,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 {
                     ModelState.AddModelError("Observation.MetricValue", $"Value must be between {observationDefinition.MinimumValue} and {observationDefinition.MaximumValue}.");
                     ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
+
                     return Page();
                 }
             }
@@ -136,11 +128,13 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 if (string.IsNullOrEmpty(ObservationVM.Note))
                 {
                     ModelState.AddModelError("Observation.Note", "A note is required for qualitative observations.");
+
                     return Page();
                 }
             }
 
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(ObservationVM);
+
             return RedirectToPage("CreateStep3", new { dogId });
         }
     }

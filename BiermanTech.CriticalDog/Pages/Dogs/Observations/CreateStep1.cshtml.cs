@@ -10,13 +10,11 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
     {
         private readonly IDogObservationService _service;
         private readonly ILogger<CreateStep1Model> _logger;
-        private readonly IMapper _mapper;
 
-        public CreateStep1Model(IDogObservationService service, ILogger<CreateStep1Model> logger, IMapper mapper)
+        public CreateStep1Model(IDogObservationService service, ILogger<CreateStep1Model> logger)
         {
             _service = service;
             _logger = logger;
-            _mapper = mapper;
         }
 
         [BindProperty]

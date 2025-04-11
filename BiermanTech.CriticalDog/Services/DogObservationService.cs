@@ -27,6 +27,7 @@ namespace BiermanTech.CriticalDog.Services
             if (!observationDefinitionId.HasValue)
                 return null;
             return await _context.ObservationDefinitions
+                .Include(a => a.MetricTypes)
                 .FirstOrDefaultAsync(od => od.Id == observationDefinitionId);
         }
 
