@@ -30,6 +30,10 @@ namespace BiermanTech.CriticalDog
     {
         public DefaultMappingProfile()
         {
+            CreateMap<SubjectType, SubjectTypeInputViewModel>();
+            CreateMap<SubjectTypeInputViewModel, SubjectType>()
+                .ForMember(dest => dest.Subjects, opt => opt.Ignore());
+
             CreateMap<ObservationType, ObservationTypeInputViewModel>();
             CreateMap<ObservationTypeInputViewModel, ObservationType>()
                 .ForMember(dest => dest.ObservationDefinitions, opt => opt.Ignore());
