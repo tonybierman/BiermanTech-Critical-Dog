@@ -11,3 +11,6 @@ docker exec mariadb_critical_dog mariadb -u root --password=rootpassword -e "CRE
 cat /var/backup.sql | docker exec -i mariadb_critical_dog mariadb -u root --password=rootpassword CriticalDogRestoreDB
 
 cat /var/backup.sql | mariadb -u root --password=rootpassword CriticalDogRestoreDB
+
+# Rebuild containers
+docker-compose up --build

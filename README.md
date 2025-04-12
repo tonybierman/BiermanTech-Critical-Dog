@@ -1,13 +1,13 @@
 ﻿# Critical Dog Application Overview
 
-Critical Dog is designed to track and monitor the health and behavior of dogs. It provides a structured system for handlers and trainers to record observations, manage medical data, and categorize findings using meta-tags and scientific disciplines. Below is a detailed list of its features.
+Critical Dog is designed to track and monitor the health and behavior of dogs. It provides a structured system for handlers and trainers to record observations, manage medical data, and categorize findings. Below is a detailed list of its features.
 
 ## Features
 
 ### 1. Subject Management
 - **Purpose**: Manage individual dog profiles.
 - **Use Case**: Register new dogs, update profiles, or review details for treatment planning.
-
+ 
 ### 2. Observation Tracking
 - **Purpose**: Record quantitative and qualitative observations about dogs.
 - **Details**:

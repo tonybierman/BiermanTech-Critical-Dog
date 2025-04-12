@@ -49,10 +49,11 @@ var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__De
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Identity DB
-var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection") ?? throw new InvalidOperationException("Connection string 'IdentityConnection' not found.");
+// Identity DB (updated to use MySQL/MariaDB)
+var identityConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__IdentityConnection")
+    ?? builder.Configuration.GetConnectionString("IdentityConnection");
 builder.Services.AddDbContext<IdentityDbContext>(options =>
-    options.UseSqlServer(identityConnectionString));
+    options.UseMySql(identityConnectionString, ServerVersion.AutoDetect(identityConnectionString)));
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<IdentityDbContext>();
 
@@ -64,6 +65,20 @@ builder.Services.AddUniversalReportServices();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
+
+// Apply migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    // Apply migrations for AppDbContext
+    var appDbContext = services.GetRequiredService<AppDbContext>();
+    appDbContext.Database.Migrate();
+
+    // Apply migrations for IdentityDbContext
+    var identityDbContext = services.GetRequiredService<IdentityDbContext>();
+    identityDbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

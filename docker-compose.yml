@@ -25,8 +25,14 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__DefaultConnection: "Server=mariadb;Database=CriticalDogDB;User=demo;Password=password;"
+      ConnectionStrings__IdentityConnection: "Server=mariadb;Database=CriticalDogDB;User=demo;Password=password;"
     networks:
       - app-network
+    # Optional: Add command to apply migrations on startup
+    command: >
+      sh -c "dotnet ef database update --context AppDbContext &&
+             dotnet ef database update --context IdentityDbContext &&
+             dotnet BiermanTech.CriticalDog.dll"
 
 volumes:
   mariadb_data:
