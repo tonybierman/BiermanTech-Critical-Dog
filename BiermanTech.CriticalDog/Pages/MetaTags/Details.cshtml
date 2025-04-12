@@ -1,0 +1,38 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.MetaTags.DetailsModel
+
+@{
+    ViewData["Title"] = "Meta Tag Details";
+}
+
+<h1>Meta Tag Details</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.MetaTagVM.TagName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.MetaTagVM.TagName)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.MetaTagVM.Description)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.MetaTagVM.Description)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.MetaTagVM.IsActive)
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.MetaTagVM.IsActive.HasValue ? (Model.MetaTagVM.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+            </dd>
+        </dl>
+        <div class="form-group mt-3">
+            <a asp-page="./Edit" asp-route-id="@Model.MetaTagVM.Id" class="btn btn-primary">Edit</a>
+            <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </div>
+</div>

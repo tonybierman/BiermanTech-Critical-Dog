@@ -37,6 +37,7 @@ builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IScientificDisciplineService, ScientificDisciplineService>();
 builder.Services.AddScoped<IObservationDefinitionService, ObservationDefinitionService>();
 builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddScoped<IMetaTagService, MetaTagService>();
 
 // Lob DB
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
