@@ -13,7 +13,6 @@
         <tr>
             <th>Name</th>
             <th>Breed</th>
-            <th>Age</th>
             <th>Sex</th>
             <th>Arrival Date</th>
             <th>Actions</th>
@@ -25,7 +24,6 @@
             <tr>
                 <td>@dog.Name</td>
                 <td>@dog.Breed</td>
-                <td>@dog.Age</td>
                 <td>@(dog.Sex == 0 ? "Male" : dog.Sex == 1 ? "Female" : "Unknown")</td>
                 <td>@dog.ArrivalDate?.ToShortDateString()</td>
                 <td>

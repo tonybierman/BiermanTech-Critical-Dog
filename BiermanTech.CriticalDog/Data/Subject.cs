@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BiermanTech.CriticalDog.Data;
 
@@ -11,11 +13,7 @@ public partial class Subject
 
     public string? Breed { get; set; }
 
-    public int? Age { get; set; }
-
     public sbyte Sex { get; set; }
-
-    public decimal? WeightKg { get; set; }
 
     public DateOnly? ArrivalDate { get; set; }
 
@@ -26,4 +24,11 @@ public partial class Subject
     public virtual ICollection<SubjectRecord> SubjectRecords { get; set; } = new List<SubjectRecord>();
 
     public virtual SubjectType? SubjectType { get; set; }
+
+    // Ownership: Foreign key to IdentityUser
+    public string UserId { get; set; }
+
+    // Optional: Navigation property to IdentityUser
+    [ForeignKey("UserId")]
+    public IdentityUser User { get; set; }
 }

@@ -15,5 +15,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public int? SubjectTypeId { get; set; }
 
         public virtual SubjectType? SubjectType { get; set; }
+
+        public string UserId { get; set; }
     }
 }

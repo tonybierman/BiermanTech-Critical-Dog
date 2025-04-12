@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using Microsoft.EntityFrameworkCore;
 
 namespace BiermanTech.CriticalDog.Data;
@@ -193,17 +194,23 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => new { e.Name, e.Breed, e.ArrivalDate }, "Name").IsUnique();
 
             entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.Age).HasColumnType("int(11)");
             entity.Property(e => e.Breed).HasMaxLength(50);
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Notes).HasColumnType("text");
             entity.Property(e => e.Sex).HasColumnType("tinyint(4)");
             entity.Property(e => e.SubjectTypeId).HasColumnType("int(11)");
-            entity.Property(e => e.WeightKg).HasPrecision(5, 2);
+            entity.Property(e => e.UserId).HasMaxLength(450); // Matches AspNetUsers.Id
 
-            entity.HasOne(d => d.SubjectType).WithMany(p => p.Subjects)
+            entity.HasOne(d => d.SubjectType)
+                .WithMany(p => p.Subjects)
                 .HasForeignKey(d => d.SubjectTypeId)
                 .HasConstraintName("FK_Subject_SubjectType");
+
+            // Add UserId foreign key to AspNetUsers
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Subject_AspNetUsers_UserId");
         });
 
         modelBuilder.Entity<SubjectRecord>(entity =>

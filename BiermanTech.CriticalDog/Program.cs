@@ -37,6 +37,10 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Privacy"); // Allow anonymous for /Pages/Privacy
     options.Conventions.AllowAnonymousToFolder("/Reports"); // Allow anonymous for /Pages/Reports/*
     options.Conventions.AuthorizeFolder("/Admin", "RequireAdminRole"); // Require Admin role for /Pages/Admin/*
+
+    // TODO: Boostratps a dmin user - must be better way
+    //options.Conventions.AllowAnonymousToPage("/Admin/Users/ManageUsers"); // Allow anonymous for /Pages/Index
+
 });
 
 // Auto Mapper Configurations
