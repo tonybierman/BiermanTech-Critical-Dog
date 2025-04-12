@@ -1,0 +1,57 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.Subjects.EditModel
+
+@{
+    ViewData["Title"] = "Edit Subject";
+}
+
+<h1>Edit Subject</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SubjectVM.Id" />
+
+            <div class="form-group">
+                <label asp-for="SubjectVM.Name" class="control-label"></label>
+                <input asp-for="SubjectVM.Name" class="form-control" />
+                <span asp-validation-for="SubjectVM.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SubjectVM.Sex" class="control-label"></label>
+                <select asp-for="SubjectVM.Sex" class="form-control">
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                </select>
+                <span asp-validation-for="SubjectVM.Sex" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SubjectVM.ArrivalDate" class="control-label"></label>
+                <input asp-for="SubjectVM.ArrivalDate" class="form-control" type="date" />
+                <span asp-validation-for="SubjectVM.ArrivalDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SubjectVM.SubjectTypeId" class="control-label"></label>
+                <select asp-for="SubjectVM.SubjectTypeId" class="form-control"
+                        asp-items="Model.SubjectTypes"></select>
+                <span asp-validation-for="SubjectVM.SubjectTypeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

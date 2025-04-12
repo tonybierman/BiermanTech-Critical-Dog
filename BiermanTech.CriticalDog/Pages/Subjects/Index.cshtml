@@ -1,11 +1,13 @@
 ﻿@page
 @model BiermanTech.CriticalDog.Pages.Dogs.IndexModel
 @{
-    ViewData["Title"] = "Dogs";
+    ViewData["Title"] = "Subjects";
 }
 
-<h1>Dogs</h1>
-
+<h1>Subjects</h1>
+<p>
+    <a class="btn btn-primary" asp-page="/Subjects/Create">Create New</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -27,7 +29,14 @@
                 <td>@(dog.Sex == 0 ? "Male" : dog.Sex == 1 ? "Female" : "Unknown")</td>
                 <td>@dog.ArrivalDate?.ToShortDateString()</td>
                 <td>
-                    <a asp-page="/Dogs/Observations/CreateStep1" asp-route-dogId="@dog.Id">Add Observation</a>
+                    <div class="d-inline-flex align-items-center me-2 non-printable" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Second group">
+                            <a class="btn btn-success" asp-page="/Subjects/Observations/CreateStep1" asp-route-dogId="@dog.Id">Observe</a>
+                            <a class="btn btn-primary" asp-page="/Subjects/Details" asp-route-id="@dog.Id">Details</a>
+                            <a class="btn btn-primary" asp-page="/Subjects/Edit" asp-route-id="@dog.Id">Edit</a>
+                            <a class="btn btn-danger" asp-page="/Subjects/Delete" asp-route-id="@dog.Id">Delete</a>
+                        </div>
+                    </div>
                 </td>
             </tr>
         }

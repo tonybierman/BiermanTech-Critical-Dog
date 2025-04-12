@@ -33,14 +33,15 @@ builder.Services.AddSingleton(mapper);
 
 // Add services to the container.
 builder.Services.AddScoped<ISubjectObservationService, SubjectObservationService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 
-// Lob
+// Lob DB
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Identity
+// Identity DB
 var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection") ?? throw new InvalidOperationException("Connection string 'IdentityConnection' not found.");
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseSqlServer(identityConnectionString));

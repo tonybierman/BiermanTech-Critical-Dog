@@ -30,6 +30,12 @@ namespace BiermanTech.CriticalDog
     {
         public DefaultMappingProfile()
         {
+            CreateMap<Subject, SubjectInputViewModel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<SubjectInputViewModel, Subject>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
             CreateMap<SubjectRecord, SubjectRecordViewModel>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 

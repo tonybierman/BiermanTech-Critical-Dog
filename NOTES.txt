@@ -1,1 +1,13 @@
 dotnet ef dbcontext scaffold "Server=localhost;Port=3307;Database=CriticalDogDB;User=demo;Password=password;" "Pomelo.EntityFrameworkCore.MySql" --context AppDbContext -o Data --force --no-onconfiguring
+
+# Log into DB 
+docker exec -it mariadb_critical_dog /bin/bash
+
+# Backup DB
+docker exec mariadb_critical_dog /usr/bin/mariadb-dump -u root --password=rootpassword CriticalDogDB > /var/backup.sql
+
+# Restore DB
+docker exec mariadb_critical_dog mariadb -u root --password=rootpassword -e "CREATE DATABASE CriticalDogRestoreDB;"
+cat /var/backup.sql | docker exec -i mariadb_critical_dog mariadb -u root --password=rootpassword CriticalDogRestoreDB
+
+cat /var/backup.sql | mariadb -u root --password=rootpassword CriticalDogRestoreDB

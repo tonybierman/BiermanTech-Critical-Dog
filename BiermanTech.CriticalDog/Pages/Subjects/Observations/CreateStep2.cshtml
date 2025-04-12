@@ -44,9 +44,9 @@
         <span asp-validation-for="ObservationVM.RecordTime" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Next</button>
-    <a asp-page="CreateStep1" asp-route-dogId="@Model.ObservationVM.SubjectId" class="btn btn-secondary">Back</a>
-    <a asp-page="/Dogs/Index" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary mt-3">Next</button>
+    <a asp-page="CreateStep1" asp-route-dogId="@Model.ObservationVM.SubjectId" class="btn btn-secondary mt-3">Back</a>
+    <a asp-page="/Dogs/Index" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 
 @section Scripts {

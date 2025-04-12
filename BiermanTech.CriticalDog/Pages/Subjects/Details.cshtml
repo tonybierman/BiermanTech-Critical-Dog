@@ -1,0 +1,44 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.Subjects.DetailsModel
+
+@{
+    ViewData["Title"] = "Subject Details";
+}
+
+<h1>Subject Details</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.SubjectVM.Name)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.SubjectVM.Name)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.SubjectVM.Sex)
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.SubjectVM.Sex == 0 ? "Male" : "Female")
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.SubjectVM.ArrivalDate)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.SubjectVM.ArrivalDate)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.SubjectVM.SubjectTypeId)
+            </dt>
+            <dd class="col-sm-9">
+                @Model.SubjectTypeName
+            </dd>
+        </dl>
+        <div class="form-group mt-3">
+            <a asp-page="./Edit" asp-route-id="@Model.SubjectVM.Id" class="btn btn-primary">Edit</a>
+            <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </div>
+</div>
