@@ -49,13 +49,21 @@ var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__De
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Identity DB (updated to use MySQL/MariaDB)
+// Identity DB
 var identityConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__IdentityConnection")
-    ?? builder.Configuration.GetConnectionString("IdentityConnection");
+    ?? builder.Configuration.GetConnectionString("IdentityConnection")
+    ?? throw new InvalidOperationException("IdentityConnection string not found.");
+
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseMySql(identityConnectionString, ServerVersion.AutoDetect(identityConnectionString)));
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<IdentityDbContext>();
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    // options.SignIn.RequireConfirmedAccount = true; // Email confirmation required
+})
+    .AddEntityFrameworkStores<IdentityDbContext>()
+    .AddDefaultTokenProviders()
+    .AddDefaultUI(); // Optional: Adds default Identity UI for Razor Pages
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -64,7 +72,11 @@ builder.Services.AddUniversalReportServices();
 
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizeFolder("/"); // Requires auth for all pages
+    options.Conventions.AuthorizeFolder("/"); // Require auth for all pages (from your previous request)
+    options.Conventions.AllowAnonymousToPage("/Index"); // Allow anonymous for /Pages/Index
+    options.Conventions.AllowAnonymousToPage("/Privacy"); // Allow anonymous for /Pages/Index
+    options.Conventions.AllowAnonymousToFolder("/Reports"); // Allow anonymous for /Pages/Reports
+    options.Conventions.AuthorizeFolder("/Admin", "Admin"); // Require Admin role for /Pages/Admin/*
 });
 
 var app = builder.Build();

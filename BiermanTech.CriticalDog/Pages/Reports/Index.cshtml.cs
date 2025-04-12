@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BiermanTech.CriticalDog.Pages.Reports
 {
-    [AllowAnonymous]
     public class IndexModel : ReportPageModel
     {
         public IndexModel(ILogger<IndexModel> logger,
