@@ -30,6 +30,14 @@ namespace BiermanTech.CriticalDog
     {
         public DefaultMappingProfile()
         {
+            CreateMap<SubjectRecord, SubjectRecordInputViewModel>()
+        .ForMember(dest => dest.SelectedMetaTagIds, opt => opt.Ignore());
+            CreateMap<SubjectRecordInputViewModel, SubjectRecord>()
+                .ForMember(dest => dest.Subject, opt => opt.Ignore())
+                .ForMember(dest => dest.ObservationDefinition, opt => opt.Ignore())
+                .ForMember(dest => dest.MetricType, opt => opt.Ignore())
+                .ForMember(dest => dest.MetaTags, opt => opt.Ignore());
+
             CreateMap<SubjectType, SubjectTypeInputViewModel>();
             CreateMap<SubjectTypeInputViewModel, SubjectType>()
                 .ForMember(dest => dest.Subjects, opt => opt.Ignore());

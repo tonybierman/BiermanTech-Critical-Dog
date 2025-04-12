@@ -1,0 +1,121 @@
+﻿using AutoMapper;
+using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+
+namespace BiermanTech.CriticalDog.Services
+{
+    public class SubjectRecordService : ISubjectRecordService
+    {
+        private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
+
+        public SubjectRecordService(AppDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<SubjectRecord> GetSubjectRecordByIdAsync(int id)
+        {
+            return await _context.SubjectRecords
+                .Include(s => s.Subject)
+                .Include(s => s.ObservationDefinition)
+                .Include(s => s.MetricType)
+                .Include(s => s.MetaTags)
+                .FirstOrDefaultAsync(s => s.Id == id);
+        }
+
+        public async Task<SubjectRecordInputViewModel> GetSubjectRecordViewModelByIdAsync(int id)
+        {
+            var record = await GetSubjectRecordByIdAsync(id);
+            if (record == null)
+            {
+                return null;
+            }
+
+            var viewModel = _mapper.Map<SubjectRecordInputViewModel>(record);
+            viewModel.SelectedMetaTagIds = record.MetaTags.Select(m => m.Id).ToList();
+            return viewModel;
+        }
+
+        public async Task<List<SubjectRecordInputViewModel>> GetAllSubjectRecordsAsync()
+        {
+            var records = await _context.SubjectRecords
+                .Include(s => s.MetaTags)
+                .ToListAsync();
+            var viewModels = _mapper.Map<List<SubjectRecordInputViewModel>>(records);
+            for (int i = 0; i < records.Count; i++)
+            {
+                viewModels[i].SelectedMetaTagIds = records[i].MetaTags.Select(m => m.Id).ToList();
+            }
+            return viewModels;
+        }
+
+        public async Task<SelectList> GetSubjectsSelectListAsync()
+        {
+            var subjects = await _context.Subjects.ToListAsync();
+            return new SelectList(subjects, nameof(Subject.Id), nameof(Subject.Name));
+        }
+
+        public async Task<SelectList> GetObservationDefinitionsSelectListAsync()
+        {
+            var definitions = await _context.ObservationDefinitions.ToListAsync();
+            return new SelectList(definitions, nameof(ObservationDefinition.Id), nameof(ObservationDefinition.DefinitionName));
+        }
+
+        public async Task<SelectList> GetMetricTypesSelectListAsync()
+        {
+            var metricTypes = await _context.MetricTypes.ToListAsync();
+            return new SelectList(metricTypes, nameof(MetricType.Id), nameof(MetricType.Id));
+        }
+
+        public async Task<SelectList> GetMetaTagsSelectListAsync()
+        {
+            var metaTags = await _context.MetaTags.ToListAsync();
+            return new SelectList(metaTags, nameof(MetaTag.Id), nameof(MetaTag.TagName));
+        }
+
+        public async Task CreateSubjectRecordAsync(SubjectRecordInputViewModel viewModel)
+        {
+            var entity = _mapper.Map<SubjectRecord>(viewModel);
+            entity.MetaTags = await _context.MetaTags
+                .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id))
+                .ToListAsync();
+            _context.SubjectRecords.Add(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateSubjectRecordAsync(SubjectRecordInputViewModel viewModel)
+        {
+            var record = await _context.SubjectRecords
+                .Include(s => s.MetaTags)
+                .FirstOrDefaultAsync(s => s.Id == viewModel.Id);
+            if (record == null)
+            {
+                throw new KeyNotFoundException($"SubjectRecord with ID {viewModel.Id} not found.");
+            }
+
+            _mapper.Map(viewModel, record);
+            record.MetaTags.Clear();
+            record.MetaTags = await _context.MetaTags
+                .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id))
+                .ToListAsync();
+            _context.SubjectRecords.Update(record);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteSubjectRecordAsync(int id)
+        {
+            var record = await _context.SubjectRecords.FindAsync(id);
+            if (record == null)
+            {
+                throw new KeyNotFoundException($"SubjectRecord with ID {id} not found.");
+            }
+
+            _context.SubjectRecords.Remove(record);
+            await _context.SaveChangesAsync();
+        }
+    }
+}
