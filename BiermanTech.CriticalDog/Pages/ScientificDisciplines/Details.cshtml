@@ -1,0 +1,38 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.ScientificDisciplines.DetailsModel
+
+@{
+    ViewData["Title"] = "Scientific Discipline Details";
+}
+
+<h1>Scientific Discipline Details</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DisciplineVM.DisciplineName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DisciplineVM.DisciplineName)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DisciplineVM.Description)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DisciplineVM.Description)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DisciplineVM.IsActive)
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.DisciplineVM.IsActive.HasValue ? (Model.DisciplineVM.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+            </dd>
+        </dl>
+        <div class="form-group mt-3">
+            <a asp-page="./Edit" asp-route-id="@Model.DisciplineVM.Id" class="btn btn-primary">Edit</a>
+            <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </div>
+</div>

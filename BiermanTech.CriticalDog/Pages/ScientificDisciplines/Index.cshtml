@@ -1,0 +1,50 @@
+﻿@page
+@model BiermanTech.CriticalDog.Pages.ScientificDisciplines.IndexModel
+
+@{
+    ViewData["Title"] = "Scientific Disciplines";
+}
+
+<h1>Scientific Disciplines</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Disciplines[0].DisciplineName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Disciplines[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Disciplines[0].IsActive)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Disciplines)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DisciplineName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @(item.IsActive.HasValue ? (item.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

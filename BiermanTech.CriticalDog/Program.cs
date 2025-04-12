@@ -34,6 +34,7 @@ builder.Services.AddSingleton(mapper);
 // Add services to the container.
 builder.Services.AddScoped<ISubjectObservationService, SubjectObservationService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<IScientificDisciplineService, ScientificDisciplineService>();
 
 // Lob DB
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
