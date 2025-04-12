@@ -1,0 +1,56 @@
+﻿@page
+@model BiermanTech.CriticalDog.Pages.Units.CreateModel
+
+@{
+    ViewData["Title"] = "Create Unit";
+}
+
+<h1>Create Unit</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="UnitVM.UnitName" class="control-label"></label>
+                <input asp-for="UnitVM.UnitName" class="form-control" />
+                <span asp-validation-for="UnitVM.UnitName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="UnitVM.UnitSymbol" class="control-label"></label>
+                <input asp-for="UnitVM.UnitSymbol" class="form-control" />
+                <span asp-validation-for="UnitVM.UnitSymbol" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="UnitVM.Description" class="control-label"></label>
+                <textarea asp-for="UnitVM.Description" class="form-control"></textarea>
+                <span asp-validation-for="UnitVM.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="UnitVM.IsActive" class="control-label"></label>
+                <select asp-for="UnitVM.IsActive" class="form-control">
+                    <option value="">Select Status</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+                <span asp-validation-for="UnitVM.IsActive" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
