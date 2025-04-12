@@ -1,0 +1,44 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.Admin.Units.DetailsModel
+
+@{
+    ViewData["Title"] = "Unit Details";
+}
+
+<h1>Unit Details</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.UnitVM.UnitName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.UnitVM.UnitName)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.UnitVM.UnitSymbol)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.UnitVM.UnitSymbol)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.UnitVM.Description)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.UnitVM.Description)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.UnitVM.IsActive)
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.UnitVM.IsActive.HasValue ? (Model.UnitVM.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+            </dd>
+        </dl>
+        <div class="form-group mt-3">
+            <a asp-page="./Edit" asp-route-id="@Model.UnitVM.Id" class="btn btn-primary">Edit</a>
+            <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </div>
+</div>

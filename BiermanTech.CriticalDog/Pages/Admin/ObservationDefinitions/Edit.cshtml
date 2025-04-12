@@ -1,0 +1,84 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions.EditModel
+
+@{
+    ViewData["Title"] = "Edit Observation Definition";
+}
+
+<h1>Edit Observation Definition</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="DefinitionVM.Id" />
+
+            <div class="form-group">
+                <label asp-for="DefinitionVM.DefinitionName" class="control-label"></label>
+                <input asp-for="DefinitionVM.DefinitionName" class="form-control" />
+                <span asp-validation-for="DefinitionVM.DefinitionName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DefinitionVM.ObservationTypeId" class="control-label"></label>
+                <select asp-for="DefinitionVM.ObservationTypeId" class="form-control" asp-items="Model.ObservationTypes"></select>
+                <span asp-validation-for="DefinitionVM.ObservationTypeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DefinitionVM.IsQualitative" class="control-label"></label>
+                <select asp-for="DefinitionVM.IsQualitative" class="form-control">
+                    <option value="true">Qualitative</option>
+                    <option value="false">Quantitative</option>
+                </select>
+                <span asp-validation-for="DefinitionVM.IsQualitative" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DefinitionVM.MinimumValue" class="control-label"></label>
+                <input asp-for="DefinitionVM.MinimumValue" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="DefinitionVM.MinimumValue" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DefinitionVM.MaximumValue" class="control-label"></label>
+                <input asp-for="DefinitionVM.MaximumValue" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="DefinitionVM.MaximumValue" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DefinitionVM.Description" class="control-label"></label>
+                <textarea asp-for="DefinitionVM.Description" class="form-control"></textarea>
+                <span asp-validation-for="DefinitionVM.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DefinitionVM.IsActive" class="control-label"></label>
+                <select asp-for="DefinitionVM.IsActive" class="form-control">
+                    <option value="">Select Status</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+                <span asp-validation-for="DefinitionVM.IsActive" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DefinitionVM.SelectedScientificDisciplineIds" class="control-label">Scientific Disciplines</label>
+                <select asp-for="DefinitionVM.SelectedScientificDisciplineIds" class="form-control" multiple asp-items="Model.ScientificDisciplines"></select>
+                <span asp-validation-for="DefinitionVM.SelectedScientificDisciplineIds" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,17 @@
+﻿@page
+@model BiermanTech.CriticalDog.Pages.Admin.Users.ManageUsersModel
+
+<h2>Manage Users</h2>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-info">@Model.Message</div>
+}
+
+<form method="post">
+    <div class="form-group">
+        <label for="userEmail">User Email</label>
+        <input asp-for="UserEmail" class="form-control" id="userEmail" />
+    </div>
+    <button type="submit" class="btn btn-primary">Make Admin</button>
+</form>

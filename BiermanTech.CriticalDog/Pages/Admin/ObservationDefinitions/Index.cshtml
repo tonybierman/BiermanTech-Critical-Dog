@@ -1,0 +1,74 @@
+﻿@page
+@model BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions.IndexModel
+
+@{
+    ViewData["Title"] = "Observation Definitions";
+}
+
+<h1>Observation Definitions</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Definitions[0].DefinitionName)
+            </th>
+            <th>
+                Observation Type
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Definitions[0].IsQualitative)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Definitions[0].MinimumValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Definitions[0].MaximumValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Definitions[0].IsActive)
+            </th>
+            <th>
+                Scientific Disciplines
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Definitions)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DefinitionName)
+                </td>
+                <td>
+                    @Model.ObservationTypeNames[item.Id]
+                </td>
+                <td>
+                    @(item.IsQualitative ? "Qualitative" : "Quantitative")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinimumValue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaximumValue)
+                </td>
+                <td>
+                    @(item.IsActive.HasValue ? (item.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+                </td>
+                <td>
+                    @(item.SelectedScientificDisciplineIds.Any() ? string.Join(", ", Model.ScientificDisciplineNames[item.Id]) : "None")
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,68 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions.DetailsModel
+
+@{
+    ViewData["Title"] = "Observation Definition Details";
+}
+
+<h1>Observation Definition Details</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DefinitionVM.DefinitionName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DefinitionVM.DefinitionName)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DefinitionVM.ObservationTypeId)
+            </dt>
+            <dd class="col-sm-9">
+                @Model.ObservationTypeName
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DefinitionVM.IsQualitative)
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.DefinitionVM.IsQualitative ? "Qualitative" : "Quantitative")
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DefinitionVM.MinimumValue)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DefinitionVM.MinimumValue)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DefinitionVM.MaximumValue)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DefinitionVM.MaximumValue)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DefinitionVM.Description)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DefinitionVM.Description)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DefinitionVM.IsActive)
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.DefinitionVM.IsActive.HasValue ? (Model.DefinitionVM.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+            </dd>
+            <dt class="col-sm-3">
+                Scientific Disciplines
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.ScientificDisciplineNames.Any() ? string.Join(", ", Model.ScientificDisciplineNames) : "None")
+            </dd>
+        </dl>
+        <div class="form-group mt-3">
+            <a asp-page="./Edit" asp-route-id="@Model.DefinitionVM.Id" class="btn btn-primary">Edit</a>
+            <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </div>
+</div>

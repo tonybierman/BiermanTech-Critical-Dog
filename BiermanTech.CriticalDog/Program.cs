@@ -23,6 +23,22 @@ builder.Logging.AddDebug();
 
 builder.Services.AddHttpContextAccessor();
 
+// Authorization
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy =>
+        policy.RequireRole("Admin"));
+});
+
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/"); // Require auth for all pages
+    options.Conventions.AllowAnonymousToPage("/Index"); // Allow anonymous for /Pages/Index
+    options.Conventions.AllowAnonymousToPage("/Privacy"); // Allow anonymous for /Pages/Privacy
+    options.Conventions.AllowAnonymousToFolder("/Reports"); // Allow anonymous for /Pages/Reports/*
+    options.Conventions.AuthorizeFolder("/Admin", "RequireAdminRole"); // Require Admin role for /Pages/Admin/*
+});
+
 // Auto Mapper Configurations
 var mapperConfig = new MapperConfiguration(mc =>
 {
@@ -69,15 +85,6 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add Universal Report services
 builder.Services.AddUniversalReportServices();
-
-builder.Services.AddRazorPages(options =>
-{
-    options.Conventions.AuthorizeFolder("/"); // Require auth for all pages (from your previous request)
-    options.Conventions.AllowAnonymousToPage("/Index"); // Allow anonymous for /Pages/Index
-    options.Conventions.AllowAnonymousToPage("/Privacy"); // Allow anonymous for /Pages/Index
-    options.Conventions.AllowAnonymousToFolder("/Reports"); // Allow anonymous for /Pages/Reports
-    options.Conventions.AuthorizeFolder("/Admin", "Admin"); // Require Admin role for /Pages/Admin/*
-});
 
 var app = builder.Build();
 

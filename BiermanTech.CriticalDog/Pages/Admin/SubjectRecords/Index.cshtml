@@ -1,0 +1,80 @@
+﻿@page
+@model BiermanTech.CriticalDog.Pages.Admin.SubjectRecords.IndexModel
+
+@{
+    ViewData["Title"] = "Subject Records";
+}
+
+<h1>Subject Records</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Subject
+            </th>
+            <th>
+                Observation Definition
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].MetricTypeId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].MetricValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].RecordTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].CreatedBy)
+            </th>
+            <th>
+                Meta Tags
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Records)
+        {
+            <tr>
+                <td>
+                    @Model.SubjectNames[item.Id]
+                </td>
+                <td>
+                    @Model.ObservationDefinitionNames[item.Id]
+                </td>
+                <td>
+                    @(item.MetricTypeId.HasValue ? item.MetricTypeId.ToString() : "None")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MetricValue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Note)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RecordTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy)
+                </td>
+                <td>
+                    @(item.SelectedMetaTagIds.Any() ? string.Join(", ", Model.MetaTagNames[item.Id]) : "None")
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

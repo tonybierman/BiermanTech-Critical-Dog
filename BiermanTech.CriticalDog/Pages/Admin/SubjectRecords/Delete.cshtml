@@ -1,0 +1,69 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.Admin.SubjectRecords.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete Subject Record";
+}
+
+<h1>Delete Subject Record</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RecordVM.SubjectId)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.SubjectName
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RecordVM.ObservationDefinitionId)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ObservationDefinitionName
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RecordVM.MetricTypeId)
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.MetricTypeId.HasValue ? Model.MetricTypeId.ToString() : "None")
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RecordVM.MetricValue)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RecordVM.MetricValue)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RecordVM.Note)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RecordVM.Note)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RecordVM.RecordTime)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RecordVM.RecordTime)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RecordVM.CreatedBy)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RecordVM.CreatedBy)
+        </dd>
+        <dt class="col-sm-3">
+            Meta Tags
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.MetaTagNames.Any() ? string.Join(", ", Model.MetaTagNames) : "None")
+        </dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="RecordVM.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+    </form>
+</div>

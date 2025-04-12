@@ -1,0 +1,50 @@
+﻿@page
+@model BiermanTech.CriticalDog.Pages.Admin.MetaTags.CreateModel
+
+@{
+    ViewData["Title"] = "Create Meta Tag";
+}
+
+<h1>Create Meta Tag</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="MetaTagVM.TagName" class="control-label"></label>
+                <input asp-for="MetaTagVM.TagName" class="form-control" />
+                <span asp-validation-for="MetaTagVM.TagName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MetaTagVM.Description" class="control-label"></label>
+                <textarea asp-for="MetaTagVM.Description" class="form-control"></textarea>
+                <span asp-validation-for="MetaTagVM.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MetaTagVM.IsActive" class="control-label"></label>
+                <select asp-for="MetaTagVM.IsActive" class="form-control">
+                    <option value="">Select Status</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+                <span asp-validation-for="MetaTagVM.IsActive" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
