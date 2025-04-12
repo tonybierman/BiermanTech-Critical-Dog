@@ -1,0 +1,38 @@
+﻿@page "{id:int}"
+@model BiermanTech.CriticalDog.Pages.ObservationTypes.DetailsModel
+
+@{
+    ViewData["Title"] = "Observation Type Details";
+}
+
+<h1>Observation Type Details</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ObservationTypeVM.TypeName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ObservationTypeVM.TypeName)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ObservationTypeVM.Description)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ObservationTypeVM.Description)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ObservationTypeVM.IsActive)
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.ObservationTypeVM.IsActive.HasValue ? (Model.ObservationTypeVM.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+            </dd>
+        </dl>
+        <div class="form-group mt-3">
+            <a asp-page="./Edit" asp-route-id="@Model.ObservationTypeVM.Id" class="btn btn-primary">Edit</a>
+            <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </div>
+</div>
