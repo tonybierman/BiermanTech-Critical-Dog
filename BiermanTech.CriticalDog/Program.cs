@@ -62,9 +62,13 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 // Add Universal Report services
 builder.Services.AddUniversalReportServices();
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/"); // Requires auth for all pages
+});
 
 var app = builder.Build();
+
 
 // Apply migrations at startup
 using (var scope = app.Services.CreateScope())
@@ -97,6 +101,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();

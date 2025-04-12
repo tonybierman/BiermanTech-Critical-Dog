@@ -11,9 +11,11 @@ using UniversalReportCore.HardQuerystringVariables;
 using Microsoft.CSharp.RuntimeBinder;
 using UniversalReportCore.Ui;
 using UniversalReportCore.Ui.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BiermanTech.CriticalDog.Pages.Reports
 {
+    [AllowAnonymous]
     public class IndexModel : ReportPageModel
     {
         public IndexModel(ILogger<IndexModel> logger,
