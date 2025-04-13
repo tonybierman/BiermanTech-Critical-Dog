@@ -31,44 +31,67 @@ namespace BiermanTech.CriticalDog
         public DefaultMappingProfile()
         {
             CreateMap<SubjectRecord, SubjectRecordInputViewModel>()
-        .ForMember(dest => dest.SelectedMetaTagIds, opt => opt.Ignore());
+                .ForMember(dest => dest.SelectedMetaTagIds, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
             CreateMap<SubjectRecordInputViewModel, SubjectRecord>()
                 .ForMember(dest => dest.Subject, opt => opt.Ignore())
                 .ForMember(dest => dest.ObservationDefinition, opt => opt.Ignore())
                 .ForMember(dest => dest.MetricType, opt => opt.Ignore())
-                .ForMember(dest => dest.MetaTags, opt => opt.Ignore());
+                .ForMember(dest => dest.MetaTags, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<SubjectType, SubjectTypeInputViewModel>();
+
+            CreateMap<SubjectType, SubjectTypeInputViewModel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            
             CreateMap<SubjectTypeInputViewModel, SubjectType>()
-                .ForMember(dest => dest.Subjects, opt => opt.Ignore());
+                .ForMember(dest => dest.Subjects, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<ObservationType, ObservationTypeInputViewModel>();
+
+            CreateMap<ObservationType, ObservationTypeInputViewModel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            
             CreateMap<ObservationTypeInputViewModel, ObservationType>()
-                .ForMember(dest => dest.ObservationDefinitions, opt => opt.Ignore());
+                .ForMember(dest => dest.ObservationDefinitions, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<MetricType, MetricTypeInputViewModel>();
             CreateMap<MetricTypeInputViewModel, MetricType>()
                 .ForMember(dest => dest.ObservationDefinition, opt => opt.Ignore())
                 .ForMember(dest => dest.Unit, opt => opt.Ignore())
-                .ForMember(dest => dest.SubjectRecords, opt => opt.Ignore());
+                .ForMember(dest => dest.SubjectRecords, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<MetaTag, MetaTagInputViewModel>();
+            CreateMap<MetaTag, MetaTagInputViewModel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
             CreateMap<MetaTagInputViewModel, MetaTag>()
-                .ForMember(dest => dest.SubjectRecords, opt => opt.Ignore());
+                .ForMember(dest => dest.SubjectRecords, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<Unit, UnitInputViewModel>();
+            CreateMap<Unit, UnitInputViewModel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
             CreateMap<UnitInputViewModel, Unit>()
                 .ForMember(dest => dest.MetricTypes, opt => opt.Ignore())
-                .ForMember(dest => dest.ObservationDefinitions, opt => opt.Ignore());
+                .ForMember(dest => dest.ObservationDefinitions, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
 
             CreateMap<ObservationDefinition, ObservationDefinitionInputViewModel>()
-                .ForMember(dest => dest.SelectedScientificDisciplineIds, opt => opt.Ignore());
+                .ForMember(dest => dest.SelectedScientificDisciplineIds, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
             CreateMap<ObservationDefinitionInputViewModel, ObservationDefinition>()
                 .ForMember(dest => dest.ScientificDisciplines, opt => opt.Ignore())
                 .ForMember(dest => dest.ObservationType, opt => opt.Ignore())
                 .ForMember(dest => dest.MetricTypes, opt => opt.Ignore())
                 .ForMember(dest => dest.SubjectRecords, opt => opt.Ignore())
-                .ForMember(dest => dest.Units, opt => opt.Ignore());
+                .ForMember(dest => dest.Units, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
 
             CreateMap<ScientificDiscipline, ScientificDisciplineInputViewModel>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
@@ -90,7 +113,7 @@ namespace BiermanTech.CriticalDog
                 .ConvertUsing<MetricTypesConverter>();
 
             CreateMap<ObservationDefinition, CreateObservationViewModel>()
-                .ForMember( dest => dest.ObservationDefinitionId,
+                .ForMember(dest => dest.ObservationDefinitionId,
                     opt => opt.MapFrom(src => src.Id))
                 .ForMember(
                     dest => dest.MetricTypes,

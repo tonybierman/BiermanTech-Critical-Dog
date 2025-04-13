@@ -67,6 +67,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             var dogRecord = new SubjectRecord
             {
+                ObservationDefinitionId = Observation.ObservationDefinitionId.Value,
                 SubjectId = Observation.SubjectId,
                 MetricTypeId = Observation.MetricTypeId,
                 MetricValue = Observation.MetricValue,
@@ -78,7 +79,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             await _service.SaveSubjectRecordAsync(dogRecord, Observation.SelectedMetaTagIds);
             TempData.Remove("Observation");
 
-            return RedirectToPage("/Dogs/Index");
+            return RedirectToPage("/Subjects/Index");
         }
     }
 }

@@ -98,7 +98,9 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 return NotFound();
             }
 
-            ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
+            // TODO: Mapping is overwriting values
+            //ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
+            ObservationVM.ObservationDefinitionId = observationDefinition.Id;
             if (!ObservationVM.IsQualitative)
             {
                 if (!ObservationVM.MetricTypeId.HasValue || !ObservationVM.MetricValue.HasValue)
