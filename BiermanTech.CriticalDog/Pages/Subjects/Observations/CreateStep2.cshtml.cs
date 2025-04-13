@@ -1,8 +1,12 @@
 using AutoMapper;
+using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Helpers;
 using BiermanTech.CriticalDog.Models;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
@@ -11,6 +15,9 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         private readonly ISubjectObservationService _service;
         private readonly ILogger<CreateStep2Model> _logger;
         private readonly IMapper _mapper;
+
+        public IEnumerable<SelectListItem> SelectedListItems { get; set; }
+        public SelectListItem SelectedItem { get; set; }
 
         public CreateStep2Model(ISubjectObservationService service, ILogger<CreateStep2Model> logger, IMapper mapper)
         {
@@ -22,6 +29,18 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         [BindProperty]
         public CreateObservationViewModel ObservationVM { get; set; } = new CreateObservationViewModel();
         public string ObservationDefinitionName { get; set; }
+
+        public void PopulateSelectListItems(int id)
+        {
+            try
+            {
+                SelectedListItems = SelectListProviderFactory.GetProvider(id).GetSelectListItems();
+            }
+            catch (NotSupportedException)
+            {
+                SelectedListItems = null; // Fallback to input field
+            }
+        }
 
         public async Task<IActionResult> OnGetAsync(int dogId, int? observationDefinitionId = null)
         {
@@ -48,6 +67,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 ObservationVM.SubjectId = dogId;
                 ObservationVM.SubjectName = dog.Name ?? "Unknown";
                 ObservationVM.RecordTime = DateTime.Now;
+
+                PopulateSelectListItems(observationDefinition.ObservationTypeId);
             }
             else
             {
@@ -83,6 +104,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 ObservationVM.SubjectName = dog.Name ?? "Unknown";
                 ObservationVM.RecordTime = DateTime.Now;
                 TempData.Keep("Observation");
+
+                PopulateSelectListItems(observationDefinition.ObservationTypeId);
             }
 
             return Page();
@@ -91,6 +114,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
             var observationDefinition = await _service.GetObservationDefinitionByIdAsync(ObservationVM.ObservationDefinitionId);
+            PopulateSelectListItems(observationDefinition.ObservationTypeId);
+
             if (observationDefinition == null)
             {
                 _logger.LogWarning("ObservationDefinition with ID {ObservationDefinitionId} not found.", ObservationVM.ObservationDefinitionId);
@@ -98,8 +123,6 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 return NotFound();
             }
 
-            // TODO: Mapping is overwriting values
-            //ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
             ObservationVM.ObservationDefinitionId = observationDefinition.Id;
             if (!ObservationVM.IsQualitative)
             {
@@ -112,7 +135,27 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
                     if (!ObservationVM.MetricValue.HasValue)
                     {
-                        ModelState.AddModelError("ObservationVM.MetricValue", "Please enter a value for quantitative observations.");
+                        // Try to parse MetricValue from SelectedItem if a dropdown is used
+                        if (!string.IsNullOrEmpty(SelectedItem?.Value) && SelectedListItems?.Any() == true)
+                        {
+                            if (decimal.TryParse(SelectedItem?.Value, out decimal parsedValue))
+                            {
+                                ObservationVM.MetricValue = parsedValue;
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("SelectedItem", "Invalid selection for the observation.");
+                            }
+                        }
+
+                        // If MetricValue is still null, add an error
+                        if (!ObservationVM.MetricValue.HasValue)
+                        {
+                            string errorMessage = SelectedListItems?.Any() == true
+                                ? "Please select a valid life stage."
+                                : "Please enter a value for the observation.";
+                            ModelState.AddModelError("ObservationVM.MetricValue", errorMessage);
+                        }
                     }
 
                     ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
