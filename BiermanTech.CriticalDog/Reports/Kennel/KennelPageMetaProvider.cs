@@ -5,6 +5,8 @@ using BiermanTech.CriticalDog.Reports;
 
 namespace BiermanTech.CriticalDog.Reports.Kennel
 {
+    [PageMetaPolicy("RequireAuthenticated")]
+    //[PageMetaPolicy("RequireAdminRole")]
     public class KennelPageMetaProvider : BaseReportPageMetaProvider, IPageMetaProvider 
     {
         public string Slug => "Kennel";

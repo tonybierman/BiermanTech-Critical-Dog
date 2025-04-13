@@ -21,15 +21,20 @@ namespace BiermanTech.CriticalDog.Pages.Reports
             IMapper mapper,
             IReportColumnFactory reportColumnFactory,
             IPageMetaFactory pageMetaFactory,
-            IReportPageHelperFactory pageHelperFactory) :
+            IReportPageHelperFactory pageHelperFactory,
+            IAuthorizationService authorizationService,
+            IAuthorizationPolicyProvider policyProvider) :
             base(logger, mapper, pageMetaFactory,
-                reportColumnFactory, pageHelperFactory)
+                reportColumnFactory, pageHelperFactory, 
+                authorizationService, policyProvider)
         {
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            return await ReportPageGetAsync();
+            var result = await ReportPageGetAsync();
+
+            return result;
         }
     }
 }

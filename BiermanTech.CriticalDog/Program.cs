@@ -26,6 +26,7 @@ builder.Services.AddHttpContextAccessor();
 // Authorization
 builder.Services.AddAuthorization(options =>
 {
+    options.AddPolicy("RequireAuthenticated", policy => policy.RequireAuthenticatedUser());
     options.AddPolicy("RequireAdminRole", policy =>
         policy.RequireRole("Admin"));
 });
@@ -35,8 +36,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/"); // Require auth for all pages
     options.Conventions.AllowAnonymousToPage("/Index"); // Allow anonymous for /Pages/Index
     options.Conventions.AllowAnonymousToPage("/Privacy"); // Allow anonymous for /Pages/Privacy
-    //options.Conventions.AllowAnonymousToFolder("/Reports"); // Allow anonymous for /Pages/Reports/*
-    //options.Conventions.AuthorizePage("/Reports/Kennel");
+    options.Conventions.AllowAnonymousToFolder("/Reports"); // Allow anonymous for /Pages/Reports/*
     options.Conventions.AuthorizeFolder("/Admin", "RequireAdminRole"); // Require Admin role for /Pages/Admin/*
 
     // TODO: Boostratps a dmin user - must be better way
