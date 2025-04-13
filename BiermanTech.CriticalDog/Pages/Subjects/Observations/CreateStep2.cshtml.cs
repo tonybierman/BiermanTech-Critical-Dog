@@ -105,12 +105,12 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 {
                     if (!ObservationVM.MetricTypeId.HasValue)
                     {
-                        ModelState.AddModelError("Observation.MetricTypeId", "Please select a metric type for quantitative observations.");
+                        ModelState.AddModelError("ObservationVM.MetricTypeId", "Please select a metric type for quantitative observations.");
                     }
 
                     if (!ObservationVM.MetricValue.HasValue)
                     {
-                        ModelState.AddModelError("Observation.MetricValue", "Please enter a value for quantitative observations.");
+                        ModelState.AddModelError("ObservationVM.MetricValue", "Please enter a value for quantitative observations.");
                     }
 
                     ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
@@ -120,7 +120,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
                 if (ObservationVM.MetricValue < observationDefinition.MinimumValue || ObservationVM.MetricValue > observationDefinition.MaximumValue)
                 {
-                    ModelState.AddModelError("Observation.MetricValue", $"Value must be between {observationDefinition.MinimumValue} and {observationDefinition.MaximumValue}.");
+                    ModelState.AddModelError("ObservationVM.MetricValue", $"Value must be between {observationDefinition.MinimumValue} and {observationDefinition.MaximumValue}.");
                     ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
 
                     return Page();
@@ -130,7 +130,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             {
                 if (string.IsNullOrEmpty(ObservationVM.Note))
                 {
-                    ModelState.AddModelError("Observation.Note", "A note is required for qualitative observations.");
+                    ModelState.AddModelError("ObservationVM.Note", "A note is required for qualitative observations.");
 
                     return Page();
                 }
