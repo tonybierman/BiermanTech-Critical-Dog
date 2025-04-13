@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,6 +27,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin Menu
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" href="/Admin/MetaTags/Index">Meta Tags</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/MetricTypes/Index">Metric Types</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/ObservationDefinitions/Index">Observation Definitions</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/ObservationTypes/Index">Observation Types</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/ScientificDisciplines/Index">Scientific Disciplines</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/SubjectRecords/Index">Subject Records</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/SubjectTypes/Index">Subject Types</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/Units/Index">Units</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/Users/ManageUsers">Manage Users</a></li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

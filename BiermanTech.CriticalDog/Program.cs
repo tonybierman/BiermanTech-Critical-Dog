@@ -3,6 +3,7 @@ using BiermanTech.CriticalDog;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Reports;
 using BiermanTech.CriticalDog.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -85,6 +86,16 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<IdentityDbContext>()
     .AddDefaultTokenProviders()
     .AddDefaultUI(); // Optional: Adds default Identity UI for Razor Pages
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    options.Cookie.MaxAge = TimeSpan.FromDays(30);
+    options.SlidingExpiration = true;
+    options.Cookie.HttpOnly = true; // Optional: Enhance security
+    options.Cookie.SameSite = SameSiteMode.Lax; // Ensure compatibility
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensure HTTPS
+});
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
