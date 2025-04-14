@@ -16,7 +16,7 @@
 
 	<ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
-    <PackageReference Include="BiermanTech.UniversalReportCore.Ui" Version="0.2.34-alpha.0.7" />
+    <PackageReference Include="BiermanTech.UniversalReportCore.Ui" Version="0.2.34-alpha.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.14" />
@@ -30,10 +30,5 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.3" />
   </ItemGroup>
-
-
-	<ItemGroup>
-	  <Folder Include="Reports\Columns\" />
-	</ItemGroup>
 
 </Project>

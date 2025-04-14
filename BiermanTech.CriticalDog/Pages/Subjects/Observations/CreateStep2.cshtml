@@ -1,4 +1,4 @@
-﻿@page "{dogId:int}/Step2"
+﻿@page "{dogId:int}"
 @using BiermanTech.CriticalDog.Helpers
 @model BiermanTech.CriticalDog.Pages.Dogs.Observations.CreateStep2Model
 @{
@@ -17,13 +17,16 @@
 
     @if (!Model.ObservationVM.IsQualitative)
     {
-        <div class="form-group">
-            <label asp-for="ObservationVM.MetricTypeId">Metric Type</label>
-            <select asp-for="ObservationVM.MetricTypeId" asp-items="Model.ObservationVM.MetricTypes" class="form-control">
-                <option value="">-- Select Unit --</option>
-            </select>
-            <span asp-validation-for="ObservationVM.MetricTypeId" class="text-danger"></span>
-        </div>
+        @if (Model.ObservationVM.MetricTypes != null && Model.ObservationVM.MetricTypes.Any() == true)
+        {
+            <div class="form-group">
+                <label asp-for="ObservationVM.MetricTypeId">Metric Type</label>
+                <select asp-for="ObservationVM.MetricTypeId" asp-items="Model.ObservationVM.MetricTypes" class="form-control">
+                    <option value="">-- Select Unit --</option>
+                </select>
+                <span asp-validation-for="ObservationVM.MetricTypeId" class="text-danger"></span>
+            </div>
+        }
 
         <div class="form-group">
 

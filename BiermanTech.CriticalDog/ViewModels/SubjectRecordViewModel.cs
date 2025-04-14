@@ -38,29 +38,5 @@ namespace BiermanTech.CriticalDog.ViewModels
         public string? MetricValueWithSymbol => $"{MetricValue} {UnitSymbol}";
 
         public virtual ICollection<MetaTag> MetaTags { get; set; } = new List<MetaTag>();
-
-        public object? TransformedMetricValue
-        {
-            get
-            {
-                if (!MetricValue.HasValue)
-                {
-                    return null;
-                }
-
-                try
-                {
-                    int mval = checked((int)MetricValue.Value);
-                    var transformer = MetricValueTransformProviderFactory.GetProvider(ObservationDefinition.ObservationTypeId);
-                    object? retval = transformer?.GetTransormedValue(mval);
-
-                    return retval ?? MetricValue;
-                }
-                catch (OverflowException)
-                {
-                    return MetricValue;
-                }
-            }
-        }
     }
 }

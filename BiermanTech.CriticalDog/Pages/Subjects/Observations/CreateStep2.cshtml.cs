@@ -33,6 +33,13 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public void PopulateSelectListItems(int id)
         {
+            var transformer = MetricValueTransformProviderFactory.GetProvider(id);
+
+            if (transformer == null)
+            {
+                return;
+            }
+
             try
             {
                 SelectedListItems = MetricValueTransformProviderFactory.GetProvider(id).GetSelectListItems();
@@ -68,6 +75,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 ObservationVM.SubjectId = dogId;
                 ObservationVM.SubjectName = dog.Name ?? "Unknown";
                 ObservationVM.RecordTime = DateTime.Now;
+
 
                 PopulateSelectListItems(observationDefinition.ObservationTypeId);
             }

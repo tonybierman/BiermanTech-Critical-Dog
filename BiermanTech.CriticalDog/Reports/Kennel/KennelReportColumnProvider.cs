@@ -1,4 +1,5 @@
-﻿using UniversalReportCore;
+﻿using BiermanTech.CriticalDog.Reports.Columns;
+using UniversalReportCore;
 
 namespace BiermanTech.CriticalDog.Reports.CityPop
 {
@@ -57,10 +58,11 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                     IsSortable = true
                 }
                 ,
-                new ReportColumnDefinition
+                new MetricValueTransformColumn
                 {
                     DisplayName = "Value",
-                    ViewModelName = "TransformedMetricValue",
+                    PropertyName = "MetricValue",
+                    ViewModelName = "MetricValue",
                     IsSortable = true
                 }
                 ,
