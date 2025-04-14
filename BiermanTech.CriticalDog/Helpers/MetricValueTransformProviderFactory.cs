@@ -8,7 +8,8 @@
             {
                 case 5:
                     return new LifeStageFactorsMetricValueTransformProvider();
-                // Add more cases for other ObservationTypeIds
+                case 6:
+                    return new OfaHipGradeMetricValueTransformProvider();
                 default:
                     return null;
             }

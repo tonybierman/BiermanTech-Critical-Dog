@@ -25,7 +25,22 @@ namespace BiermanTech.CriticalDog.Helpers
             return new SelectList(enumValues, "Value", "Text", selected?.ToString());
         }
 
-        private static string GetEnumDisplayName(LifeStageFactorsEnum value)
+        public static SelectList GetOfaHipGradesSelectList(OfaHipGradeEnum? selected = null)
+        {
+            var enumValues = Enum.GetValues(typeof(OfaHipGradeEnum))
+                .Cast<OfaHipGradeEnum>()
+                .Where(e => e != OfaHipGradeEnum.None) // Exclude 'None' if not desired
+                .Select(e => new
+                {
+                    Value = ((int)e).ToString(),
+                    Text = GetEnumDisplayName(e)
+                })
+                .ToList();
+
+            return new SelectList(enumValues, "Value", "Text", selected?.ToString());
+        }
+
+        private static string GetEnumDisplayName(Enum value)
         {
             var fieldInfo = value.GetType().GetField(value.ToString());
             var displayAttribute = fieldInfo?.GetCustomAttribute<DisplayAttribute>();
