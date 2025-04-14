@@ -60,8 +60,7 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                 new ReportColumnDefinition
                 {
                     DisplayName = "Value",
-                    PropertyName = "MetricValue",
-                    ViewModelName = "MetricValueWithSymbol",
+                    ViewModelName = "TransformedMetricValue",
                     IsSortable = true
                 }
                 ,

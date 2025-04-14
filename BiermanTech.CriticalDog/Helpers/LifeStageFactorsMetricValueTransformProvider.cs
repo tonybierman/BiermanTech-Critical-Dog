@@ -9,7 +9,7 @@ namespace BiermanTech.CriticalDog.Helpers
             return SelectListHelper.GetLifeStageFactorsSelectList();
         }
 
-        public string GetTransormedValue(int value)
+        public string? GetTransormedValue(int value)
         {
             return ((LifeStageFactorsEnum)value).GetDisplayName();
         }

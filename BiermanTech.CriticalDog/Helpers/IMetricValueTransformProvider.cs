@@ -6,6 +6,6 @@ namespace BiermanTech.CriticalDog.Helpers
     {
         IEnumerable<SelectListItem> GetSelectListItems();
 
-        public string GetTransormedValue(int value);
+        public string? GetTransormedValue(int value);
     }
 }

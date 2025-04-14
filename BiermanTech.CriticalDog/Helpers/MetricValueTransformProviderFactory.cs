@@ -2,7 +2,7 @@
 {
     public static class MetricValueTransformProviderFactory
     {
-        public static IMetricValueTransformProvider GetProvider(int observationTypeId)
+        public static IMetricValueTransformProvider? GetProvider(int observationTypeId)
         {
             switch (observationTypeId)
             {
@@ -10,7 +10,7 @@
                     return new LifeStageFactorsMetricValueTransformProvider();
                 // Add more cases for other ObservationTypeIds
                 default:
-                    throw new NotSupportedException($"No provider found for ObservationTypeId: {observationTypeId}");
+                    return null;
             }
         }
     }
