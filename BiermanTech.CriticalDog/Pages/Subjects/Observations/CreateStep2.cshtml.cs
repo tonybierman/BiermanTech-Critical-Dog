@@ -35,7 +35,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         {
             try
             {
-                SelectedListItems = MetricValueProviderFactory.GetProvider(id).GetSelectListItems();
+                SelectedListItems = MetricValueTransformProviderFactory.GetProvider(id).GetSelectListItems();
             }
             catch (NotSupportedException)
             {

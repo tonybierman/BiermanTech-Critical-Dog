@@ -30,9 +30,9 @@
         <div class="form-group">
             <label>Value</label>
             <p>
-                @if (Model.MetricValueProvider != null)
+                @if (Model.MetricValueTransformer != null)
                 {
-                    @Model.MetricValueProvider.GetDisplayName((int)Model.Observation.MetricValue)
+                    @Model.MetricValueTransformer.GetTransormedValue((int)Model.Observation.MetricValue)
                 }
                 else
                 {

@@ -2,10 +2,10 @@
 
 namespace BiermanTech.CriticalDog.Helpers
 {
-    public interface IMetricValueProvider
+    public interface IMetricValueTransformProvider
     {
         IEnumerable<SelectListItem> GetSelectListItems();
 
-        public string GetDisplayName(int value);
+        public string GetTransormedValue(int value);
     }
 }
