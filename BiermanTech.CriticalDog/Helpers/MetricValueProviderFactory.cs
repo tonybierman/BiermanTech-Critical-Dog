@@ -1,13 +1,13 @@
 ﻿namespace BiermanTech.CriticalDog.Helpers
 {
-    public static class SelectListProviderFactory
+    public static class MetricValueProviderFactory
     {
-        public static ISelectListProvider GetProvider(int observationTypeId)
+        public static IMetricValueProvider GetProvider(int observationTypeId)
         {
             switch (observationTypeId)
             {
                 case 5:
-                    return new LifeStageFactorsSelectListProvider();
+                    return new LifeStageFactorsMetricValueProvider();
                 // Add more cases for other ObservationTypeIds
                 default:
                     throw new NotSupportedException($"No provider found for ObservationTypeId: {observationTypeId}");

@@ -17,7 +17,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         private readonly IMapper _mapper;
 
         public IEnumerable<SelectListItem> SelectedListItems { get; set; }
-        public SelectListItem SelectedItem { get; set; }
+        [BindProperty] 
+        public int SelectedItem { get; set; }
 
         public CreateStep2Model(ISubjectObservationService service, ILogger<CreateStep2Model> logger, IMapper mapper)
         {
@@ -34,7 +35,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         {
             try
             {
-                SelectedListItems = SelectListProviderFactory.GetProvider(id).GetSelectListItems();
+                SelectedListItems = MetricValueProviderFactory.GetProvider(id).GetSelectListItems();
             }
             catch (NotSupportedException)
             {
@@ -130,22 +131,25 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 {
                     if (!ObservationVM.MetricTypeId.HasValue)
                     {
-                        ModelState.AddModelError("ObservationVM.MetricTypeId", "Please select a metric type for quantitative observations.");
+                        if (observationDefinition.MetricTypes.Any())
+                        {
+                            if (observationDefinition.MetricTypes.ToList().Count == 1)
+                            {
+                                ObservationVM.MetricTypeId = observationDefinition.MetricTypes.First().Id;
+                            }
+                            else 
+                            {
+                                ModelState.AddModelError("ObservationVM.MetricTypeId", "Please select a metric type for quantitative observations.");
+                            }
+                        }
                     }
 
                     if (!ObservationVM.MetricValue.HasValue)
                     {
                         // Try to parse MetricValue from SelectedItem if a dropdown is used
-                        if (!string.IsNullOrEmpty(SelectedItem?.Value) && SelectedListItems?.Any() == true)
+                        if (SelectedListItems?.Any() == true && SelectedItem > 0)
                         {
-                            if (decimal.TryParse(SelectedItem?.Value, out decimal parsedValue))
-                            {
-                                ObservationVM.MetricValue = parsedValue;
-                            }
-                            else
-                            {
-                                ModelState.AddModelError("SelectedItem", "Invalid selection for the observation.");
-                            }
+                            ObservationVM.MetricValue = SelectedItem;
                         }
 
                         // If MetricValue is still null, add an error
@@ -156,6 +160,13 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                                 : "Please enter a value for the observation.";
                             ModelState.AddModelError("ObservationVM.MetricValue", errorMessage);
                         }
+                    }
+
+                    if (ObservationVM.MetricValue.HasValue)
+                    {
+                        TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(ObservationVM);
+
+                        return RedirectToPage("CreateStep3", new { dogId });
                     }
 
                     ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);

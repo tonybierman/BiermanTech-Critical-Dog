@@ -1,4 +1,5 @@
 using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Helpers;
 using BiermanTech.CriticalDog.Models;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public string ObservationDefinitionName { get; set; }
         public string MetricTypeDescription { get; set; }
+        public IMetricValueProvider MetricValueProvider { get; private set; }
 
         public async Task<IActionResult> OnGetAsync(int dogId)
         {
@@ -53,6 +55,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 var metricType = await _service.GetMetricTypeByIdAsync(Observation.MetricTypeId);
                 MetricTypeDescription = metricType?.Description ?? "Unknown";
             }
+
+            MetricValueProvider = MetricValueProviderFactory.GetProvider(observationDefinition.ObservationTypeId);
 
             Observation.MetaTags = await _service.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
             TempData.Keep("Observation");

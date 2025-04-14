@@ -25,24 +25,24 @@
             <span asp-validation-for="ObservationVM.MetricTypeId" class="text-danger"></span>
         </div>
 
-        @if (Model.SelectedListItems?.Any() == true)
-        {
-            <div class="form-group">
-                <label asp-for="SelectedItem">Life Stage</label>
-                <select asp-for="SelectedItem" asp-items="@Model.SelectedListItems" class="form-select">
-                    <option value="">Select Life Stage</option>
-                </select>
-                <span asp-validation-for="SelectedItem" class="text-danger"></span>
-            </div>
-        }
-        else
-        {
-            <div class="form-group">
-                <label asp-for="ObservationVM.MetricValue">Value</label>
-                <input asp-for="ObservationVM.MetricValue" class="form-control" />
-                <span asp-validation-for="ObservationVM.MetricValue" class="text-danger"></span>
-            </div>
-        }
+        <div class="form-group">
+
+            @if (Model.SelectedListItems?.Any() == true)
+            {
+                    <label asp-for="SelectedItem">Value</label>
+                    <select asp-for="SelectedItem" asp-items="@Model.SelectedListItems" class="form-select">
+                        <option value="">Select a Value</option>
+                    </select>
+            }
+            else
+            {
+                    <label asp-for="ObservationVM.MetricValue">Value</label>
+                    <input asp-for="ObservationVM.MetricValue" class="form-control" />
+            }
+            <span asp-validation-for="ObservationVM.MetricValue" class="text-danger"></span>
+
+        </div>
+
     }
 
     <div class="form-group">

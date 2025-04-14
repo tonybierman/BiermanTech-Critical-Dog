@@ -15,9 +15,6 @@ COPY ["BiermanTech.CriticalDog/BiermanTech.CriticalDog.csproj", "BiermanTech.Cri
 RUN dotnet restore "./BiermanTech.CriticalDog/BiermanTech.CriticalDog.csproj"
 COPY . .
 WORKDIR "/src/BiermanTech.CriticalDog"
-# Install dotnet-ef tool for migrations
-RUN dotnet tool install --global dotnet-ef --version 8.0.0
-ENV PATH="$PATH:/root/.dotnet/tools"
 RUN dotnet build "./BiermanTech.CriticalDog.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
