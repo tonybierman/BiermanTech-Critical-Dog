@@ -17,7 +17,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         {
             get
             {
-                if (!_parent.MetricValue.HasValue)
+                if (!_parent.MetricValue.HasValue || _parent.ObservationDefinition == null)
                 {
                     return null;
                 }

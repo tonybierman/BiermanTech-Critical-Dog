@@ -6,6 +6,7 @@ using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var options = new WebApplicationOptions
 {
@@ -15,12 +16,19 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-// Log paths for debugging
-Console.WriteLine($"ContentRootPath: {builder.Environment.ContentRootPath}");
-Console.WriteLine($"WebRootPath: {builder.Environment.WebRootPath}");
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration) // Read from appsettings.json
+    .Enrich.FromLogContext()
+    .WriteTo.Console() // Console sink
+    .WriteTo.File(
+        path: "logs/criticaldog-.log", // File path with date-based rolling
+        rollingInterval: RollingInterval.Day, // New file daily
+        retainedFileCountLimit: 7, // Keep 7 days of logs
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}") // Detailed format
+    .CreateLogger();
 
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
+builder.Host.UseSerilog();
 
 builder.Services.AddHttpContextAccessor();
 

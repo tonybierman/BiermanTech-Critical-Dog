@@ -21,16 +21,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs
 
         public async Task OnGetAsync()
         {
-            string userId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(userId))
-            {
-                // Return empty query for unauthenticated users
-                Dogs = await _context.Subjects.Where(a => false).ToListAsync();
-            }
-            else 
-            {
-                Dogs = await _context.Subjects.Where(a => a.UserId == userId).ToListAsync();
-            }
+            Dogs = await _context.GetFilteredSubjects().ToListAsync();
         }
     }
 }
