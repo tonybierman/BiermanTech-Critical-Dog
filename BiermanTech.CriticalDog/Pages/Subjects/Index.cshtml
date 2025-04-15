@@ -24,7 +24,7 @@
             <tr>
                 <td>@dog.Name</td>
                 <td>@dog.Breed</td>
-                <td>@(dog.Sex == 0 ? "Male" : dog.Sex == 1 ? "Female" : "Unknown")</td>
+                <td>@(dog.Sex == 1 ? "Male" : dog.Sex == 2 ? "Female" : "Unknown")</td>
                 <td>@dog.ArrivalDate?.ToShortDateString()</td>
                 <td>
                     <div class="d-inline-flex align-items-center me-2 non-printable" role="toolbar" aria-label="Toolbar with button groups">

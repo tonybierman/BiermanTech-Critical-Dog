@@ -23,7 +23,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public string? SubjectName => Subject?.Name;
         public string? SubjectTypeName => Subject?.SubjectType?.TypeName;
 
-        public string? SubjectSex => Subject?.Sex == 0 ? "M" : "F";
+        public string? SubjectSex => Subject?.Sex == null ? SexEnum.None.ToString() :  ((SexEnum)Subject?.Sex).ToString();
 
         public virtual Subject Subject { get; set; } = null!;
 

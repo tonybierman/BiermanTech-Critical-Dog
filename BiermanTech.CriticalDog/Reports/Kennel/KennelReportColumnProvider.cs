@@ -53,7 +53,7 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                 new ReportColumnDefinition
                 {
                     DisplayName = "Observation",
-                    PropertyName = "MetricType.ObservationDefinition.DefinitionName",
+                    PropertyName = "ObservationDefinition.DefinitionName",
                     ViewModelName = "ObservationName",
                     IsSortable = true
                 }
