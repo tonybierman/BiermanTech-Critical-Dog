@@ -17,7 +17,6 @@ namespace BiermanTech.CriticalDog.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseCollation("utf8mb4_unicode_ci")
                 .HasAnnotation("ProductVersion", "8.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 

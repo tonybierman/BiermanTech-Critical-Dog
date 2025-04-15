@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BiermanTech.CriticalDog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250415214916_InitialCreate")]
+    [Migration("20250415222058_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,6 @@ namespace BiermanTech.CriticalDog.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseCollation("utf8mb4_unicode_ci")
                 .HasAnnotation("ProductVersion", "8.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
