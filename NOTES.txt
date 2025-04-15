@@ -17,3 +17,5 @@ docker-compose up --build
 
 dotnet ef migrations add AddIdenityUserToSubject --context AppDbContext
 dotnet ef database update --context AppDbContext
+
+ASPNETCORE_ENVIRONMENT=Production bash -c 'dotnet BiermanTech.CriticalDog.dll --urls http://localhost:5019'
