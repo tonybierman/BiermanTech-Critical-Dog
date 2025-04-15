@@ -22,9 +22,9 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<ScientificDiscipline> ScientificDisciplines { get; set; }
 
-    public virtual DbSet<Subject> Subjects { get; set; }
+    protected virtual DbSet<Subject> Subjects { get; set; }
 
-    public virtual DbSet<SubjectRecord> SubjectRecords { get; set; }
+    protected virtual DbSet<SubjectRecord> SubjectRecords { get; set; }
 
     public virtual DbSet<SubjectType> SubjectTypes { get; set; }
 

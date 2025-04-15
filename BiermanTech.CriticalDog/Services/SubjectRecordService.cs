@@ -19,10 +19,12 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task<SubjectRecord> GetSubjectRecordByIdAsync(int id)
         {
-            return await _context.SubjectRecords
+            return await _context.GetFilteredSubjectRecords()
                 .Include(s => s.Subject)
+                .ThenInclude(s => s.SubjectType)
                 .Include(s => s.ObservationDefinition)
                 .Include(s => s.MetricType)
+                .ThenInclude(mt => mt.Unit)
                 .Include(s => s.MetaTags)
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
@@ -42,8 +44,13 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task<List<SubjectRecordInputViewModel>> GetAllSubjectRecordsAsync()
         {
-            var records = await _context.SubjectRecords
+            var records = await _context.GetFilteredSubjectRecords()
                 .Include(s => s.MetaTags)
+                .Include(s => s.Subject)
+                .ThenInclude(s => s.SubjectType)
+                .Include(s => s.ObservationDefinition)
+                .Include(s => s.MetricType)
+                .ThenInclude(mt => mt.Unit)
                 .ToListAsync();
             var viewModels = _mapper.Map<List<SubjectRecordInputViewModel>>(records);
             for (int i = 0; i < records.Count; i++)
@@ -55,7 +62,8 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task<SelectList> GetSubjectsSelectListAsync()
         {
-            var subjects = await _context.Subjects.ToListAsync();
+            var subjects = await _context.GetFilteredSubjects()
+                .ToListAsync();
             return new SelectList(subjects, nameof(Subject.Id), nameof(Subject.Name));
         }
 
@@ -83,18 +91,18 @@ namespace BiermanTech.CriticalDog.Services
             entity.MetaTags = await _context.MetaTags
                 .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id))
                 .ToListAsync();
-            _context.SubjectRecords.Add(entity);
-            await _context.SaveChangesAsync();
+            _context.Add(entity); // EF Core allows adding entities directly
+            await _context.SaveChangesAsync(); // ApplyUserIdOnSave sets Subject.UserId
         }
 
         public async Task UpdateSubjectRecordAsync(SubjectRecordInputViewModel viewModel)
         {
-            var record = await _context.SubjectRecords
+            var record = await _context.GetFilteredSubjectRecords()
                 .Include(s => s.MetaTags)
                 .FirstOrDefaultAsync(s => s.Id == viewModel.Id);
             if (record == null)
             {
-                throw new KeyNotFoundException($"SubjectRecord with ID {viewModel.Id} not found.");
+                throw new KeyNotFoundException($"SubjectRecord with ID {viewModel.Id} not found or you lack permission to access it.");
             }
 
             _mapper.Map(viewModel, record);
@@ -102,19 +110,20 @@ namespace BiermanTech.CriticalDog.Services
             record.MetaTags = await _context.MetaTags
                 .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id))
                 .ToListAsync();
-            _context.SubjectRecords.Update(record);
+            _context.Update(record);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteSubjectRecordAsync(int id)
         {
-            var record = await _context.SubjectRecords.FindAsync(id);
+            var record = await _context.GetFilteredSubjectRecords()
+                .FirstOrDefaultAsync(s => s.Id == id);
             if (record == null)
             {
-                throw new KeyNotFoundException($"SubjectRecord with ID {id} not found.");
+                throw new KeyNotFoundException($"SubjectRecord with ID {id} not found or you lack permission to access it.");
             }
 
-            _context.SubjectRecords.Remove(record);
+            _context.Remove(record);
             await _context.SaveChangesAsync();
         }
     }

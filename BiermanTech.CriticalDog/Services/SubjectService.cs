@@ -19,7 +19,7 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task<Subject> GetSubjectByIdAsync(int id)
         {
-            return await _context.Subjects
+            return await _context.GetFilteredSubjects()
                 .Include(s => s.SubjectType)
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
@@ -39,32 +39,34 @@ namespace BiermanTech.CriticalDog.Services
         public async Task CreateSubjectAsync(SubjectInputViewModel viewModel)
         {
             var entity = _mapper.Map<Subject>(viewModel);
-            _context.Subjects.Add(entity);
+            _context.Add(entity); // Use generic Add; UserId set by ApplyUserIdOnSave
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateSubjectAsync(SubjectInputViewModel viewModel)
         {
-            var subject = await _context.Subjects.FindAsync(viewModel.Id);
+            var subject = await _context.GetFilteredSubjects()
+                .FirstOrDefaultAsync(s => s.Id == viewModel.Id);
             if (subject == null)
             {
-                throw new KeyNotFoundException($"Subject with ID {viewModel.Id} not found.");
+                throw new KeyNotFoundException($"Subject with ID {viewModel.Id} not found or you lack permission to access it.");
             }
 
             _mapper.Map(viewModel, subject);
-            _context.Subjects.Update(subject);
+            _context.Update(subject);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteSubjectAsync(int id)
         {
-            var subject = await _context.Subjects.FindAsync(id);
+            var subject = await _context.GetFilteredSubjects()
+                .FirstOrDefaultAsync(s => s.Id == id);
             if (subject == null)
             {
-                throw new KeyNotFoundException($"Subject with ID {id} not found.");
+                throw new KeyNotFoundException($"Subject with ID {id} not found or you lack permission to access it.");
             }
 
-            _context.Subjects.Remove(subject);
+            _context.Remove(subject);
             await _context.SaveChangesAsync();
         }
     }

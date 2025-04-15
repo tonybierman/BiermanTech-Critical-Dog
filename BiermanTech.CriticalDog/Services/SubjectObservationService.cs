@@ -19,13 +19,16 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task<Subject?> GetByIdAsync(int id)
         {
-            return await _context.Subjects.FindAsync(id);
+            return await _context.GetFilteredSubjects()
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<ObservationDefinition?> GetObservationDefinitionByIdAsync(int? observationDefinitionId)
         {
             if (!observationDefinitionId.HasValue)
+            {
                 return null;
+            }
             return await _context.ObservationDefinitions
                 .Include(a => a.MetricTypes)
                 .FirstOrDefaultAsync(od => od.Id == observationDefinitionId);
@@ -34,7 +37,9 @@ namespace BiermanTech.CriticalDog.Services
         public async Task<MetricType?> GetMetricTypeByIdAsync(int? metricTypeId)
         {
             if (!metricTypeId.HasValue)
+            {
                 return null;
+            }
             return await _context.MetricTypes
                 .FirstOrDefaultAsync(mt => mt.Id == metricTypeId);
         }
@@ -83,24 +88,32 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task SaveSubjectRecordAsync(SubjectRecord record, IEnumerable<int>? selectedMetaTagIds)
         {
-            _context.SubjectRecords.Add(record);
-            await _context.SaveChangesAsync();
-
-            if (selectedMetaTagIds?.Any() == true)
+            try
             {
-                foreach (var tagId in selectedMetaTagIds)
-                {
-                    var metaTag = await _context.MetaTags.FirstOrDefaultAsync(mt => mt.Id == tagId);
-                    if (metaTag != null)
-                    {
-                        record.MetaTags.Add(metaTag);
-                    }
-                    else
-                    {
-                        _logger.LogWarning("MetaTag with Id {TagId} not found.", tagId);
-                    }
-                }
+                _context.Add(record); // Use generic Add; UserId set by ApplyUserIdOnSave
                 await _context.SaveChangesAsync();
+
+                if (selectedMetaTagIds?.Any() == true)
+                {
+                    foreach (var tagId in selectedMetaTagIds)
+                    {
+                        var metaTag = await _context.MetaTags.FirstOrDefaultAsync(mt => mt.Id == tagId);
+                        if (metaTag != null)
+                        {
+                            record.MetaTags.Add(metaTag);
+                        }
+                        else
+                        {
+                            _logger.LogWarning("MetaTag with Id {TagId} not found.", tagId);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saving SubjectRecord with MetaTagIds {MetaTagIds}", selectedMetaTagIds);
+                throw;
             }
         }
     }

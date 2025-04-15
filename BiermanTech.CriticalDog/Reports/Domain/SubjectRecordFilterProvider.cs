@@ -16,7 +16,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
             _dbContext = dbContext;
 
             // Dynamically fetch Subject Genders
-            var genders = _dbContext.SubjectRecords
+            var genders = _dbContext.GetFilteredSubjectRecords()
                 .Select(p => p.Subject.Sex)
                 .Distinct()
                 .ToList();
@@ -33,7 +33,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
             Facets.Add(new Facet<SubjectRecord>("Subject.Sex", genderFacetValues));
 
             // Dynamically fetch Subject Names
-            var subjects = _dbContext.SubjectRecords
+            var subjects = _dbContext.GetFilteredSubjectRecords()
                 .Select(p => p.Subject.Name)
                 .Distinct()
                 .ToList();
@@ -50,7 +50,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
             Facets.Add(new Facet<SubjectRecord>("Subject.Name", subjectFacetValues));
 
             // Dynamically fetch Observation Definition names
-            var observationDefinitionNames = _dbContext.SubjectRecords
+            var observationDefinitionNames = _dbContext.GetFilteredSubjectRecords()
                 .Select(p => p.ObservationDefinition.DefinitionName)
                 .Distinct()
                 .ToList();
@@ -67,7 +67,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
             Facets.Add(new Facet<SubjectRecord>("ObservationDefinition.DefinitionName", observationDefinitionNameFacetValues));
 
             // Dynamically fetch subject type names
-            var subjectTypeNames = _dbContext.SubjectRecords
+            var subjectTypeNames = _dbContext.GetFilteredSubjectRecords()
                 .Select(p => p.Subject.SubjectType.TypeName)
                 .Distinct()
                 .ToList();
