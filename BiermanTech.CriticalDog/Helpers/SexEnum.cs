@@ -14,12 +14,12 @@ namespace BiermanTech.CriticalDog.Helpers
         /// Male
         /// </summary>
         [Display(Name = "Male")]
-        Male = 1,
+        M = 1,
 
         /// <summary>
         /// Female
         /// </summary>
         [Display(Name = "Female")]
-        Female = 2
+        F = 2
     }
 }

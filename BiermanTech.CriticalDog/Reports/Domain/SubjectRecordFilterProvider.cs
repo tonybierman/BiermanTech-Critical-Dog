@@ -2,6 +2,7 @@
 using BiermanTech.CriticalDog.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json.Linq;
 using System.Linq.Expressions;
 using UniversalReportCore;
 
@@ -26,7 +27,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
                 new FacetValue<SubjectRecord>(
                     key: c.ToString(),
                     filter: p => p.Subject.Sex == c,
-                    displayName: ((SexEnum)c).ToString()
+                    displayName: ((SexEnum)c).GetDisplayName()
                 )).ToList();
 
             // Add dynamic gender Facet
