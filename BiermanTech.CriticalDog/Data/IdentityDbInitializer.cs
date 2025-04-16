@@ -53,5 +53,41 @@ namespace BiermanTech.CriticalDog.Data
                 throw;
             }
         }
+
+        public static async Task SeedRegularUser(IServiceProvider serviceProvider, string userEmail, string userPassword)
+        {
+            // Get required services
+            var identityContext = serviceProvider.GetRequiredService<IdentityDbContext>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+            try
+            {
+                // Apply migrations
+                await identityContext.Database.MigrateAsync();
+
+                // Create Regular user
+                var regularUser = await userManager.FindByEmailAsync(userEmail);
+                if (regularUser == null)
+                {
+                    regularUser = new IdentityUser
+                    {
+                        UserName = userEmail,
+                        Email = userEmail,
+                        EmailConfirmed = true
+                    };
+                    var result = await userManager.CreateAsync(regularUser, userPassword);
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception($"Failed to create regular user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while seeding the regular user.");
+                throw;
+            }
+        }
     }
 }
