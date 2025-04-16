@@ -137,12 +137,37 @@ namespace BiermanTech.CriticalDog.Data
                 string userId = _userManager.GetUserId(user);
                 if (!string.IsNullOrEmpty(userId))
                 {
-                    var entries = ChangeTracker.Entries<Subject>()
-                        .Where(e => e.State == EntityState.Added);
+                    var now = DateTime.UtcNow;
 
-                    foreach (var entry in entries)
+                    // Handle Subject entities
+                    var subjectEntries = ChangeTracker.Entries<Subject>()
+                        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+                    foreach (var entry in subjectEntries)
                     {
-                        entry.Entity.UserId = userId;
+                        if (entry.State == EntityState.Added)
+                        {
+                            entry.Entity.UserId = userId;
+                            entry.Entity.CreatedBy = userId;
+                            entry.Entity.CreatedAt = now;
+                        }
+                        entry.Entity.UpdatedBy = userId;
+                        entry.Entity.UpdatedAt = now;
+                    }
+
+                    // Handle SubjectRecord entities
+                    var recordEntries = ChangeTracker.Entries<SubjectRecord>()
+                        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+                    foreach (var entry in recordEntries)
+                    {
+                        if (entry.State == EntityState.Added)
+                        {
+                            entry.Entity.CreatedBy = userId;
+                            entry.Entity.CreatedAt = now;
+                        }
+                        entry.Entity.UpdatedBy = userId;
+                        entry.Entity.UpdatedAt = now;
                     }
                 }
             }

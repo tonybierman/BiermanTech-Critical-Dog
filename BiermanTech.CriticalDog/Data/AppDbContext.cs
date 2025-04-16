@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Composition;
 using Microsoft.EntityFrameworkCore;
 
 namespace BiermanTech.CriticalDog.Data;
@@ -198,14 +197,17 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Notes).HasColumnType("text");
             entity.Property(e => e.Sex).HasColumnType("tinyint(4)");
             entity.Property(e => e.SubjectTypeId).HasColumnType("int(11)");
-            entity.Property(e => e.UserId).HasMaxLength(450); // Matches AspNetUsers.Id
+            entity.Property(e => e.UserId).HasMaxLength(450);
+            entity.Property(e => e.CreatedBy).HasMaxLength(450);
+            entity.Property(e => e.UpdatedBy).HasMaxLength(450);
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.SubjectType)
                 .WithMany(p => p.Subjects)
                 .HasForeignKey(d => d.SubjectTypeId)
                 .HasConstraintName("FK_Subject_SubjectType");
 
-            // Add UserId foreign key to AspNetUsers
             entity.HasOne(d => d.User)
                 .WithMany()
                 .HasForeignKey(d => d.UserId)
@@ -227,7 +229,10 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.SubjectId, "IDX_SubjectRecord_SubjectId");
 
             entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.CreatedBy).HasMaxLength(50);
+            entity.Property(e => e.CreatedBy).HasMaxLength(450); // Updated from VARCHAR(50)
+            entity.Property(e => e.UpdatedBy).HasMaxLength(450);
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
             entity.Property(e => e.MetricTypeId).HasColumnType("int(11)");
             entity.Property(e => e.MetricValue).HasPrecision(10, 2);
             entity.Property(e => e.Note).HasColumnType("text");

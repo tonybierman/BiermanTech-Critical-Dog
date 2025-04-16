@@ -184,7 +184,13 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     SubjectTypeId = table.Column<int>(type: "int(11)", nullable: true),
                     UserId = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedBy = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UpdatedBy = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -294,8 +300,12 @@ namespace BiermanTech.CriticalDog.Migrations
                     Note = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     RecordTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "current_timestamp()"),
-                    CreatedBy = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    CreatedBy = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UpdatedBy = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -19,8 +19,6 @@ public partial class SubjectRecord
 
     public DateTime RecordTime { get; set; }
 
-    public string? CreatedBy { get; set; }
-
     public virtual MetricType? MetricType { get; set; }
 
     public virtual ObservationDefinition ObservationDefinition { get; set; } = null!;
@@ -28,4 +26,9 @@ public partial class SubjectRecord
     public virtual Subject Subject { get; set; } = null!;
 
     public virtual ICollection<MetaTag> MetaTags { get; set; } = new List<MetaTag>();
+
+    public string? CreatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
+    public DateTime? CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }

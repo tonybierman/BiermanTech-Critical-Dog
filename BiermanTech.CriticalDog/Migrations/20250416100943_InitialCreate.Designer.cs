@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BiermanTech.CriticalDog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250415222058_InitialCreate")]
+    [Migration("20250416100943_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -215,6 +215,15 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
@@ -227,6 +236,13 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.Property<int?>("SubjectTypeId")
                         .HasColumnType("int(11)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -256,9 +272,14 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
 
                     b.Property<int?>("MetricTypeId")
                         .HasColumnType("int(11)");
@@ -280,6 +301,13 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.Property<int>("SubjectId")
                         .HasColumnType("int(11)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");

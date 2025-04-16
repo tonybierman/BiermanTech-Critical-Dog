@@ -24,6 +24,10 @@ namespace BiermanTech.CriticalDog.ViewModels
 
         [StringLength(100)]
         public string? CreatedBy { get; set; }
+        [StringLength(100)]
+        public string? UpdatedBy { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public List<int> SelectedMetaTagIds { get; set; } = new List<int>();
     }
