@@ -51,7 +51,11 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationType { TypeName = "Weight", Description = "Measurement of mass", IsActive = true },
                     new ObservationType { TypeName = "Temperature", Description = "Measurement of body temperature", IsActive = true },
                     new ObservationType { TypeName = "Behavior", Description = "Observation of behavioral traits", IsActive = true },
-                    new ObservationType { TypeName = "Medication", Description = "Administration of medication", IsActive = true }
+                    new ObservationType { TypeName = "Medication", Description = "Administration of medication", IsActive = true },
+                    new ObservationType { TypeName = "LifeStageFactor", Description = "Use to determine energy requirement", IsActive = true },
+                    new ObservationType { TypeName = "OfaHipGrade", Description = "Grading system used by OFA for radiographic hips evaluation", IsActive = true },
+                    new ObservationType { TypeName = "mtDNA", Description = "mitochondrial DNA", IsActive = true },
+                    new ObservationType { TypeName = "Y-DNA", Description = "Y-chromosomal DNA", IsActive = true }
                 );
                 await context.SaveChangesAsync();
             }
