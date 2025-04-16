@@ -20,6 +20,7 @@ public partial class ObservationDefinition
     public string? Description { get; set; }
 
     public bool? IsActive { get; set; }
+    public bool? IsSingular { get; set; }
 
     public virtual ICollection<MetricType> MetricTypes { get; set; } = new List<MetricType>();
 

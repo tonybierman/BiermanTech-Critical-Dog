@@ -155,7 +155,8 @@ namespace BiermanTech.CriticalDog.Migrations
                     MaximumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
+                    IsSingular = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'0'")
                 },
                 constraints: table =>
                 {
@@ -198,7 +199,7 @@ namespace BiermanTech.CriticalDog.Migrations
                     table.ForeignKey(
                         name: "FK_Subject_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "IdentityUser",
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(

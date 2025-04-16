@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BiermanTech.CriticalDog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250416100943_InitialCreate")]
+    [Migration("20250416102431_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -115,6 +115,12 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.Property<bool>("IsQualitative")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<bool?>("IsSingular")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<decimal?>("MaximumValue")
                         .HasPrecision(10, 2)
@@ -437,7 +443,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUser");
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("ObservationDefinitionDiscipline", b =>

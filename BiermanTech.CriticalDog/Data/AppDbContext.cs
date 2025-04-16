@@ -95,6 +95,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IsActive)
                 .IsRequired()
                 .HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsSingular)
+                .IsRequired()
+                .HasDefaultValueSql("'0'");
             entity.Property(e => e.MaximumValue).HasPrecision(10, 2);
             entity.Property(e => e.MinimumValue).HasPrecision(10, 2);
             entity.Property(e => e.ObservationTypeId).HasColumnType("int(11)");

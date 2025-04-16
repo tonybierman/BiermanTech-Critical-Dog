@@ -23,6 +23,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public string? Description { get; set; }
 
         public bool? IsActive { get; set; }
+        public bool? IsSingular { get; set; }
 
         public List<int> SelectedScientificDisciplineIds { get; set; } = new List<int>();
     }

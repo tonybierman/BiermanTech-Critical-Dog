@@ -113,6 +113,12 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.Property<bool>("IsQualitative")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool?>("IsSingular")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValueSql("'0'");
+
                     b.Property<decimal?>("MaximumValue")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
