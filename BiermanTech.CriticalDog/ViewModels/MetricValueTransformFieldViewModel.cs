@@ -30,6 +30,10 @@ namespace BiermanTech.CriticalDog.ViewModels
 
                     return retval ?? $"{_parent.MetricValue}";
                 }
+                catch (NullReferenceException)
+                {
+                    return $"{_parent.MetricValue}";
+                }
                 catch (OverflowException)
                 {
                     return $"{_parent.MetricValue}";
