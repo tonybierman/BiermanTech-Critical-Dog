@@ -6,7 +6,9 @@ using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 using Serilog;
+using System.Runtime.Intrinsics.X86;
 
 var options = new WebApplicationOptions
 {
@@ -47,9 +49,6 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Privacy"); // Allow anonymous for /Pages/Privacy
     options.Conventions.AllowAnonymousToFolder("/Reports"); // Allow anonymous for /Pages/Reports/*
     options.Conventions.AuthorizeFolder("/Admin", "RequireAdminRole"); // Require Admin role for /Pages/Admin/*
-
-    // TODO: Boostratps a dmin user - must be better way
-    //options.Conventions.AllowAnonymousToPage("/Admin/Users/ManageUsers"); // Allow anonymous for /Pages/Index
 
 });
 
@@ -113,19 +112,72 @@ builder.Services.AddUniversalReportServices();
 var app = builder.Build();
 
 
-// Apply migrations at startup
-using (var scope = app.Services.CreateScope())
+try
 {
-    var services = scope.ServiceProvider;
+    string regularUserId = null;
 
-    // Apply migrations for IdentityDbContext
-    await IdentityDbInitializer.SeedAdminUser(
-        scope.ServiceProvider,
-        adminEmail: "admin@example.com",
-        adminPassword: "Admin@123!");
+    // Seed IdentityDbContext (Admin and Regular User)
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Starting IdentityDbContext seeding...");
+
+        // Seed Admin User
+        await IdentityDbInitializer.SeedAdminUser(
+            services,
+            adminEmail: "admin@example.com",
+            adminPassword: "Admin@123!");
+
+        // Seed Regular User and capture UserId
+        regularUserId = await IdentityDbInitializer.SeedRegularUser(
+            services,
+            userEmail: "user@example.com",
+            userPassword: "User@123!");
+
+        logger.LogInformation("Completed IdentityDbContext seeding.");
+    }
 
     // Apply migrations for AppDbContext
-    await AppDbInitializer.InitializeAsync(scope.ServiceProvider);
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Starting AppDbContext initialization...");
+
+        var context = services.GetRequiredService<AppDbContext>();
+        await AppDbInitializer.InitializeAsync(services);
+
+        // Explicitly dispose AppDbContext to release connections
+        await context.DisposeAsync();
+        logger.LogInformation("Completed AppDbContext initialization and disposed context.");
+    }
+
+    // Seed sample data for the regular user
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Starting UserDbInitializer...");
+
+        if (string.IsNullOrEmpty(regularUserId))
+        {
+            logger.LogError("Regular user ID is null. Skipping UserDbInitializer.");
+            throw new InvalidOperationException("Failed to obtain regular user ID.");
+        }
+
+        await UserDbInitializer.InitializeAsync(services, regularUserId);
+        logger.LogInformation("Completed UserDbInitializer.");
+    }
+
+    var successLogger = app.Services.GetRequiredService<ILogger<Program>>();
+    successLogger.LogInformation("Database initialization and seeding completed successfully.");
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred during database initialization.");
+    throw;
 }
 
 // Configure the HTTP request pipeline.

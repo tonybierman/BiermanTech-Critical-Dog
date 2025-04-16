@@ -6,7 +6,7 @@ namespace BiermanTech.CriticalDog.Data
 {
     public static class IdentityDbInitializer
     {
-        public static async Task SeedAdminUser(IServiceProvider serviceProvider, string adminEmail, string adminPassword)
+        public static async Task<string> SeedAdminUser(IServiceProvider serviceProvider, string adminEmail, string adminPassword)
         {
             // Get required services
             var identityContext = serviceProvider.GetRequiredService<IdentityDbContext>();
@@ -26,7 +26,7 @@ namespace BiermanTech.CriticalDog.Data
                     await roleManager.CreateAsync(new IdentityRole(adminRole));
                 }
 
-                // Create Admin user
+                // Create or find Admin user
                 var adminUser = await userManager.FindByEmailAsync(adminEmail);
                 if (adminUser == null)
                 {
@@ -46,6 +46,8 @@ namespace BiermanTech.CriticalDog.Data
                         throw new Exception($"Failed to create admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                     }
                 }
+
+                return adminUser.Id;
             }
             catch (Exception ex)
             {
@@ -54,7 +56,7 @@ namespace BiermanTech.CriticalDog.Data
             }
         }
 
-        public static async Task SeedRegularUser(IServiceProvider serviceProvider, string userEmail, string userPassword)
+        public static async Task<string> SeedRegularUser(IServiceProvider serviceProvider, string userEmail, string userPassword)
         {
             // Get required services
             var identityContext = serviceProvider.GetRequiredService<IdentityDbContext>();
@@ -66,7 +68,7 @@ namespace BiermanTech.CriticalDog.Data
                 // Apply migrations
                 await identityContext.Database.MigrateAsync();
 
-                // Create Regular user
+                // Create or find Regular user
                 var regularUser = await userManager.FindByEmailAsync(userEmail);
                 if (regularUser == null)
                 {
@@ -82,6 +84,8 @@ namespace BiermanTech.CriticalDog.Data
                         throw new Exception($"Failed to create regular user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                     }
                 }
+
+                return regularUser.Id;
             }
             catch (Exception ex)
             {

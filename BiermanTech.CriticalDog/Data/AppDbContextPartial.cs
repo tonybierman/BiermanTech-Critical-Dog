@@ -74,6 +74,41 @@ namespace BiermanTech.CriticalDog.Data
             }
         }
 
+        public async Task<IQueryable<Subject>> GetFilteredSubjects(string userId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(userId))
+                {
+                    _logger?.LogWarning("GetFilteredSubjects: Provided UserId is null or empty, returning empty query.");
+                    Debug.WriteLine("GetFilteredSubjects: Provided UserId is null or empty.");
+                    return Subjects.Where(s => false);
+                }
+
+                var identityUser = await _userManager.FindByIdAsync(userId);
+                if (identityUser == null)
+                {
+                    _logger?.LogWarning($"GetFilteredSubjects: No user found for UserId={userId}, returning empty query.");
+                    Debug.WriteLine($"GetFilteredSubjects: No user found for UserId={userId}.");
+                    return Subjects.Where(s => false);
+                }
+
+                bool isAdmin = await _userManager.IsInRoleAsync(identityUser, "Admin");
+                _logger?.LogInformation($"GetFilteredSubjects: UserId={userId}, IsAdmin={isAdmin}");
+                Debug.WriteLine($"GetFilteredSubjects: UserId={userId}, IsAdmin={isAdmin}");
+
+                return isAdmin
+                    ? Subjects
+                    : Subjects.Where(s => s.UserId == userId);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, $"Error in GetFilteredSubjects for UserId={userId}");
+                Debug.WriteLine($"Error in GetFilteredSubjects for UserId={userId}: {ex.Message}");
+                throw;
+            }
+        }
+
         public IQueryable<SubjectRecord> GetFilteredSubjectRecords()
         {
             try
@@ -114,6 +149,41 @@ namespace BiermanTech.CriticalDog.Data
                 _logger?.LogError(ex, "Error in GetFilteredSubjectRecords");
                 Debug.WriteLine($"Error in GetFilteredSubjectRecords: {ex.Message}");
                 throw; // Re-throw to catch in debugger or logs
+            }
+        }
+
+        public async Task<IQueryable<SubjectRecord>> GetFilteredSubjectRecords(string userId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(userId))
+                {
+                    _logger?.LogWarning("GetFilteredSubjectRecords: Provided UserId is null or empty, returning empty query.");
+                    Debug.WriteLine("GetFilteredSubjectRecords: Provided UserId is null or empty.");
+                    return SubjectRecords.Where(r => false);
+                }
+
+                var identityUser = await _userManager.FindByIdAsync(userId);
+                if (identityUser == null)
+                {
+                    _logger?.LogWarning($"GetFilteredSubjectRecords: No user found for UserId={userId}, returning empty query.");
+                    Debug.WriteLine($"GetFilteredSubjectRecords: No user found for UserId={userId}.");
+                    return SubjectRecords.Where(r => false);
+                }
+
+                bool isAdmin = await _userManager.IsInRoleAsync(identityUser, "Admin");
+                _logger?.LogInformation($"GetFilteredSubjectRecords: UserId={userId}, IsAdmin={isAdmin}");
+                Debug.WriteLine($"GetFilteredSubjectRecords: UserId={userId}, IsAdmin={isAdmin}");
+
+                return isAdmin
+                    ? SubjectRecords
+                    : SubjectRecords.Where(r => r.Subject.UserId == userId);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, $"Error in GetFilteredSubjectRecords for UserId={userId}");
+                Debug.WriteLine($"Error in GetFilteredSubjectRecords for UserId={userId}: {ex.Message}");
+                throw;
             }
         }
 
