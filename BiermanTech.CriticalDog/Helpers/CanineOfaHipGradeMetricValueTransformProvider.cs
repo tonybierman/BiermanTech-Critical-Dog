@@ -2,7 +2,7 @@
 
 namespace BiermanTech.CriticalDog.Helpers
 {
-    public class OfaHipGradeMetricValueTransformProvider : IMetricValueTransformProvider
+    public class CanineOfaHipGradeMetricValueTransformProvider : IMetricValueTransformProvider
     {
         public IEnumerable<SelectListItem> GetSelectListItems()
         {
@@ -11,7 +11,7 @@ namespace BiermanTech.CriticalDog.Helpers
 
         public string? GetTransormedValue(int value)
         {
-            return ((OfaHipGradeEnum)value).GetDisplayName();
+            return ((CanineOfaHipGradeEnum)value).GetDisplayName();
         }
     }
 }

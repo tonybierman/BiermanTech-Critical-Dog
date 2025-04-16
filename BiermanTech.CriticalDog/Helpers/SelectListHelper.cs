@@ -10,11 +10,11 @@ namespace BiermanTech.CriticalDog.Helpers
 {
     public static class SelectListHelper
     {
-        public static SelectList GetLifeStageFactorsSelectList(LifeStageFactorsEnum? selected = null)
+        public static SelectList GetLifeStageFactorsSelectList(CanineLifeStageFactorsEnum? selected = null)
         {
-            var enumValues = Enum.GetValues(typeof(LifeStageFactorsEnum))
-                .Cast<LifeStageFactorsEnum>()
-                .Where(e => e != LifeStageFactorsEnum.None) // Exclude 'None' if not desired
+            var enumValues = Enum.GetValues(typeof(CanineLifeStageFactorsEnum))
+                .Cast<CanineLifeStageFactorsEnum>()
+                .Where(e => e != CanineLifeStageFactorsEnum.None) // Exclude 'None' if not desired
                 .Select(e => new
                 {
                     Value = ((int)e).ToString(),
@@ -25,11 +25,26 @@ namespace BiermanTech.CriticalDog.Helpers
             return new SelectList(enumValues, "Value", "Text", selected?.ToString());
         }
 
-        public static SelectList GetOfaHipGradesSelectList(OfaHipGradeEnum? selected = null)
+        public static SelectList GetOfaHipGradesSelectList(CanineOfaHipGradeEnum? selected = null)
         {
-            var enumValues = Enum.GetValues(typeof(OfaHipGradeEnum))
-                .Cast<OfaHipGradeEnum>()
-                .Where(e => e != OfaHipGradeEnum.None) // Exclude 'None' if not desired
+            var enumValues = Enum.GetValues(typeof(CanineOfaHipGradeEnum))
+                .Cast<CanineOfaHipGradeEnum>()
+                .Where(e => e != CanineOfaHipGradeEnum.None) // Exclude 'None' if not desired
+                .Select(e => new
+                {
+                    Value = ((int)e).ToString(),
+                    Text = GetEnumDisplayName(e)
+                })
+                .ToList();
+
+            return new SelectList(enumValues, "Value", "Text", selected?.ToString());
+        }
+
+        internal static IEnumerable<SelectListItem> CanineGeneticHealthConditionStatusSelectList(CanineGeneticHealthConditionStatusEnum? selected = null)
+        {
+            var enumValues = Enum.GetValues(typeof(CanineGeneticHealthConditionStatusEnum))
+                .Cast<CanineGeneticHealthConditionStatusEnum>()
+                .Where(e => e != CanineGeneticHealthConditionStatusEnum.None) // Exclude 'None' if not desired
                 .Select(e => new
                 {
                     Value = ((int)e).ToString(),

@@ -7,9 +7,9 @@
             switch (observationTypeId)
             {
                 case 5:
-                    return new LifeStageFactorsMetricValueTransformProvider();
+                    return new CanineLifeStageFactorsMetricValueTransformProvider();
                 case 6:
-                    return new OfaHipGradeMetricValueTransformProvider();
+                    return new CanineOfaHipGradeMetricValueTransformProvider();
                 default:
                     return null;
             }

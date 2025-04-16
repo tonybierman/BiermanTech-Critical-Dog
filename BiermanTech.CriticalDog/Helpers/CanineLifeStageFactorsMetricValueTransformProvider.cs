@@ -2,7 +2,7 @@
 
 namespace BiermanTech.CriticalDog.Helpers
 {
-    public class LifeStageFactorsMetricValueTransformProvider : IMetricValueTransformProvider
+    public class CanineLifeStageFactorsMetricValueTransformProvider : IMetricValueTransformProvider
     {
         public IEnumerable<SelectListItem> GetSelectListItems()
         {
@@ -11,7 +11,7 @@ namespace BiermanTech.CriticalDog.Helpers
 
         public string? GetTransormedValue(int value)
         {
-            return ((LifeStageFactorsEnum)value).GetDisplayName();
+            return ((CanineLifeStageFactorsEnum)value).GetDisplayName();
         }
     }
 }
