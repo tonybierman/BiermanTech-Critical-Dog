@@ -19,3 +19,11 @@ dotnet ef migrations add AddIdenityUserToSubject --context AppDbContext
 dotnet ef database update --context AppDbContext
 
 ASPNETCORE_ENVIRONMENT=Production bash -c 'dotnet BiermanTech.CriticalDog.dll --urls http://localhost:5019'
+
+-- Drop the incorrect foreign key
+ALTER TABLE Subject DROP FOREIGN KEY FK_Subject_AspNetUsers_UserId;
+
+-- Recreate the foreign key to reference AspNetUsers
+ALTER TABLE Subject
+ADD CONSTRAINT FK_Subject_AspNetUsers_UserId
+FOREIGN KEY (UserId) REFERENCES AspNetUsers(Id) ON DELETE CASCADE;

@@ -119,12 +119,13 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
 
     // Apply migrations for AppDbContext
-    var appDbContext = services.GetRequiredService<AppDbContext>();
-    appDbContext.Database.Migrate();
+    await AppDbInitializer.InitializeAsync(scope.ServiceProvider);
 
     // Apply migrations for IdentityDbContext
-    var identityDbContext = services.GetRequiredService<IdentityDbContext>();
-    identityDbContext.Database.Migrate();
+    await IdentityDbInitializer.SeedAdminUser(
+        scope.ServiceProvider,
+        adminEmail: "admin@example.com",
+        adminPassword: "Admin@123!");
 }
 
 // Configure the HTTP request pipeline.
