@@ -47,7 +47,7 @@ namespace BiermanTech.CriticalDog.Data
                     new Unit { UnitName = "Milliliters", UnitSymbol = "mL", Description = "Metric unit of volume", IsActive = true },
                     new Unit { UnitName = "Liters", UnitSymbol = "L", Description = "Metric unit of volume", IsActive = true },
                     new Unit { UnitName = "Cups", UnitSymbol = "c", Description = "US customary unit of volume", IsActive = true },
-                    new Unit { UnitName = "Fluid Ounces", UnitSymbol = "fl oz", Description = "US customary unit of volume", IsActive = true },
+                    new Unit { UnitName = "FluidOunces", UnitSymbol = "fl oz", Description = "US customary unit of volume", IsActive = true },
 
                     // Energy Units (for nutrition, feed energy)
                     new Unit { UnitName = "Kilocalories", UnitSymbol = "kcal", Description = "Metric unit of energy", IsActive = true },
@@ -55,8 +55,8 @@ namespace BiermanTech.CriticalDog.Data
                     new Unit { UnitName = "Kilojoules", UnitSymbol = "kJ", Description = "Metric unit of energy", IsActive = true },
 
                     // Temperature Units (for body temperature, environment)
-                    new Unit { UnitName = "Degrees Celsius", UnitSymbol = "°C", Description = "Metric unit of temperature", IsActive = true },
-                    new Unit { UnitName = "Degrees Fahrenheit", UnitSymbol = "°F", Description = "Imperial unit of temperature", IsActive = true },
+                    new Unit { UnitName = "DegreesCelsius", UnitSymbol = "°C", Description = "Metric unit of temperature", IsActive = true },
+                    new Unit { UnitName = "DegreesFahrenheit", UnitSymbol = "°F", Description = "Imperial unit of temperature", IsActive = true },
 
                     // Length Units (for body measurements)
                     new Unit { UnitName = "Centimeters", UnitSymbol = "cm", Description = "Metric unit of length", IsActive = true },
@@ -70,10 +70,10 @@ namespace BiermanTech.CriticalDog.Data
                     new Unit { UnitName = "Years", UnitSymbol = "yr", Description = "Unit of time", IsActive = true },
 
                     // Area Unit (for kennel or exercise space)
-                    new Unit { UnitName = "Square Meters", UnitSymbol = "m²", Description = "Metric unit of area", IsActive = true },
+                    new Unit { UnitName = "SquareMeters", UnitSymbol = "m²", Description = "Metric unit of area", IsActive = true },
 
                     // Specialized Units (for medications, vitamins)
-                    new Unit { UnitName = "International Units", UnitSymbol = "IU", Description = "Unit for biological activity (e.g., vitamins)", IsActive = true },
+                    new Unit { UnitName = "InternationalUnits", UnitSymbol = "IU", Description = "Unit for biological activity (e.g., vitamins)", IsActive = true },
 
                     // Percentage (for humidity, health metrics)
                     new Unit { UnitName = "Percentage", UnitSymbol = "%", Description = "Unit of proportion or ratio", IsActive = true },
@@ -82,7 +82,7 @@ namespace BiermanTech.CriticalDog.Data
                     new Unit { UnitName = "Count", UnitSymbol = "ct", Description = "Denotes a quantity or number of items", IsActive = true },
 
                     // New Units
-                    new Unit { UnitName = "Beats per Minute", UnitSymbol = "bpm", Description = "Unit for heart rate or respiratory rate", IsActive = true },
+                    new Unit { UnitName = "BeatsPerMinute", UnitSymbol = "bpm", Description = "Unit for heart rate or respiratory rate", IsActive = true },
                     new Unit { UnitName = "Score", UnitSymbol = "scr", Description = "Unit for semi-quantitative scales (e.g., 1–10)", IsActive = true }
                 );
                 await context.SaveChangesAsync();
@@ -104,7 +104,7 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationType { TypeName = "Y-DNA", Description = "Y-chromosomal DNA", IsActive = true },
                     new ObservationType { TypeName = "Reproduction", Description = "Of or related to the biological process of producing offspring", IsActive = true },
                     // New Observation Types
-                    new ObservationType { TypeName = "Vital Signs", Description = "Measurement of physiological vital signs", IsActive = true },
+                    new ObservationType { TypeName = "VitalSigns", Description = "Measurement of physiological vital signs", IsActive = true },
                     new ObservationType { TypeName = "Exercise", Description = "Observation of physical activity", IsActive = true },
                     new ObservationType { TypeName = "Nutrition", Description = "Observation of dietary intake or digestion", IsActive = true },
                     new ObservationType { TypeName = "Grooming", Description = "Observation of coat, skin, or dental condition", IsActive = true },
@@ -118,9 +118,9 @@ namespace BiermanTech.CriticalDog.Data
             {
                 logger.LogInformation("Seeding ScientificDisciplines...");
                 context.ScientificDisciplines.AddRange(
-                    new ScientificDiscipline { DisciplineName = "Canine Biology", Description = "Study of dog anatomy, physiology, and genetics", IsActive = true },
-                    new ScientificDiscipline { DisciplineName = "Nutrition Science", Description = "Study of dietary needs for canine health", IsActive = true },
-                    new ScientificDiscipline { DisciplineName = "Veterinary Medicine", Description = "Diagnosis and treatment of canine diseases", IsActive = true },
+                    new ScientificDiscipline { DisciplineName = "CanineBiology", Description = "Study of dog anatomy, physiology, and genetics", IsActive = true },
+                    new ScientificDiscipline { DisciplineName = "NutritionScience", Description = "Study of dietary needs for canine health", IsActive = true },
+                    new ScientificDiscipline { DisciplineName = "VeterinaryMedicine", Description = "Diagnosis and treatment of canine diseases", IsActive = true },
                     new ScientificDiscipline { DisciplineName = "Ethology", Description = "Study of animal behavior", IsActive = true },
                     new ScientificDiscipline { DisciplineName = "Pharmacology", Description = "Study of drug effects on dogs", IsActive = true }
                 );
@@ -136,7 +136,7 @@ namespace BiermanTech.CriticalDog.Data
                 var behaviorType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Behavior");
                 var medicationType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Medication");
                 var reproType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Reproduction");
-                var vitalSignsType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Vital Signs");
+                var vitalSignsType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "VitalSigns");
                 var exerciseType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Exercise");
                 var nutritionType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Nutrition");
                 var groomingType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Grooming");
@@ -146,7 +146,7 @@ namespace BiermanTech.CriticalDog.Data
                     // Existing Definitions
                     new ObservationDefinition
                     {
-                        DefinitionName = "Weigh In",
+                        DefinitionName = "WeighIn",
                         ObservationTypeId = weightType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
@@ -156,7 +156,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Temp Check",
+                        DefinitionName = "TempCheck",
                         ObservationTypeId = tempType.Id,
                         IsQualitative = false,
                         MinimumValue = 36m,
@@ -166,7 +166,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Behavior Note",
+                        DefinitionName = "BehaviorNote",
                         ObservationTypeId = behaviorType.Id,
                         IsQualitative = true,
                         MinimumValue = null,
@@ -176,7 +176,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Medication Dose",
+                        DefinitionName = "MedicationDose",
                         ObservationTypeId = medicationType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
@@ -186,7 +186,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Litter Size",
+                        DefinitionName = "LitterSize",
                         ObservationTypeId = reproType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
@@ -197,7 +197,7 @@ namespace BiermanTech.CriticalDog.Data
                     // New Definitions
                     new ObservationDefinition
                     {
-                        DefinitionName = "Heart Rate",
+                        DefinitionName = "HeartRate",
                         ObservationTypeId = vitalSignsType.Id,
                         IsQualitative = false,
                         MinimumValue = 40m,
@@ -207,7 +207,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Respiratory Rate",
+                        DefinitionName = "RespiratoryRate",
                         ObservationTypeId = vitalSignsType.Id,
                         IsQualitative = false,
                         MinimumValue = 10m,
@@ -217,7 +217,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Hydration Status",
+                        DefinitionName = "HydrationStatus",
                         ObservationTypeId = vitalSignsType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
@@ -227,7 +227,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Exercise Duration",
+                        DefinitionName = "ExerciseDuration",
                         ObservationTypeId = exerciseType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
@@ -237,7 +237,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Exercise Intensity",
+                        DefinitionName = "ExerciseIntensity",
                         ObservationTypeId = exerciseType.Id,
                         IsQualitative = true,
                         MinimumValue = null,
@@ -247,7 +247,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Appetite Level",
+                        DefinitionName = "AppetiteLevel",
                         ObservationTypeId = nutritionType.Id,
                         IsQualitative = true,
                         MinimumValue = null,
@@ -257,7 +257,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Stool Quality",
+                        DefinitionName = "StoolQuality",
                         ObservationTypeId = nutritionType.Id,
                         IsQualitative = false,
                         MinimumValue = 1m,
@@ -267,7 +267,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Daily Caloric Intake",
+                        DefinitionName = "DailyCaloricIntake",
                         ObservationTypeId = nutritionType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
@@ -277,7 +277,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Socialization Behavior",
+                        DefinitionName = "SocializationBehavior",
                         ObservationTypeId = behaviorType.Id,
                         IsQualitative = true,
                         MinimumValue = null,
@@ -287,7 +287,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Training Progress",
+                        DefinitionName = "TrainingProgress",
                         ObservationTypeId = behaviorType.Id,
                         IsQualitative = false,
                         MinimumValue = 1m,
@@ -297,7 +297,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Estrus Cycle Stage",
+                        DefinitionName = "EstrusCycleStage",
                         ObservationTypeId = reproType.Id,
                         IsQualitative = true,
                         MinimumValue = null,
@@ -307,7 +307,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Gestation Progress",
+                        DefinitionName = "GestationProgress",
                         ObservationTypeId = reproType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
@@ -317,7 +317,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Coat Condition",
+                        DefinitionName = "CoatCondition",
                         ObservationTypeId = groomingType.Id,
                         IsQualitative = false,
                         MinimumValue = 1m,
@@ -327,7 +327,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Dental Health",
+                        DefinitionName = "DentalHealth",
                         ObservationTypeId = groomingType.Id,
                         IsQualitative = false,
                         MinimumValue = 1m,
@@ -337,7 +337,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Pain Assessment",
+                        DefinitionName = "PainAssessment",
                         ObservationTypeId = vitalSignsType.Id,
                         IsQualitative = false,
                         MinimumValue = 1m,
@@ -347,7 +347,7 @@ namespace BiermanTech.CriticalDog.Data
                     },
                     new ObservationDefinition
                     {
-                        DefinitionName = "Ambient Humidity",
+                        DefinitionName = "AmbientHumidity",
                         ObservationTypeId = environmentType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
@@ -363,31 +363,31 @@ namespace BiermanTech.CriticalDog.Data
             if (!await context.Set<Dictionary<string, object>>("ObservationDefinitionDiscipline").AnyAsync())
             {
                 logger.LogInformation("Seeding ObservationDefinitionDiscipline...");
-                var weighIn = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Weigh In");
-                var tempCheck = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Temp Check");
-                var behaviorNote = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Behavior Note");
-                var medicationDose = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Medication Dose");
-                var litterSize = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Litter Size");
-                var heartRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Heart Rate");
-                var respiratoryRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Respiratory Rate");
-                var hydrationStatus = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Hydration Status");
-                var exerciseDuration = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Exercise Duration");
-                var exerciseIntensity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Exercise Intensity");
-                var appetiteLevel = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Appetite Level");
-                var stoolQuality = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Stool Quality");
-                var dailyCaloricIntake = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Daily Caloric Intake");
-                var socializationBehavior = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Socialization Behavior");
-                var trainingProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Training Progress");
-                var estrusCycleStage = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Estrus Cycle Stage");
-                var gestationProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Gestation Progress");
-                var coatCondition = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Coat Condition");
-                var dentalHealth = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Dental Health");
-                var painAssessment = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Pain Assessment");
-                var ambientHumidity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Ambient Humidity");
+                var weighIn = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "WeighIn");
+                var tempCheck = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "TempCheck");
+                var behaviorNote = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "BehaviorNote");
+                var medicationDose = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "MedicationDose");
+                var litterSize = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "LitterSize");
+                var heartRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "HeartRate");
+                var respiratoryRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "RespiratoryRate");
+                var hydrationStatus = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "HydrationStatus");
+                var exerciseDuration = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "ExerciseDuration");
+                var exerciseIntensity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "ExerciseIntensity");
+                var appetiteLevel = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "AppetiteLevel");
+                var stoolQuality = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "StoolQuality");
+                var dailyCaloricIntake = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "DailyCaloricIntake");
+                var socializationBehavior = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "SocializationBehavior");
+                var trainingProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "TrainingProgress");
+                var estrusCycleStage = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "EstrusCycleStage");
+                var gestationProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "GestationProgress");
+                var coatCondition = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "CoatCondition");
+                var dentalHealth = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "DentalHealth");
+                var painAssessment = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "PainAssessment");
+                var ambientHumidity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "AmbientHumidity");
 
-                var canineBiology = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "Canine Biology");
-                var nutritionScience = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "Nutrition Science");
-                var veterinaryMedicine = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "Veterinary Medicine");
+                var canineBiology = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "CanineBiology");
+                var nutritionScience = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "NutritionScience");
+                var veterinaryMedicine = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "VeterinaryMedicine");
                 var ethology = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "Ethology");
                 var pharmacology = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "Pharmacology");
 
@@ -407,7 +407,7 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         { "ObservationDefinitionId", tempCheck.Id },
                         { "ScientificDisciplineId", veterinaryMedicine.Id }
-                        },
+                    },
                     new Dictionary<string, object>
                     {
                         { "ObservationDefinitionId", behaviorNote.Id },
@@ -517,33 +517,33 @@ namespace BiermanTech.CriticalDog.Data
             if (!await context.Set<Dictionary<string, object>>("ObservationDefinitionUnit").AnyAsync())
             {
                 logger.LogInformation("Seeding ObservationDefinitionUnit...");
-                var weighIn = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Weigh In");
-                var tempCheck = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Temp Check");
-                var medicationDose = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Medication Dose");
-                var litterSize = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Litter Size");
-                var heartRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Heart Rate");
-                var respiratoryRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Respiratory Rate");
-                var hydrationStatus = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Hydration Status");
-                var exerciseDuration = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Exercise Duration");
-                var stoolQuality = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Stool Quality");
-                var dailyCaloricIntake = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Daily Caloric Intake");
-                var trainingProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Training Progress");
-                var gestationProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Gestation Progress");
-                var coatCondition = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Coat Condition");
-                var dentalHealth = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Dental Health");
-                var painAssessment = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Pain Assessment");
-                var ambientHumidity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Ambient Humidity");
+                var weighIn = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "WeighIn");
+                var tempCheck = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "TempCheck");
+                var medicationDose = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "MedicationDose");
+                var litterSize = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "LitterSize");
+                var heartRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "HeartRate");
+                var respiratoryRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "RespiratoryRate");
+                var hydrationStatus = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "HydrationStatus");
+                var exerciseDuration = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "ExerciseDuration");
+                var stoolQuality = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "StoolQuality");
+                var dailyCaloricIntake = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "DailyCaloricIntake");
+                var trainingProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "TrainingProgress");
+                var gestationProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "GestationProgress");
+                var coatCondition = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "CoatCondition");
+                var dentalHealth = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "DentalHealth");
+                var painAssessment = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "PainAssessment");
+                var ambientHumidity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "AmbientHumidity");
 
                 var kilograms = await context.Units.FirstAsync(u => u.UnitName == "Kilograms");
                 var pounds = await context.Units.FirstAsync(u => u.UnitName == "Pounds");
                 var ounces = await context.Units.FirstAsync(u => u.UnitName == "Ounces");
-                var celsius = await context.Units.FirstAsync(u => u.UnitName == "Degrees Celsius");
-                var fahrenheit = await context.Units.FirstAsync(u => u.UnitName == "Degrees Fahrenheit");
+                var celsius = await context.Units.FirstAsync(u => u.UnitName == "DegreesCelsius");
+                var fahrenheit = await context.Units.FirstAsync(u => u.UnitName == "DegreesFahrenheit");
                 var milliliters = await context.Units.FirstAsync(u => u.UnitName == "Milliliters");
                 var milligrams = await context.Units.FirstAsync(u => u.UnitName == "Milligrams");
                 var grams = await context.Units.FirstAsync(u => u.UnitName == "Grams");
                 var count = await context.Units.FirstAsync(u => u.UnitName == "Count");
-                var bpm = await context.Units.FirstAsync(u => u.UnitName == "Beats per Minute");
+                var bpm = await context.Units.FirstAsync(u => u.UnitName == "BeatsPerMinute");
                 var percentage = await context.Units.FirstAsync(u => u.UnitName == "Percentage");
                 var minutes = await context.Units.FirstAsync(u => u.UnitName == "Minutes");
                 var score = await context.Units.FirstAsync(u => u.UnitName == "Score");
@@ -681,33 +681,33 @@ namespace BiermanTech.CriticalDog.Data
             if (!await context.MetricTypes.AnyAsync())
             {
                 logger.LogInformation("Seeding MetricTypes...");
-                var weighIn = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Weigh In");
-                var tempCheck = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Temp Check");
-                var medicationDose = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Medication Dose");
-                var litterSize = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Litter Size");
-                var heartRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Heart Rate");
-                var respiratoryRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Respiratory Rate");
-                var hydrationStatus = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Hydration Status");
-                var exerciseDuration = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Exercise Duration");
-                var stoolQuality = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Stool Quality");
-                var dailyCaloricIntake = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Daily Caloric Intake");
-                var trainingProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Training Progress");
-                var gestationProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Gestation Progress");
-                var coatCondition = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Coat Condition");
-                var dentalHealth = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Dental Health");
-                var painAssessment = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Pain Assessment");
-                var ambientHumidity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Ambient Humidity");
+                var weighIn = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "WeighIn");
+                var tempCheck = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "TempCheck");
+                var medicationDose = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "MedicationDose");
+                var litterSize = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "LitterSize");
+                var heartRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "HeartRate");
+                var respiratoryRate = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "RespiratoryRate");
+                var hydrationStatus = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "HydrationStatus");
+                var exerciseDuration = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "ExerciseDuration");
+                var stoolQuality = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "StoolQuality");
+                var dailyCaloricIntake = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "DailyCaloricIntake");
+                var trainingProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "TrainingProgress");
+                var gestationProgress = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "GestationProgress");
+                var coatCondition = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "CoatCondition");
+                var dentalHealth = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "DentalHealth");
+                var painAssessment = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "PainAssessment");
+                var ambientHumidity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "AmbientHumidity");
 
                 var kilograms = await context.Units.FirstAsync(u => u.UnitName == "Kilograms");
                 var pounds = await context.Units.FirstAsync(u => u.UnitName == "Pounds");
                 var ounces = await context.Units.FirstAsync(u => u.UnitName == "Ounces");
-                var celsius = await context.Units.FirstAsync(u => u.UnitName == "Degrees Celsius");
-                var fahrenheit = await context.Units.FirstAsync(u => u.UnitName == "Degrees Fahrenheit");
+                var celsius = await context.Units.FirstAsync(u => u.UnitName == "DegreesCelsius");
+                var fahrenheit = await context.Units.FirstAsync(u => u.UnitName == "DegreesFahrenheit");
                 var milliliters = await context.Units.FirstAsync(u => u.UnitName == "Milliliters");
                 var milligrams = await context.Units.FirstAsync(u => u.UnitName == "Milligrams");
                 var grams = await context.Units.FirstAsync(u => u.UnitName == "Grams");
                 var count = await context.Units.FirstAsync(u => u.UnitName == "Count");
-                var bpm = await context.Units.FirstAsync(u => u.UnitName == "Beats per Minute");
+                var bpm = await context.Units.FirstAsync(u => u.UnitName == "BeatsPerMinute");
                 var percentage = await context.Units.FirstAsync(u => u.UnitName == "Percentage");
                 var minutes = await context.Units.FirstAsync(u => u.UnitName == "Minutes");
                 var score = await context.Units.FirstAsync(u => u.UnitName == "Score");
@@ -899,10 +899,10 @@ namespace BiermanTech.CriticalDog.Data
                     new MetaTag { TagName = "Medication", Description = "Indicates a medication-related record", IsActive = true },
                     new MetaTag { TagName = "Exercise", Description = "Pertains to physical activity or exercise", IsActive = true },
                     new MetaTag { TagName = "Grooming", Description = "Related to grooming or hygiene", IsActive = true },
-                    new MetaTag { TagName = "Health Check", Description = "General health or veterinary check-up", IsActive = true },
+                    new MetaTag { TagName = "HealthCheck", Description = "General health or veterinary check-up", IsActive = true },
                     new MetaTag { TagName = "Behavior", Description = "Observations about behavior or temperament", IsActive = true },
                     // New Entries
-                    new MetaTag { TagName = "Vital Signs", Description = "Related to physiological measurements", IsActive = true },
+                    new MetaTag { TagName = "VitalSigns", Description = "Related to physiological measurements", IsActive = true },
                     new MetaTag { TagName = "Reproduction", Description = "Related to reproductive observations", IsActive = true },
                     new MetaTag { TagName = "Training", Description = "Related to training or obedience observations", IsActive = true },
                     new MetaTag { TagName = "Environment", Description = "Related to environmental conditions", IsActive = true }
