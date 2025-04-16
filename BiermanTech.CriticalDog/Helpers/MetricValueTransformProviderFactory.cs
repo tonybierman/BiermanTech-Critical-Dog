@@ -2,14 +2,16 @@
 {
     public static class MetricValueTransformProviderFactory
     {
-        public static IMetricValueTransformProvider? GetProvider(int observationTypeId)
+        public static IMetricValueTransformProvider? GetProvider(string observationTypeName)
         {
-            switch (observationTypeId)
+            switch (observationTypeName)
             {
-                case 5:
+                case "CanineLifeStageFactor":
                     return new CanineLifeStageFactorsMetricValueTransformProvider();
-                case 6:
+                case "CanineOfaHipGrade":
                     return new CanineOfaHipGradeMetricValueTransformProvider();
+                case "CanineGeneticHealthConditionStatus":
+                    return new CanineGeneticHealthConditionStatusMetricValueTransformProvider();
                 default:
                     return null;
             }

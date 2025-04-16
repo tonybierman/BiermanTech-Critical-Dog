@@ -31,9 +31,9 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         public CreateObservationViewModel ObservationVM { get; set; } = new CreateObservationViewModel();
         public string ObservationDefinitionName { get; set; }
 
-        public void PopulateSelectListItems(int id)
+        public void PopulateSelectListItems(string typeName)
         {
-            var transformer = MetricValueTransformProviderFactory.GetProvider(id);
+            var transformer = MetricValueTransformProviderFactory.GetProvider(typeName);
 
             if (transformer == null)
             {
@@ -42,7 +42,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             try
             {
-                SelectedListItems = MetricValueTransformProviderFactory.GetProvider(id).GetSelectListItems();
+                SelectedListItems = MetricValueTransformProviderFactory.GetProvider(typeName).GetSelectListItems();
             }
             catch (NotSupportedException)
             {
@@ -77,7 +77,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 ObservationVM.RecordTime = DateTime.Now;
 
 
-                PopulateSelectListItems(observationDefinition.ObservationTypeId);
+                PopulateSelectListItems(observationDefinition.ObservationType.TypeName);
             }
             else
             {
@@ -114,7 +114,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 ObservationVM.RecordTime = DateTime.Now;
                 TempData.Keep("Observation");
 
-                PopulateSelectListItems(observationDefinition.ObservationTypeId);
+                PopulateSelectListItems(observationDefinition.ObservationType.TypeName);
             }
 
             return Page();
@@ -123,7 +123,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
             var observationDefinition = await _service.GetObservationDefinitionByIdAsync(ObservationVM.ObservationDefinitionId);
-            PopulateSelectListItems(observationDefinition.ObservationTypeId);
+            PopulateSelectListItems(observationDefinition.ObservationType.TypeName);
 
             if (observationDefinition == null)
             {
