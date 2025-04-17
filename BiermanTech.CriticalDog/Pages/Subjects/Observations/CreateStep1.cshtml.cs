@@ -1,5 +1,6 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Models;
+using BiermanTech.CriticalDog.Pages.Subjects.Observations.RouteProviders;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -37,25 +38,31 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
+            var dog = await _service.GetByIdAsync(dogId);
+            if (dog == null)
+            {
+                return NotFound();
+
+            }
             if (!Observation.ObservationDefinitionId.HasValue)
             {
                 ModelState.AddModelError("Observation.ObservationDefinitionId", "Please select an observation type.");
                 Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
+
                 return Page();
             }
 
             var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
 
-            // Mapping of TypeName to page routes
-            var routeMap = new Dictionary<string, string>
+            // Resolve providers (injected via DI or instantiated)
+            var providers = new List<IObservationRouteProvider>
             {
-                { "Health", "CreateHealthObservation" },
-                { "Behavior", "CreateBehaviorObservation" },
-                { "Training", "CreateTrainingObservation" }
+                new DailyCaloricIntakeObservationRouteProvider()
+                // Add more providers
             };
 
-            var typeName = observationDefinition.ObservationType.TypeName;
-            var targetPage = routeMap.TryGetValue(typeName, out var page) ? page : "CreateStep2"; // Fallback to default
+            var typeName = observationDefinition.DefinitionName ?? "Unknown";
+            var targetPage = providers.FirstOrDefault(p => p.CanHandle(dog, typeName))?.GetRoute() ?? "CreateStep2";
 
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(Observation);
 
