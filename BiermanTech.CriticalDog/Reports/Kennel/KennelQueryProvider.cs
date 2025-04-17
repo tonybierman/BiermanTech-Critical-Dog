@@ -31,6 +31,7 @@ namespace BiermanTech.CriticalDog.Reports.Kennel
                 .Include(a => a.Subject)
                 .ThenInclude(a => a.SubjectType)
                 .Include(a => a.ObservationDefinition)
+                .ThenInclude(od => od.ObservationType)
                 .Include(a => a.MetricType)
                 .ThenInclude(mt => mt.Unit)
                 .Include(a => a.MetaTags);

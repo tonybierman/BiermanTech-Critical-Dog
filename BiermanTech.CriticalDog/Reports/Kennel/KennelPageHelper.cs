@@ -33,8 +33,17 @@ namespace BiermanTech.CriticalDog.Reports.Kennel
             PagedQueryParameters<SubjectRecord> parameters,
             int totalCount)
         {
+            IQueryable<SubjectRecord> query = _dbContext.GetFilteredSubjectRecords()
+                .Include(a => a.Subject)
+                .ThenInclude(a => a.SubjectType)
+                .Include(a => a.ObservationDefinition)
+                .ThenInclude(od => od.ObservationType)
+                .Include(a => a.MetricType)
+                .ThenInclude(mt => mt.Unit)
+                .Include(a => a.MetaTags);
+
             return await _reportService.GetPagedAsync<SubjectRecord, SubjectRecordViewModel>(
-                parameters, totalCount);
+                parameters, totalCount, query);
         }
 
         //public override async Task<ICohort[]?> GetCohortsAsync(int[] cohortIds)
