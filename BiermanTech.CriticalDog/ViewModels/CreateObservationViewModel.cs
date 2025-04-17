@@ -7,6 +7,7 @@ namespace BiermanTech.CriticalDog.Models
         public int SubjectId { get; set; }
         public string? SubjectName { get; set; }
         public int? ObservationDefinitionId { get; set; }
+        public int? ObservationDefinitionTypeName { get; set; }
         public int? MetricTypeId { get; set; }
         public decimal? MetricValue { get; set; }
         public string? Note { get; set; }

@@ -41,13 +41,25 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             {
                 ModelState.AddModelError("Observation.ObservationDefinitionId", "Please select an observation type.");
                 Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
-
                 return Page();
             }
 
+            var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
+
+            // Mapping of TypeName to page routes
+            var routeMap = new Dictionary<string, string>
+            {
+                { "Health", "CreateHealthObservation" },
+                { "Behavior", "CreateBehaviorObservation" },
+                { "Training", "CreateTrainingObservation" }
+            };
+
+            var typeName = observationDefinition.ObservationType.TypeName;
+            var targetPage = routeMap.TryGetValue(typeName, out var page) ? page : "CreateStep2"; // Fallback to default
+
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(Observation);
 
-            return RedirectToPage("CreateStep2", new { dogId });
+            return RedirectToPage(targetPage, new { dogId });
         }
     }
 }

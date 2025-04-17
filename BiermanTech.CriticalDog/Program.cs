@@ -154,21 +154,21 @@ try
     }
 
     // Seed sample data for the regular user
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Starting UserDbInitializer...");
+    //using (var scope = app.Services.CreateScope())
+    //{
+    //    var services = scope.ServiceProvider;
+    //    var logger = services.GetRequiredService<ILogger<Program>>();
+    //    logger.LogInformation("Starting UserDbInitializer...");
 
-        if (string.IsNullOrEmpty(regularUserId))
-        {
-            logger.LogError("Regular user ID is null. Skipping UserDbInitializer.");
-            throw new InvalidOperationException("Failed to obtain regular user ID.");
-        }
+    //    if (string.IsNullOrEmpty(regularUserId))
+    //    {
+    //        logger.LogError("Regular user ID is null. Skipping UserDbInitializer.");
+    //        throw new InvalidOperationException("Failed to obtain regular user ID.");
+    //    }
 
-        await UserDbInitializer.InitializeAsync(services, regularUserId);
-        logger.LogInformation("Completed UserDbInitializer.");
-    }
+    //    await UserDbInitializer.InitializeAsync(services, regularUserId);
+    //    logger.LogInformation("Completed UserDbInitializer.");
+    //}
 
     var successLogger = app.Services.GetRequiredService<ILogger<Program>>();
     successLogger.LogInformation("Database initialization and seeding completed successfully.");
