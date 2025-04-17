@@ -1,4 +1,5 @@
 ﻿using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Helpers;
 using BiermanTech.CriticalDog.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +53,7 @@ namespace BiermanTech.CriticalDog.Services
                 .Select(od => new SelectListItem
                 {
                     Value = od.Id.ToString(),
-                    Text = od.DefinitionName
+                    Text = StringHelper.SplitPascalCase(od.DefinitionName)
                 })
                 .ToListAsync();
 
