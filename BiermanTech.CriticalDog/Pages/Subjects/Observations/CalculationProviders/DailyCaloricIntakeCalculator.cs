@@ -1,4 +1,5 @@
 ﻿using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Helpers;
 using BiermanTech.CriticalDog.ViewModels;
 
 namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders
@@ -19,7 +20,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProvide
                 observationVM.MetricTypeId = id;
             }
 
-            observationVM.MetricValue = 69;
+            // TODO: Pull parms from dog's history or don't set
+            observationVM.MetricValue = (decimal)CanineMerCalculator.CalculateMeanMer(LifeStageFactorsEnum.IntactAdult, 45);
         }
     }
 }
