@@ -50,6 +50,7 @@ namespace BiermanTech.CriticalDog.Services
         {
             var items = await _context.ObservationDefinitions
                 .Where(od => od.IsActive == true)
+                .OrderBy(od => od.DefinitionName)
                 .Select(od => new SelectListItem
                 {
                     Value = od.Id.ToString(),
@@ -64,6 +65,7 @@ namespace BiermanTech.CriticalDog.Services
         {
             var items = await _context.MetricTypes
                 .Where(mt => mt.ObservationDefinitionId == observationDefinitionId && mt.IsActive == true)
+                .OrderBy(mt => mt.Description)
                 .Select(mt => new SelectListItem
                 {
                     Value = mt.Id.ToString(),
@@ -78,6 +80,7 @@ namespace BiermanTech.CriticalDog.Services
         {
             var items = await _context.MetaTags
                 .Where(mt => mt.IsActive == true)
+                .OrderBy(mt => mt.TagName)
                 .Select(mt => new SelectListItem
                 {
                     Value = mt.Id.ToString(),

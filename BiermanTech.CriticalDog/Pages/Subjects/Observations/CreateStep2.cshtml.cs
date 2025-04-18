@@ -17,7 +17,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         private readonly IMapper _mapper;
 
         public IEnumerable<SelectListItem> SelectedListItems { get; set; }
-        [BindProperty] 
+        [BindProperty]
         public int SelectedItem { get; set; }
 
         public CreateStep2Model(ISubjectObservationService service, ILogger<CreateStep2Model> logger, IMapper mapper)
@@ -133,71 +133,57 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             }
 
             ObservationVM.ObservationDefinitionId = observationDefinition.Id;
-            if (!ObservationVM.IsQualitative)
+
+            if (!ObservationVM.MetricTypeId.HasValue || !ObservationVM.MetricValue.HasValue)
             {
-                if (!ObservationVM.MetricTypeId.HasValue || !ObservationVM.MetricValue.HasValue)
+                if (!ObservationVM.MetricTypeId.HasValue)
                 {
-                    if (!ObservationVM.MetricTypeId.HasValue)
+                    if (observationDefinition.MetricTypes.Any())
                     {
-                        if (observationDefinition.MetricTypes.Any())
+                        if (observationDefinition.MetricTypes.ToList().Count == 1)
                         {
-                            if (observationDefinition.MetricTypes.ToList().Count == 1)
-                            {
-                                ObservationVM.MetricTypeId = observationDefinition.MetricTypes.First().Id;
-                            }
-                            else 
-                            {
-                                ModelState.AddModelError("ObservationVM.MetricTypeId", "Please select a metric type for quantitative observations.");
-                            }
+                            ObservationVM.MetricTypeId = observationDefinition.MetricTypes.First().Id;
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("ObservationVM.MetricTypeId", "Please select a metric type for quantitative observations.");
                         }
                     }
+                }
 
+                if (!ObservationVM.MetricValue.HasValue)
+                {
+                    // Try to parse MetricValue from SelectedItem if a dropdown is used
+                    if (SelectedListItems?.Any() == true && SelectedItem > 0)
+                    {
+                        ObservationVM.MetricValue = SelectedItem;
+                    }
+
+                    // If MetricValue is still null, make it 0
                     if (!ObservationVM.MetricValue.HasValue)
                     {
-                        // Try to parse MetricValue from SelectedItem if a dropdown is used
-                        if (SelectedListItems?.Any() == true && SelectedItem > 0)
-                        {
-                            ObservationVM.MetricValue = SelectedItem;
-                        }
-
-                        // If MetricValue is still null, add an error
-                        if (!ObservationVM.MetricValue.HasValue)
-                        {
-                            string errorMessage = SelectedListItems?.Any() == true
-                                ? "Please select a valid life stage."
-                                : "Please enter a value for the observation.";
-                            ModelState.AddModelError("ObservationVM.MetricValue", errorMessage);
-                        }
+                        ObservationVM.MetricValue = 0m;
                     }
-
-                    if (ObservationVM.MetricValue.HasValue)
-                    {
-                        TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(ObservationVM);
-
-                        return RedirectToPage("CreateStep3", new { dogId });
-                    }
-
-                    ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
-
-                    return Page();
                 }
 
-                if (ObservationVM.MetricValue < observationDefinition.MinimumValue || ObservationVM.MetricValue > observationDefinition.MaximumValue)
+                if (ObservationVM.MetricValue.HasValue)
                 {
-                    ModelState.AddModelError("ObservationVM.MetricValue", $"Value must be between {observationDefinition.MinimumValue} and {observationDefinition.MaximumValue}.");
-                    ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
+                    TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(ObservationVM);
 
-                    return Page();
+                    return RedirectToPage("CreateStep3", new { dogId });
                 }
+
+                ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
+
+                return Page();
             }
-            else
-            {
-                if (string.IsNullOrEmpty(ObservationVM.Note))
-                {
-                    ModelState.AddModelError("ObservationVM.Note", "A note is required for qualitative observations.");
 
-                    return Page();
-                }
+            if (ObservationVM.MetricValue < observationDefinition.MinimumValue || ObservationVM.MetricValue > observationDefinition.MaximumValue)
+            {
+                ModelState.AddModelError("ObservationVM.MetricValue", $"Value must be between {observationDefinition.MinimumValue} and {observationDefinition.MaximumValue}.");
+                ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
+
+                return Page();
             }
 
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(ObservationVM);

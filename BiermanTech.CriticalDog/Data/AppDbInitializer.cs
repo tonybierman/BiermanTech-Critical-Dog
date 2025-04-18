@@ -89,21 +89,26 @@ namespace BiermanTech.CriticalDog.Data
             }
 
             // Seed ObservationTypes
+            // An observation type dictates the units of measure that can be applied
             if (!await context.ObservationTypes.AnyAsync())
             {
                 logger.LogInformation("Seeding ObservationTypes...");
                 context.ObservationTypes.AddRange(
+                    new ObservationType { TypeName = "Qualitative", Description = "Descriptive, often categorical and discrete", IsActive = true },
                     new ObservationType { TypeName = "Weight", Description = "Measurement of mass", IsActive = true },
+                    new ObservationType { TypeName = "Cohort", Description = "Number of members in a cohort", IsActive = true },
+                    new ObservationType { TypeName = "EstrusStage", Description = "Defines the stages of an estrus cycle", IsActive = true },
                     new ObservationType { TypeName = "Temperature", Description = "Measurement of body temperature", IsActive = true },
+                    new ObservationType { TypeName = "TemporalDays", Description = "Measurement of time in days", IsActive = true },
                     new ObservationType { TypeName = "Behavior", Description = "Observation of behavioral traits", IsActive = true },
                     new ObservationType { TypeName = "Medication", Description = "Administration of medication", IsActive = true },
-                    new ObservationType { TypeName = "Genetics", Description = "Observation of genetics", IsActive = true },
-                    new ObservationType { TypeName = "Reproduction", Description = "Of or related to the biological process of producing offspring", IsActive = true },
-                    new ObservationType { TypeName = "Anatomy", Description = "Observation of the structure and organization of organs, tissues, or cells", IsActive = true },
-                    new ObservationType { TypeName = "Physiology", Description = "Observation of the functions and processes of biological systems or organs", IsActive = true },
+                    new ObservationType { TypeName = "GeneticHealthConditionStatus", Description = "Covers the possible outcomes for a canine genetic health condition", IsActive = true },
+                    new ObservationType { TypeName = "OfaHipsGrade", Description = "OFA radiographic evaluation of canine hip joint structure", IsActive = true },
                     new ObservationType { TypeName = "VitalSigns", Description = "Measurement of physiological vital signs", IsActive = true },
-                    new ObservationType { TypeName = "Exercise", Description = "Observation of physical activity", IsActive = true },
+                    new ObservationType { TypeName = "ExerciseDuration", Description = "Observation of physical activity", IsActive = true },
+                    new ObservationType { TypeName = "ExerciseIntensity", Description = "Observation of physical activity", IsActive = true },
                     new ObservationType { TypeName = "Nutrition", Description = "Observation of dietary intake or digestion", IsActive = true },
+                    new ObservationType { TypeName = "LifeStageFactor", Description = "Used in nutrition to determine energy requirements", IsActive = true },
                     new ObservationType { TypeName = "Grooming", Description = "Observation of coat, skin, or dental condition", IsActive = true },
                     new ObservationType { TypeName = "Environment", Description = "Observation of environmental conditions", IsActive = true }
                 );
@@ -128,17 +133,21 @@ namespace BiermanTech.CriticalDog.Data
             if (!await context.ObservationDefinitions.AnyAsync())
             {
                 logger.LogInformation("Seeding ObservationDefinitions...");
+                var qualitativeType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Qualitative");
                 var weightType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Weight");
+                var cohortType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Cohort");
+                var estrusStageType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "EstrusStage");
                 var tempType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Temperature");
+                var timeDaysType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "TemporalDays");
                 var behaviorType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Behavior");
                 var medicationType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Medication");
-                var reproType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Reproduction");
                 var vitalSignsType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "VitalSigns");
-                var exerciseType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Exercise");
-                var geneticsType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Genetics");
-                var anatomyType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Anatomy");
-                var physiologyType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Physiology");
+                var exerciseDurationType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "ExerciseDuration");
+                var exerciseIntensityType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "ExerciseIntensity");
+                var geneticConditionType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "GeneticHealthConditionStatus");
+                var ofaHipsGradeType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "OfaHipsGrade");
                 var nutritionType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Nutrition");
+                var lifeStageFactorType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "LifeStageFactor");
                 var groomingType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Grooming");
                 var environmentType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Environment");
 
@@ -146,7 +155,7 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "mtDNA",
-                        ObservationTypeId = geneticsType.Id,
+                        ObservationTypeId = qualitativeType.Id,
                         IsQualitative = false,
                         Description = "Record of mitochondrial DNA haplotype or haplogroup for maternal lineage analysis",
                         IsActive = true
@@ -154,7 +163,7 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "Y-DNA",
-                        ObservationTypeId = geneticsType.Id,
+                        ObservationTypeId = qualitativeType.Id,
                         IsQualitative = false,
                         Description = "Record of Y-chromosome DNA haplotype or haplogroup for paternal lineage analysis",
                         IsActive = true
@@ -162,17 +171,17 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "CanineGeneticHealthConditionStatus",
-                        ObservationTypeId = geneticsType.Id,
+                        ObservationTypeId = geneticConditionType.Id,
                         IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 4m,
-                        Description = "Covers the possible outcomes for canine genetic health conditions",
+                        Description = "Covers the possible outcomes for a canine genetic health condition",
                         IsActive = true
                     },
                     new ObservationDefinition
                     {
                         DefinitionName = "CanineOfaHipGrade",
-                        ObservationTypeId = anatomyType.Id,
+                        ObservationTypeId = ofaHipsGradeType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 200m,
@@ -222,7 +231,7 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "LitterSize",
-                        ObservationTypeId = reproType.Id,
+                        ObservationTypeId = cohortType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 24m,
@@ -263,7 +272,7 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "ExerciseDuration",
-                        ObservationTypeId = exerciseType.Id,
+                        ObservationTypeId = exerciseDurationType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 300m,
@@ -273,8 +282,8 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "ExerciseIntensity",
-                        ObservationTypeId = exerciseType.Id,
-                        IsQualitative = true,
+                        ObservationTypeId = exerciseIntensityType.Id,
+                        IsQualitative = false,
                         MinimumValue = null,
                         MaximumValue = null,
                         Description = "Qualitative assessment of exercise intensity (low, moderate, high)",
@@ -293,11 +302,11 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "CanineLifeStageFactor",
-                        ObservationTypeId = nutritionType.Id,
+                        ObservationTypeId = lifeStageFactorType.Id,
                         IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 10m,
-                        Description = "Life Stage Factor",
+                        Description = "Used in nutrition to determine energy requirements",
                         IsActive = true
                     },
                     new ObservationDefinition
@@ -343,8 +352,8 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "EstrusCycleStage",
-                        ObservationTypeId = reproType.Id,
-                        IsQualitative = true,
+                        ObservationTypeId = estrusStageType.Id,
+                        IsQualitative = false,
                         MinimumValue = null,
                         MaximumValue = null,
                         Description = "Qualitative observation of reproductive cycle phase",
@@ -353,7 +362,7 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationDefinition
                     {
                         DefinitionName = "GestationProgress",
-                        ObservationTypeId = reproType.Id,
+                        ObservationTypeId = timeDaysType.Id,
                         IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 70m,

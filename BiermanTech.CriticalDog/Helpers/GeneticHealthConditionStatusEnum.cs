@@ -5,7 +5,7 @@ namespace BiermanTech.CriticalDog.Helpers
     /// <summary>
     /// Covers the possible outcomes for canine genetic health conditions
     /// </summary>
-    public enum CanineGeneticHealthConditionStatusEnum
+    public enum GeneticHealthConditionStatusEnum
     {
         /// <summary>
         /// The dog has not been evaluate for the condition of the result is unknown.

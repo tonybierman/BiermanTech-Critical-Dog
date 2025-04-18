@@ -2,16 +2,16 @@
 
 namespace BiermanTech.CriticalDog.Helpers
 {
-    public class CanineLifeStageFactorsMetricValueTransformProvider : IMetricValueTransformProvider
+    public class OfaHipsGradeMetricValueTransformProvider : IMetricValueTransformProvider
     {
         public IEnumerable<SelectListItem> GetSelectListItems()
         {
-            return SelectListHelper.GetLifeStageFactorsSelectList();
+            return SelectListHelper.GetOfaHipGradesSelectList();
         }
 
         public string? GetTransormedValue(int value)
         {
-            return ((CanineLifeStageFactorsEnum)value).GetDisplayName();
+            return ((OfaHipsGradeEnum)value).GetDisplayName();
         }
     }
 }

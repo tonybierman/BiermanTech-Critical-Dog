@@ -2,7 +2,7 @@
 
 namespace BiermanTech.CriticalDog.Helpers
 {
-    public class CanineGeneticHealthConditionStatusMetricValueTransformProvider : IMetricValueTransformProvider
+    public class GeneticHealthConditionStatusMetricValueTransformProvider : IMetricValueTransformProvider
     {
         public IEnumerable<SelectListItem> GetSelectListItems()
         {
@@ -11,7 +11,7 @@ namespace BiermanTech.CriticalDog.Helpers
 
         public string? GetTransormedValue(int value)
         {
-            return ((CanineGeneticHealthConditionStatusEnum)value).GetDisplayName();
+            return ((GeneticHealthConditionStatusEnum)value).GetDisplayName();
         }
     }
 }

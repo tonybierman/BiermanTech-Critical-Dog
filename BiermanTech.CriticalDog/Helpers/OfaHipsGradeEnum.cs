@@ -5,7 +5,7 @@ namespace BiermanTech.CriticalDog.Helpers
     /// <summary>
     /// Defines the Orthopedic Foundation for Animals (OFA) hip grades for evaluating hip dysplasia in dogs.
     /// </summary>
-    public enum CanineOfaHipGradeEnum
+    public enum OfaHipsGradeEnum
     {
         /// <summary>
         /// No specific hip grade assigned (invalid for OFA evaluation).

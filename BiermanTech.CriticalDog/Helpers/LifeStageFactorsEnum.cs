@@ -5,7 +5,7 @@ namespace BiermanTech.CriticalDog.Helpers
     /// <summary>
     /// Defines the life stages and conditions of a dog that affect its Maintenance Energy Requirement (MER) factors.
     /// </summary>
-    public enum CanineLifeStageFactorsEnum
+    public enum LifeStageFactorsEnum
     {
         /// <summary>
         /// No specific life stage or condition (invalid for MER calculation).

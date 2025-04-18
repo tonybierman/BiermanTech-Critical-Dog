@@ -17,36 +17,38 @@
 
     @if (!Model.ObservationVM.IsQualitative)
     {
-        @if (Model.ObservationVM.MetricTypes != null && Model.ObservationVM.MetricTypes.Any() == true)
-        {
-            <div class="form-group">
-                <label asp-for="ObservationVM.MetricTypeId">Metric Type</label>
-                <select asp-for="ObservationVM.MetricTypeId" asp-items="Model.ObservationVM.MetricTypes" class="form-control">
-                    <option value="">-- Select Unit --</option>
-                </select>
-                <span asp-validation-for="ObservationVM.MetricTypeId" class="text-danger"></span>
-            </div>
-        }
-
-        <div class="form-group">
-
-            @if (Model.SelectedListItems?.Any() == true)
-            {
-                    <label asp-for="SelectedItem">Value</label>
-                    <select asp-for="SelectedItem" asp-items="@Model.SelectedListItems" class="form-select">
-                        <option value="">Select a Value</option>
-                    </select>
-            }
-            else
-            {
-                    <label asp-for="ObservationVM.MetricValue">Value</label>
-                    <input asp-for="ObservationVM.MetricValue" class="form-control" />
-            }
-            <span asp-validation-for="ObservationVM.MetricValue" class="text-danger"></span>
-
-        </div>
-
+       
     }
+
+    @if (Model.ObservationVM.MetricTypes != null && Model.ObservationVM.MetricTypes.Any() == true)
+    {
+        <div class="form-group">
+            <label asp-for="ObservationVM.MetricTypeId">Metric Type</label>
+            <select asp-for="ObservationVM.MetricTypeId" asp-items="Model.ObservationVM.MetricTypes" class="form-control">
+                <option value="">-- Select Unit --</option>
+            </select>
+            <span asp-validation-for="ObservationVM.MetricTypeId" class="text-danger"></span>
+        </div>
+    }
+
+    <div class="form-group">
+
+        @if (Model.SelectedListItems?.Any() == true)
+        {
+            <label asp-for="SelectedItem">Value</label>
+            <select asp-for="SelectedItem" asp-items="@Model.SelectedListItems" class="form-select">
+                <option value="">Select a Value</option>
+            </select>
+        }
+        else
+        {
+            <label asp-for="ObservationVM.MetricValue">Value</label>
+            <input asp-for="ObservationVM.MetricValue" class="form-control" />
+        }
+        <span asp-validation-for="ObservationVM.MetricValue" class="text-danger"></span>
+
+    </div>
+
 
     <div class="form-group">
         <label asp-for="ObservationVM.Note">Note</label>
