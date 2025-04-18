@@ -13,8 +13,6 @@ namespace BiermanTech.CriticalDog.ViewModels
         [Required]
         public int ObservationTypeId { get; set; }
 
-        public bool IsQualitative { get; set; }
-
         public decimal? MinimumValue { get; set; }
 
         public decimal? MaximumValue { get; set; }

@@ -50,11 +50,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             ObservationDefinitionName = observationDefinition.DefinitionName;
 
-            if (!Observation.IsQualitative && Observation.MetricTypeId.HasValue)
-            {
-                var metricType = await _service.GetMetricTypeByIdAsync(Observation.MetricTypeId);
-                MetricTypeDescription = metricType?.Description ?? "Unknown";
-            }
+            var metricType = await _service.GetMetricTypeByIdAsync(Observation.MetricTypeId);
+            MetricTypeDescription = metricType?.Description ?? "Unknown";
 
             MetricValueTransformer = MetricValueTransformProviderFactory.GetProvider(observationDefinition);
 

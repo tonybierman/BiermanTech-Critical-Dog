@@ -12,7 +12,6 @@ namespace BiermanTech.CriticalDog.Models
         public decimal? MetricValue { get; set; }
         public string? Note { get; set; }
         public DateTime? RecordTime { get; set; }
-        public bool IsQualitative { get; set; }
         public decimal? MinimumValue { get; set; }
         public decimal? MaximumValue { get; set; }
         public List<int> SelectedMetaTagIds { get; set; } = new List<int>();

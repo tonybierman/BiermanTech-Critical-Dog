@@ -11,14 +11,8 @@
 <form method="post">
     <input type="hidden" asp-for="ObservationVM.SubjectId" />
     <input type="hidden" asp-for="ObservationVM.ObservationDefinitionId" />
-    <input type="hidden" asp-for="ObservationVM.IsQualitative" />
     <input type="hidden" asp-for="ObservationVM.MinimumValue" />
     <input type="hidden" asp-for="ObservationVM.MaximumValue" />
-
-    @if (!Model.ObservationVM.IsQualitative)
-    {
-       
-    }
 
     @if (Model.ObservationVM.MetricTypes != null && Model.ObservationVM.MetricTypes.Any() == true)
     {

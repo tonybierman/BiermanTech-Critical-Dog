@@ -22,9 +22,6 @@
                 Observation Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Definitions[0].IsQualitative)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Definitions[0].MinimumValue)
             </th>
             <th>
@@ -48,9 +45,6 @@
                 </td>
                 <td>
                     @Model.ObservationTypeNames[item.Id]
-                </td>
-                <td>
-                    @(item.IsQualitative ? "Qualitative" : "Quantitative")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.MinimumValue)

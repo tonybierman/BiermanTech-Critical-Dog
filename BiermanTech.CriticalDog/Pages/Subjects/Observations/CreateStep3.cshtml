@@ -9,7 +9,6 @@
 <form method="post">
     <input type="hidden" asp-for="Observation.SubjectId" />
     <input type="hidden" asp-for="Observation.ObservationDefinitionId" />
-    <input type="hidden" asp-for="Observation.IsQualitative" />
     <input type="hidden" asp-for="Observation.MetricTypeId" />
     <input type="hidden" asp-for="Observation.MetricValue" />
     <input type="hidden" asp-for="Observation.Note" />
@@ -21,26 +20,23 @@
         <p>@Model.ObservationDefinitionName</p>
     </div>
 
-    @if (!Model.Observation.IsQualitative)
-    {
-        <div class="form-group">
-            <label>Metric Type</label>
-            <p>@Model.MetricTypeDescription</p>
-        </div>
-        <div class="form-group">
-            <label>Value</label>
-            <p>
-                @if (Model.MetricValueTransformer != null)
-                {
-                    @Model.MetricValueTransformer.GetTransormedValue((int)Model.Observation.MetricValue)
-                }
-                else
-                {
-                    @Model.Observation.MetricValue
-                }
-            </p>
-        </div>
-    }
+    <div class="form-group">
+        <label>Metric Type</label>
+        <p>@Model.MetricTypeDescription</p>
+    </div>
+    <div class="form-group">
+        <label>Value</label>
+        <p>
+            @if (Model.MetricValueTransformer != null)
+            {
+                @Model.MetricValueTransformer.GetTransormedValue((int)Model.Observation.MetricValue)
+            }
+            else
+            {
+                @Model.Observation.MetricValue
+            }
+        </p>
+    </div>
 
     <div class="form-group">
         <label>Note</label>
