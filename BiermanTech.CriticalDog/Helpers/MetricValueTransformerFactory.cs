@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace BiermanTech.CriticalDog.Helpers
 {
-    public static class MetricValueTransformProviderFactory
+    public static class MetricValueTransformerFactory
     {
         // Dictionary to map observation type names to provider instances
         private static readonly Dictionary<string, IMetricValueTransformProvider> _providers = new()
         {
-            { "LifeStageFactor", new MetricValueTransformProvider<LifeStageFactorsEnum>() },
-            { "EstrusStage", new MetricValueTransformProvider<EstrusStageEnum>() },
-            { "OfaHipsGrade", new MetricValueTransformProvider<OfaHipsGradeEnum>() },
-            { "GeneticHealthConditionStatus", new MetricValueTransformProvider<GeneticHealthConditionStatusEnum>() }
+            { "LifeStageFactor", new MetricValueTransformer<LifeStageFactorsEnum>() },
+            { "EstrusStage", new MetricValueTransformer<EstrusStageEnum>() },
+            { "OfaHipsGrade", new MetricValueTransformer<OfaHipsGradeEnum>() },
+            { "GeneticHealthConditionStatus", new MetricValueTransformer<GeneticHealthConditionStatusEnum>() }
         };
 
         /// <summary>

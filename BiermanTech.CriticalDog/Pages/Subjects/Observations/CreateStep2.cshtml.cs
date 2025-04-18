@@ -34,7 +34,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public void PopulateSelectListItems(ObservationDefinition observationDefinition)
         {
-            var transformer = MetricValueTransformProviderFactory.GetProvider(observationDefinition);
+            var transformer = MetricValueTransformerFactory.GetProvider(observationDefinition);
 
             if (transformer == null)
             {
@@ -43,7 +43,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             try
             {
-                SelectedListItems = MetricValueTransformProviderFactory.GetProvider(observationDefinition).GetSelectListItems();
+                SelectedListItems = MetricValueTransformerFactory.GetProvider(observationDefinition).GetSelectListItems();
             }
             catch (NotSupportedException)
             {

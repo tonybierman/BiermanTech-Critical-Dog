@@ -4,7 +4,7 @@ using System;
 
 namespace BiermanTech.CriticalDog.Helpers
 {
-    public class MetricValueTransformProvider<T> : IMetricValueTransformProvider where T : struct, Enum
+    public class MetricValueTransformer<T> : IMetricValueTransformProvider where T : struct, Enum
     {
         public IEnumerable<SelectListItem> GetSelectListItems()
         {
