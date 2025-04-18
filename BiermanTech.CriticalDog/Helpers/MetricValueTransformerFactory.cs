@@ -13,7 +13,8 @@ namespace BiermanTech.CriticalDog.Helpers
             { "LifeStageFactor", new MetricValueTransformer<LifeStageFactorsEnum>() },
             { "EstrusStage", new MetricValueTransformer<EstrusStageEnum>() },
             { "OfaHipsGrade", new MetricValueTransformer<OfaHipsGradeEnum>() },
-            { "GeneticHealthConditionStatus", new MetricValueTransformer<GeneticHealthConditionStatusEnum>() }
+            { "GeneticHealthConditionStatus", new MetricValueTransformer<GeneticHealthConditionStatusEnum>() },
+            { "BodyConditionScore", new MetricValueTransformer<BodyConditionScoreEnum>() }
         };
 
         /// <summary>
