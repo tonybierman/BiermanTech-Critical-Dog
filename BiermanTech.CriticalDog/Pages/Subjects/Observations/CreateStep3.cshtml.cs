@@ -56,7 +56,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 MetricTypeDescription = metricType?.Description ?? "Unknown";
             }
 
-            MetricValueTransformer = MetricValueTransformProviderFactory.GetProvider(observationDefinition.ObservationType.TypeName);
+            MetricValueTransformer = MetricValueTransformProviderFactory.GetProvider(observationDefinition);
 
             Observation.MetaTags = await _service.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
             TempData.Keep("Observation");

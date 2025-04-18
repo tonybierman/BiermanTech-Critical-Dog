@@ -97,13 +97,10 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationType { TypeName = "Temperature", Description = "Measurement of body temperature", IsActive = true },
                     new ObservationType { TypeName = "Behavior", Description = "Observation of behavioral traits", IsActive = true },
                     new ObservationType { TypeName = "Medication", Description = "Administration of medication", IsActive = true },
-                    new ObservationType { TypeName = "CanineLifeStageFactor", Description = "Use to determine energy requirement", IsActive = true },
-                    new ObservationType { TypeName = "CanineOfaHipGrade", Description = "Grading system used by OFA for radiographic hips evaluation", IsActive = true },
-                    new ObservationType { TypeName = "CanineGeneticHealthConditionStatus", Description = "Covers the possible outcomes for canine genetic health conditions", IsActive = true },
-                    new ObservationType { TypeName = "mtDNA", Description = "mitochondrial DNA", IsActive = true },
-                    new ObservationType { TypeName = "Y-DNA", Description = "Y-chromosomal DNA", IsActive = true },
+                    new ObservationType { TypeName = "Genetics", Description = "Observation of genetics", IsActive = true },
                     new ObservationType { TypeName = "Reproduction", Description = "Of or related to the biological process of producing offspring", IsActive = true },
-                    // New Observation Types
+                    new ObservationType { TypeName = "Anatomy", Description = "Observation of the structure and organization of organs, tissues, or cells", IsActive = true },
+                    new ObservationType { TypeName = "Physiology", Description = "Observation of the functions and processes of biological systems or organs", IsActive = true },
                     new ObservationType { TypeName = "VitalSigns", Description = "Measurement of physiological vital signs", IsActive = true },
                     new ObservationType { TypeName = "Exercise", Description = "Observation of physical activity", IsActive = true },
                     new ObservationType { TypeName = "Nutrition", Description = "Observation of dietary intake or digestion", IsActive = true },
@@ -138,12 +135,50 @@ namespace BiermanTech.CriticalDog.Data
                 var reproType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Reproduction");
                 var vitalSignsType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "VitalSigns");
                 var exerciseType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Exercise");
+                var geneticsType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Genetics");
+                var anatomyType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Anatomy");
+                var physiologyType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Physiology");
                 var nutritionType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Nutrition");
                 var groomingType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Grooming");
                 var environmentType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Environment");
 
                 context.ObservationDefinitions.AddRange(
-                    // Existing Definitions
+                    new ObservationDefinition
+                    {
+                        DefinitionName = "mtDNA",
+                        ObservationTypeId = geneticsType.Id,
+                        IsQualitative = false,
+                        Description = "Record of mitochondrial DNA haplotype or haplogroup for maternal lineage analysis",
+                        IsActive = true
+                    },
+                    new ObservationDefinition
+                    {
+                        DefinitionName = "Y-DNA",
+                        ObservationTypeId = geneticsType.Id,
+                        IsQualitative = false,
+                        Description = "Record of Y-chromosome DNA haplotype or haplogroup for paternal lineage analysis",
+                        IsActive = true
+                    },
+                    new ObservationDefinition
+                    {
+                        DefinitionName = "CanineGeneticHealthConditionStatus",
+                        ObservationTypeId = geneticsType.Id,
+                        IsQualitative = false,
+                        MinimumValue = 1m,
+                        MaximumValue = 4m,
+                        Description = "Covers the possible outcomes for canine genetic health conditions",
+                        IsActive = true
+                    },
+                    new ObservationDefinition
+                    {
+                        DefinitionName = "CanineOfaHipGrade",
+                        ObservationTypeId = anatomyType.Id,
+                        IsQualitative = false,
+                        MinimumValue = 0m,
+                        MaximumValue = 200m,
+                        Description = "OFA radiographic evaluation of canine hip joint structure",
+                        IsActive = true
+                    },
                     new ObservationDefinition
                     {
                         DefinitionName = "WeighIn",
@@ -253,6 +288,16 @@ namespace BiermanTech.CriticalDog.Data
                         MinimumValue = null,
                         MaximumValue = null,
                         Description = "Qualitative observation of food intake",
+                        IsActive = true
+                    },
+                    new ObservationDefinition
+                    {
+                        DefinitionName = "CanineLifeStageFactor",
+                        ObservationTypeId = nutritionType.Id,
+                        IsQualitative = false,
+                        MinimumValue = 1m,
+                        MaximumValue = 10m,
+                        Description = "Life Stage Factor",
                         IsActive = true
                     },
                     new ObservationDefinition
@@ -384,6 +429,11 @@ namespace BiermanTech.CriticalDog.Data
                 var dentalHealth = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "DentalHealth");
                 var painAssessment = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "PainAssessment");
                 var ambientHumidity = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "AmbientHumidity");
+                var canineLifeStageFactor = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "CanineLifeStageFactor");
+                var mtDNA = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "mtDNA");
+                var yDNA = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "Y-DNA");
+                var canineGeneticHealthConditionStatus = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "CanineGeneticHealthConditionStatus");
+                var canineOfaHipGrade = await context.ObservationDefinitions.FirstAsync(od => od.DefinitionName == "CanineOfaHipGrade");
 
                 var canineBiology = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "CanineBiology");
                 var nutritionScience = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "NutritionScience");
@@ -392,7 +442,26 @@ namespace BiermanTech.CriticalDog.Data
                 var pharmacology = await context.ScientificDisciplines.FirstAsync(sd => sd.DisciplineName == "Pharmacology");
 
                 context.Set<Dictionary<string, object>>("ObservationDefinitionDiscipline").AddRange(
-                    // Existing Entries
+                    new Dictionary<string, object>
+                    {
+                        { "ObservationDefinitionId", mtDNA.Id },
+                        { "ScientificDisciplineId", canineBiology.Id }
+                    },
+                    new Dictionary<string, object>
+                    {
+                        { "ObservationDefinitionId", yDNA.Id },
+                        { "ScientificDisciplineId", canineBiology.Id }
+                    },
+                    new Dictionary<string, object>
+                    {
+                        { "ObservationDefinitionId", canineGeneticHealthConditionStatus.Id },
+                        { "ScientificDisciplineId", canineBiology.Id }
+                    },
+                    new Dictionary<string, object>
+                    {
+                        { "ObservationDefinitionId", canineOfaHipGrade.Id },
+                        { "ScientificDisciplineId", canineBiology.Id }
+                    },
                     new Dictionary<string, object>
                     {
                         { "ObservationDefinitionId", weighIn.Id },
@@ -467,6 +536,11 @@ namespace BiermanTech.CriticalDog.Data
                     new Dictionary<string, object>
                     {
                         { "ObservationDefinitionId", dailyCaloricIntake.Id },
+                        { "ScientificDisciplineId", nutritionScience.Id }
+                    },
+                    new Dictionary<string, object>
+                    {
+                        { "ObservationDefinitionId", canineLifeStageFactor.Id },
                         { "ScientificDisciplineId", nutritionScience.Id }
                     },
                     new Dictionary<string, object>

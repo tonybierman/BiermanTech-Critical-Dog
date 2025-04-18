@@ -1,76 +1,82 @@
-﻿# Critical Dog Application Overview
+# Critical Dog Application
 
-Critical Dog is designed to track and monitor the health and behavior of dogs. It provides a structured system for handlers and trainers to record observations, manage medical data, and categorize findings. Below is a detailed list of its features.
+## Overview
+Critical Dog is a comprehensive application designed for managing and analyzing detailed canine health, behavior, and environmental data. It provides a robust platform for tracking and recording various metrics related to canine biology, veterinary care, nutrition, and behavior, catering to veterinarians, breeders, researchers, and dog owners. Built with a focus on standardized data collection, Critical Dog supports scientific disciplines such as canine biology, veterinary medicine, nutrition science, ethology, and pharmacology.
+
+## Purpose
+The Critical Dog application aims to:
+- Facilitate precise tracking of canine health metrics, such as weight, heart rate, and temperature.
+- Monitor behavioral patterns, reproductive cycles, and environmental conditions.
+- Support nutritional analysis and dietary management for optimal canine health.
+- Provide a structured framework for recording and analyzing data across multiple scientific disciplines.
+- Enable users to make data-driven decisions for canine care, breeding, and research.
 
 ## Features
+Critical Dog offers a rich set of features to support canine data management:
 
-### 1. Subject Management
-- **Purpose**: Manage individual dog profiles.
-- **Use Case**: Register new dogs, update profiles, or review details for treatment planning.
- 
-### 2. Observation Tracking
-- **Purpose**: Record quantitative and qualitative observations about dogs.
-- **Details**:
-  - **Observation Types**: Supports categories like Weight, Temperature, Behavior, and Medication (`ObservationType`).
-  - **Observation Definitions**: Defines specific metrics (e.g., WeighIn, TempCheck) with ranges (MinimumValue, MaximumValue) and qualitative flags (`ObservationDefinition`).
-  - **Records**: Logs observations in `SubjectRecord` with:
-    - Subject ID, Observation Definition, Metric Type, Metric Value, Notes, Record Time, and Created By.
-    - Supports null Metric Values for qualitative notes (e.g., behavior observations).
-    - Ensures Metric Values are non-negative when applicable.
-  - Indexes on SubjectId, RecordTime, MetricTypeId, and ObservationDefinitionId for efficient querying.
-- **Use Case**: Track weight changes, monitor temperatures, note behaviors, or record medication doses over time.
+### Health and Vital Signs Tracking
+- Record quantitative metrics like weight, heart rate, respiratory rate, body temperature, and hydration levels.
+- Support for multiple units (e.g., kilograms, pounds, Celsius, Fahrenheit, beats per minute).
+- Semi-quantitative scoring for metrics like pain assessment, coat condition, and dental health (e.g., 1–10 pain scale, 1–5 coat condition score).
 
-### 3. Metric and Unit Management
-- **Purpose**: Standardize measurement units and metrics.
-- **Details**:
-  - **Units**: Supports units like Kilograms (kg), Pounds (lb), Degrees Celsius (°C), and Milliliters (ml) in `Unit`.
-  - **Metric Types**: Combines Observation Definitions with Units (e.g., Weight in kg or lb) in `MetricType`.
-  - Ensures unique combinations of Observation Definition and Unit.
-  - Descriptions for clarity (e.g., "Weight in kilograms").
-- **Use Case**: Convert between units (e.g., kg to lb) or ensure consistent metric usage across records.
+### Behavioral Observations
+- Capture qualitative notes on behavior, socialization, and training progress.
+- Track training command mastery with semi-quantitative scores (e.g., 1–5 scale).
+- Monitor behavioral traits relevant to ethology studies.
 
-### 4. Meta-Tagging System
-- **Purpose**: Categorize observations for easy filtering and analysis.
-- **Details**:
-  - Defines tags like "Routine Check," "Post-Treatment," or "Behavioral Issue" in `MetaTag`.
-  - Associates tags with records via `SubjectRecordMetaTag`.
-  - Supports multiple tags per record (many-to-many relationship).
-- **Use Case**: Flag routine checkups, track post-treatment progress, or highlight behavioral concerns.
+### Reproductive and Genetic Data
+- Track reproductive metrics such as litter size, gestation progress, and estrus cycle stages.
+- Record genetic data, including mitochondrial DNA (mtDNA), Y-chromosome DNA (Y-DNA), and health condition statuses.
+- Support for Orthopedic Foundation for Animals (OFA) hip grading and other anatomical evaluations.
 
-### 5. Scientific Discipline Integration
-- **Purpose**: Align observations with relevant fields of study.
-- **Details**:
-  - Supports disciplines like Canine Biology, Nutrition Science, Veterinary Medicine, Ethology, and Pharmacology in `ScientificDiscipline`.
-  - Links disciplines to observation definitions via `ObservationDefinitionDiscipline`.
-  - Allows multiple disciplines per observation (e.g., WeighIn linked to Canine Biology and Nutrition Science).
-- **Use Case**: Analyze data by discipline, such as studying weight trends in Nutrition Science or behavior in Ethology.
+### Nutritional Management
+- Monitor dietary intake, including daily caloric intake and appetite levels.
+- Assess stool quality using a standardized 1–7 scale.
+- Track life stage factors to tailor nutritional needs for puppies, adults, and seniors.
 
-### 6. Data Integrity and Constraints
-- **Purpose**: Ensure reliable and consistent data.
-- **Details**:
-  - **Foreign Keys**: Enforce relationships (e.g., SubjectRecord to Subject, MetricType to Unit).
-  - **Unique Constraints**: Prevent duplicates (e.g., unique TagName, UnitSymbol, or Subject Name/Breed/ArrivalDate).
-  - **Check Constraints**: Validate data (e.g., Age ≥ 0, Sex in (0,1,2), MinimumValue ≤ MaximumValue).
-  - **Cascading Deletes**: Remove dependent records (e.g., SubjectRecord when Subject is deleted).
-  - **Indexes**: Optimize queries on frequently accessed fields like SubjectId or RecordTime.
-- **Use Case**: Maintain a robust dataset for accurate reporting and analysis.
+### Environmental Monitoring
+- Record environmental conditions like ambient humidity and kennel space (e.g., square meters).
+- Support for qualitative and quantitative environmental observations to ensure optimal living conditions.
 
-### 7. Flexible Reporting
-- **Purpose**: Generate insights from recorded data.
-- **Details**:
-  - Query `SubjectRecord` for trends (e.g., weight changes over time).
-  - Filter by MetaTags (e.g., all "Behavioral Issue" records).
-  - Group by Scientific Discipline or Observation Type for research.
-  - Support for qualitative notes alongside quantitative metrics.
-- **Use Case**: Produce reports on dog health, identify patterns, or prepare data for research.
+### Scientific Discipline Integration
+- Align data collection with disciplines such as:
+  - **Canine Biology**: Anatomy, physiology, and genetics.
+  - **Veterinary Medicine**: Diagnosis, treatment, and vital signs.
+  - **Nutrition Science**: Dietary needs and energy intake.
+  - **Ethology**: Behavioral studies.
+  - **Pharmacology**: Medication administration and effects.
+- Link observations to relevant disciplines for research and analysis.
 
-### 8. Extensibility
-- **Purpose**: Allow future enhancements.
-- **Details**:
-  - **IsActive Flags**: Enable soft deletion for MetaTags, Units, Observation Types, etc., preserving historical data.
-  - **Generic Structure**: ObservationDefinition and MetricType allow new metrics without schema changes.
-  - **Scalable Design**: Supports additional SubjectTypes or Disciplines as needed.
-- **Use Case**: Add new observation types (e.g., heart rate) or disciplines (e.g., neurology) seamlessly.
+### Standardized Data Framework
+- Use predefined units, observation types, and metric definitions for consistency.
+- Support both qualitative (e.g., behavior notes) and quantitative (e.g., weight in kilograms) data.
+- Organize data with metadata tags like Feeding, Medication, Exercise, Vital Signs, and Reproduction for easy categorization.
 
-## Summary
-Critical Dog is a comprehensive tool, enabling detailed tracking of canine health and behavior. Its features include robust subject management, flexible observation recording, standardized metrics, meta-tagging, and discipline-based analysis, all underpinned by strong data integrity. The application supports both day-to-day care and long-term research, with room for future expansion.
+### Subject Management
+- Focus on canine subjects (Canis familiaris or Canis lupus familiaris), with extensible support for other subject types.
+- Maintain detailed records for individual dogs, including health, behavior, and genetic profiles.
+
+## Use Cases
+- **Veterinarians**: Track patient health metrics, administer medications, and monitor vital signs.
+- **Breeders**: Manage reproductive cycles, litter sizes, and genetic health conditions.
+- **Researchers**: Collect standardized data for canine biology, ethology, or nutrition studies.
+- **Dog Owners**: Monitor their pet’s health, behavior, and nutrition for optimal care.
+- **Kennel Managers**: Ensure optimal environmental conditions and track exercise routines.
+
+## Technical Details
+- **Framework**: Built using .NET with Entity Framework Core for database operations.
+- **Database**: Stores data in a relational structure with entities for units, observation types, scientific disciplines, and more.
+- **Extensibility**: Designed to support additional metrics, units, and subject types as needed.
+
+## Getting Started
+To use Critical Dog:
+1. Clone the repository from [repository URL].
+2. Configure the database connection in the application settings.
+3. Run the application to initialize the database with predefined data.
+4. Start recording and analyzing canine data through the user interface or API.
+
+## Contributing
+Contributions are welcome! Please submit a pull request or open an issue on the repository for bug reports, feature requests, or improvements.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.

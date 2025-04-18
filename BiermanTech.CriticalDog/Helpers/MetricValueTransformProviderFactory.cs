@@ -1,10 +1,17 @@
-﻿namespace BiermanTech.CriticalDog.Helpers
+﻿using BiermanTech.CriticalDog.Data;
+
+namespace BiermanTech.CriticalDog.Helpers
 {
     public static class MetricValueTransformProviderFactory
     {
-        public static IMetricValueTransformProvider? GetProvider(string observationTypeName)
+        public static IMetricValueTransformProvider? GetProvider(ObservationDefinition? observationDefinition)
         {
-            switch (observationTypeName)
+            if (observationDefinition == null)
+            {
+                return null;
+            }
+
+            switch (observationDefinition.DefinitionName)
             {
                 case "CanineLifeStageFactor":
                     return new CanineLifeStageFactorsMetricValueTransformProvider();
