@@ -1,8 +1,9 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Helpers;
-using BiermanTech.CriticalDog.Models;
+using BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders;
 using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -81,7 +82,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             }
             else
             {
-                // Existing flow: Use TempData from Step 1
+                // Normal flow: Use TempData from Step 1
                 if (TempData["Observation"] == null)
                 {
                     _logger.LogInformation("TempData['Observation'] is null. Redirecting to CreateStep1 for DogId {DogId}.", dogId);
@@ -115,6 +116,17 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 TempData.Keep("Observation");
 
                 PopulateSelectListItems(observationDefinition);
+            }
+
+            if (!ObservationVM.MetricValue.HasValue)
+            {
+                // Check if a calculator exisits and run it
+                var calculator = MetricValueCalculatorFactory.GetProvider(ObservationDefinitionName);
+                var dog = await _service.GetByIdAsync(dogId);
+                if (calculator != null && calculator.CanHandle(dog, ObservationVM))
+                {
+                    calculator.Execute(dog, ObservationVM);
+                }
             }
 
             return Page();

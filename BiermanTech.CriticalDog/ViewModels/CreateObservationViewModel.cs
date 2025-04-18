@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BiermanTech.CriticalDog.Models
+namespace BiermanTech.CriticalDog.ViewModels
 {
     public class CreateObservationViewModel
     {

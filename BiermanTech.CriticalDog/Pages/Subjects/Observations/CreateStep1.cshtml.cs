@@ -1,7 +1,7 @@
 using AutoMapper;
-using BiermanTech.CriticalDog.Models;
 using BiermanTech.CriticalDog.Pages.Subjects.Observations.RouteProviders;
 using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 

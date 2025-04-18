@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Models;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;

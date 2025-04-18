@@ -1,6 +1,5 @@
 ﻿using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Helpers;
-using BiermanTech.CriticalDog.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
