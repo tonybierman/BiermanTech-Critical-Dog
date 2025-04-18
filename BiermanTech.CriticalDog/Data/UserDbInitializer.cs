@@ -10,7 +10,7 @@ namespace BiermanTech.CriticalDog.Data
 {
     public static class UserDbInitializer
     {
-        public static async Task InitializeAsync(IServiceProvider serviceProvider, string userId, ILogger? logger = null)
+        public static async Task InitializeAsync(IServiceProvider serviceProvider, string userId, bool subjectsOnly, ILogger? logger = null)
         {
             var context = serviceProvider.GetRequiredService<AppDbContext>();
             logger ??= serviceProvider.GetRequiredService<ILogger<Program>>();
@@ -19,7 +19,7 @@ namespace BiermanTech.CriticalDog.Data
             {
                 logger.LogInformation($"Initializing user data for UserId: {userId}...");
 
-                await SeedUserDataAsync(context, userId, logger);
+                await SeedUserDataAsync(context, userId, logger, subjectsOnly);
 
                 logger.LogInformation("User data initialization completed successfully.");
             }
@@ -36,7 +36,7 @@ namespace BiermanTech.CriticalDog.Data
             }
         }
 
-        private static async Task SeedUserDataAsync(AppDbContext context, string userId, ILogger logger)
+        private static async Task SeedUserDataAsync(AppDbContext context, string userId, ILogger logger, bool subjectsOnly)
         {
             // Get SubjectType for "Dog"
             var dogSubjectType = await context.SubjectTypes.FirstOrDefaultAsync(st => st.TypeName == "Dog");
@@ -72,7 +72,7 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         Name = "Bella",
                         Breed = "German Shepherd",
-                        Sex = 0, // Female
+                        Sex = 2, // Female
                         ArrivalDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-2)),
                         Notes = "Loyal and protective",
                         SubjectTypeId = dogSubjectType.Id,
@@ -86,6 +86,9 @@ namespace BiermanTech.CriticalDog.Data
                 await RetryAsync(() => context.SaveChangesAsync(), logger, "Saving subjects");
                 logger.LogInformation("Subjects seeded successfully.");
             }
+
+            if (subjectsOnly)
+                return;
 
             // Refresh subjects list after seeding
             subjects = await (await context.GetFilteredSubjects(userId)).ToListAsync();
