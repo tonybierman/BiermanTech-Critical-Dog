@@ -2,13 +2,13 @@ using BiermanTech.CriticalDog.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2
+namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2PostPipeline
 {
-    public class ProcessMetricValueHandler : ICreateStep2PostHandler
+    public class ProcessMetricValueStage : ICreateStep2PostStage
     {
         private readonly ISubjectObservationService _service;
 
-        public ProcessMetricValueHandler(ISubjectObservationService service)
+        public ProcessMetricValueStage(ISubjectObservationService service)
         {
             _service = service;
         }

@@ -1,8 +1,8 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Helpers;
-using BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders;
-using BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2;
+using BiermanTech.CriticalDog.Pages.Dogs.Observations.Step2GetPipeline;
+using BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2PostPipeline;
 using BiermanTech.CriticalDog.Services;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -53,78 +53,54 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public async Task<IActionResult> OnGetAsync(int dogId, int? observationDefinitionId = null)
         {
-            if (observationDefinitionId.HasValue)
+            var stages = new List<ICreateStep2GetStage>
             {
-                var dog = await _service.GetByIdAsync(dogId);
-                if (dog == null)
-                {
-                    _logger.LogWarning("Dog with ID {DogId} not found.", dogId);
-                    return NotFound();
-                }
+                new ValidateDogStage(_service, _logger),
+                new HandleFlowStage(_service, _logger),
+                new FetchObservationDefinitionStage(_service, _logger, _mapper),
+                new PopulateViewModelStage(this),
+                new CalculateMetricValueStage(_service)
+            };
 
-                var observationDefinition = await _service.GetObservationDefinitionByIdAsync(observationDefinitionId.Value);
-                if (observationDefinition == null)
-                {
-                    _logger.LogWarning("ObservationDefinition with ID {ObservationDefinitionId} not found.", observationDefinitionId);
-                    return NotFound();
-                }
-
-                ObservationDefinitionName = observationDefinition.DefinitionName;
-                ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
-                ObservationVM.SubjectId = dogId;
-                ObservationVM.SubjectName = dog.Name ?? "Unknown";
-                ObservationVM.RecordTime = DateTime.Now;
-
-                PopulateSelectListItems(observationDefinition);
-            }
-            else
-            {
-                if (TempData["Observation"] == null)
-                {
-                    _logger.LogInformation("TempData['Observation'] is null. Redirecting to CreateStep1 for DogId {DogId}.", dogId);
-                    return RedirectToPage("CreateStep1", new { dogId });
-                }
-
-                ObservationVM = System.Text.Json.JsonSerializer.Deserialize<CreateObservationViewModel>(TempData["Observation"].ToString())!;
-                ObservationVM.SubjectId = dogId;
-
-                var dog = await _service.GetByIdAsync(dogId);
-                if (dog == null)
-                {
-                    _logger.LogWarning("Dog with ID {DogId} not found.", dogId);
-                    return NotFound();
-                }
-
-                var observationDefinition = await _service.GetObservationDefinitionByIdAsync(ObservationVM.ObservationDefinitionId);
-                if (observationDefinition == null)
-                {
-                    _logger.LogWarning("ObservationDefinition with ID {ObservationDefinitionId} not found.", observationDefinitionId);
-                    return NotFound();
-                }
-
-                ObservationDefinitionName = observationDefinition.DefinitionName;
-                ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
-                ObservationVM.SubjectName = dog.Name ?? "Unknown";
-                ObservationVM.RecordTime = DateTime.Now;
-                TempData.Keep("Observation");
-
-                PopulateSelectListItems(observationDefinition);
-            }
-
-            if (!ObservationVM.MetricValue.HasValue)
-            {
-                var calculator = MetricValueCalculatorFactory.GetProvider(ObservationDefinitionName);
-                var dog = await _service.GetByIdAsync(dogId);
-                if (calculator != null && calculator.CanHandle(dog, ObservationVM))
-                {
-                    calculator.Execute(dog, ObservationVM);
-                }
-            }
-
-            return Page();
+            return await ExecuteGetPipelineAsync(dogId, observationDefinitionId, stages);
         }
 
-        private async Task<IActionResult> ExecutePipelineAsync(int dogId, IEnumerable<ICreateStep2PostHandler> handlers)
+        public async Task<IActionResult> OnPostAsync(int dogId)
+        {
+            var stages = new List<ICreateStep2PostStage>
+            {
+                new ValidateObservationDefinitionStage(_service, _logger),
+                new ProcessMetricTypeStage(),
+                new ProcessMetricValueStage(_service),
+                new SaveToTempDataStage()
+            };
+
+            return await ExecutePostPipelineAsync(dogId, stages);
+        }
+
+        private async Task<IActionResult> ExecuteGetPipelineAsync(int dogId, int? observationDefinitionId, IEnumerable<ICreateStep2GetStage> stages)
+        {
+            var context = new Step2GetContext
+            {
+                DogId = dogId,
+                ObservationDefinitionId = observationDefinitionId,
+                ObservationVM = ObservationVM,
+                PageModel = this
+            };
+
+            foreach (var handler in stages)
+            {
+                await handler.HandleAsync(context);
+                if (context.Result != null)
+                {
+                    return context.Result;
+                }
+            }
+
+            return context.Result ?? Page();
+        }
+
+        private async Task<IActionResult> ExecutePostPipelineAsync(int dogId, IEnumerable<ICreateStep2PostStage> stages)
         {
             var context = new CreateStep2PostContext
             {
@@ -135,7 +111,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 PageModel = this
             };
 
-            foreach (var handler in handlers)
+            foreach (var handler in stages)
             {
                 await handler.HandleAsync(context);
                 if (context.Result != null)
@@ -146,19 +122,5 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             return context.Result ?? RedirectToPage("CreateStep3", new { dogId });
         }
-
-        public async Task<IActionResult> OnPostAsync(int dogId)
-        {
-            var handlers = new List<ICreateStep2PostHandler>
-            {
-                new ValidateObservationDefinitionHandler(_service, _logger),
-                new ProcessMetricTypeHandler(),
-                new ProcessMetricValueHandler(_service),
-                new SaveToTempDataHandler()
-            };
-
-            return await ExecutePipelineAsync(dogId, handlers);
-        }
     }
-
 }

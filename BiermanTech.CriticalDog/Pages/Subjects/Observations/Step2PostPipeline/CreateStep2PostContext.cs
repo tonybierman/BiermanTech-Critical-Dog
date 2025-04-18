@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 
-namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2
+namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2PostPipeline
 { 
     public class CreateStep2PostContext 
     { 

@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2
+namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2PostPipeline
 {
-    public class ProcessMetricTypeHandler : ICreateStep2PostHandler
+    public class ProcessMetricTypeStage : ICreateStep2PostStage
     {
         public async Task HandleAsync(CreateStep2PostContext context)
         {

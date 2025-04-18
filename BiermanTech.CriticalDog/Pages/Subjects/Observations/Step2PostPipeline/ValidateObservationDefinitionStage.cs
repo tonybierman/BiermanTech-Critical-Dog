@@ -4,14 +4,14 @@ using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2
+namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.Step2PostPipeline
 {
-    public class ValidateObservationDefinitionHandler : ICreateStep2PostHandler
+    public class ValidateObservationDefinitionStage : ICreateStep2PostStage
     {
         private readonly ISubjectObservationService _service;
         private readonly ILogger _logger;
 
-        public ValidateObservationDefinitionHandler(ISubjectObservationService service, ILogger logger)
+        public ValidateObservationDefinitionStage(ISubjectObservationService service, ILogger logger)
         {
             _service = service;
             _logger = logger;
