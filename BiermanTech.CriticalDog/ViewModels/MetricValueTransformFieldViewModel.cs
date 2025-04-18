@@ -26,7 +26,7 @@ namespace BiermanTech.CriticalDog.ViewModels
                 {
                     int mval = checked((int)_parent.MetricValue.Value);
                     var transformer = MetricValueTransformProviderFactory.GetProvider(_parent.ObservationDefinition);
-                    string? retval = transformer?.GetTransormedValue(mval);
+                    string? retval = transformer?.GetTransformedValue(mval);
 
                     return retval ?? $"{_parent.MetricValue}";
                 }

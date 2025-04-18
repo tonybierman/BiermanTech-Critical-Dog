@@ -156,7 +156,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "mtDNA",
                         ObservationTypeId = qualitativeType.Id,
-                        IsQualitative = false,
                         Description = "Record of mitochondrial DNA haplotype or haplogroup for maternal lineage analysis",
                         IsActive = true
                     },
@@ -164,7 +163,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "Y-DNA",
                         ObservationTypeId = qualitativeType.Id,
-                        IsQualitative = false,
                         Description = "Record of Y-chromosome DNA haplotype or haplogroup for paternal lineage analysis",
                         IsActive = true
                     },
@@ -172,7 +170,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "CanineGeneticHealthConditionStatus",
                         ObservationTypeId = geneticConditionType.Id,
-                        IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 4m,
                         Description = "Covers the possible outcomes for a canine genetic health condition",
@@ -182,7 +179,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "CanineOfaHipGrade",
                         ObservationTypeId = ofaHipsGradeType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 200m,
                         Description = "OFA radiographic evaluation of canine hip joint structure",
@@ -192,7 +188,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "WeighIn",
                         ObservationTypeId = weightType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 200m,
                         Description = "Quantitative measurement of subject weight",
@@ -202,7 +197,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "TempCheck",
                         ObservationTypeId = tempType.Id,
-                        IsQualitative = false,
                         MinimumValue = 36m,
                         MaximumValue = 40m,
                         Description = "Quantitative measurement of body temperature",
@@ -212,7 +206,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "BehaviorNote",
                         ObservationTypeId = behaviorType.Id,
-                        IsQualitative = true,
                         MinimumValue = null,
                         MaximumValue = null,
                         Description = "Qualitative note on subject behavior",
@@ -222,7 +215,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "MedicationDose",
                         ObservationTypeId = medicationType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 1000m,
                         Description = "Quantitative record of medication administered",
@@ -232,7 +224,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "LitterSize",
                         ObservationTypeId = cohortType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 24m,
                         Description = "Count of offspring",
@@ -243,7 +234,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "HeartRate",
                         ObservationTypeId = vitalSignsType.Id,
-                        IsQualitative = false,
                         MinimumValue = 40m,
                         MaximumValue = 180m,
                         Description = "Quantitative measurement of heart rate",
@@ -253,7 +243,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "RespiratoryRate",
                         ObservationTypeId = vitalSignsType.Id,
-                        IsQualitative = false,
                         MinimumValue = 10m,
                         MaximumValue = 60m,
                         Description = "Quantitative measurement of respiratory rate",
@@ -263,7 +252,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "HydrationStatus",
                         ObservationTypeId = vitalSignsType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 100m,
                         Description = "Quantitative estimate of hydration level",
@@ -273,7 +261,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "ExerciseDuration",
                         ObservationTypeId = exerciseDurationType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 300m,
                         Description = "Quantitative measurement of exercise time",
@@ -283,7 +270,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "ExerciseIntensity",
                         ObservationTypeId = exerciseIntensityType.Id,
-                        IsQualitative = false,
                         MinimumValue = null,
                         MaximumValue = null,
                         Description = "Qualitative assessment of exercise intensity (low, moderate, high)",
@@ -293,7 +279,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "AppetiteLevel",
                         ObservationTypeId = nutritionType.Id,
-                        IsQualitative = true,
                         MinimumValue = null,
                         MaximumValue = null,
                         Description = "Qualitative observation of food intake",
@@ -303,7 +288,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "CanineLifeStageFactor",
                         ObservationTypeId = lifeStageFactorType.Id,
-                        IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 10m,
                         Description = "Used in nutrition to determine energy requirements",
@@ -313,7 +297,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "StoolQuality",
                         ObservationTypeId = nutritionType.Id,
-                        IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 7m,
                         Description = "Semi-quantitative score of stool consistency (1–7 scale)",
@@ -323,7 +306,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "DailyCaloricIntake",
                         ObservationTypeId = nutritionType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 5000m,
                         Description = "Quantitative measurement of daily energy intake",
@@ -333,7 +315,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "SocializationBehavior",
                         ObservationTypeId = behaviorType.Id,
-                        IsQualitative = true,
                         MinimumValue = null,
                         MaximumValue = null,
                         Description = "Qualitative note on socialization with dogs or humans",
@@ -343,7 +324,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "TrainingProgress",
                         ObservationTypeId = behaviorType.Id,
-                        IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 5m,
                         Description = "Semi-quantitative score of training command mastery",
@@ -353,9 +333,8 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "EstrusCycleStage",
                         ObservationTypeId = estrusStageType.Id,
-                        IsQualitative = false,
-                        MinimumValue = null,
-                        MaximumValue = null,
+                        MinimumValue = 1m,
+                        MaximumValue = 4m,
                         Description = "Qualitative observation of reproductive cycle phase",
                         IsActive = true
                     },
@@ -363,7 +342,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "GestationProgress",
                         ObservationTypeId = timeDaysType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 70m,
                         Description = "Quantitative measurement of gestation time in days",
@@ -373,7 +351,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "CoatCondition",
                         ObservationTypeId = groomingType.Id,
-                        IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 5m,
                         Description = "Semi-quantitative score of coat health",
@@ -383,7 +360,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "DentalHealth",
                         ObservationTypeId = groomingType.Id,
-                        IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 5m,
                         Description = "Semi-quantitative score of dental condition",
@@ -393,7 +369,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "PainAssessment",
                         ObservationTypeId = vitalSignsType.Id,
-                        IsQualitative = false,
                         MinimumValue = 1m,
                         MaximumValue = 10m,
                         Description = "Semi-quantitative score of pain level",
@@ -403,7 +378,6 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "AmbientHumidity",
                         ObservationTypeId = environmentType.Id,
-                        IsQualitative = false,
                         MinimumValue = 0m,
                         MaximumValue = 100m,
                         Description = "Quantitative measurement of environmental humidity",

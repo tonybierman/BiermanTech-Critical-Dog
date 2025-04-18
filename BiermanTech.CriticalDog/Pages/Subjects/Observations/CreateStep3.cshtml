@@ -29,7 +29,7 @@
         <p>
             @if (Model.MetricValueTransformer != null)
             {
-                @Model.MetricValueTransformer.GetTransormedValue((int)Model.Observation.MetricValue)
+                @Model.MetricValueTransformer.GetTransformedValue((int)Model.Observation.MetricValue)
             }
             else
             {

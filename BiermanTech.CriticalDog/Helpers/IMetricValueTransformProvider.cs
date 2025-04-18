@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BiermanTech.CriticalDog.Helpers
+namespace BiermanTech.CriticalDog.Helpers.BiermanTech.CriticalDog.Helpers
 {
     public interface IMetricValueTransformProvider
     {
         IEnumerable<SelectListItem> GetSelectListItems();
-
-        public string? GetTransormedValue(int value);
+        string? GetTransformedValue(int value);
     }
 }

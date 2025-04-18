@@ -12,6 +12,10 @@
 	<PropertyGroup>
 		<StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
 	</PropertyGroup>
+	
+	<ItemGroup>
+	  <Compile Remove="Helpers\SelectListHelper.cs" />
+	</ItemGroup>
 
 
 	<ItemGroup>
