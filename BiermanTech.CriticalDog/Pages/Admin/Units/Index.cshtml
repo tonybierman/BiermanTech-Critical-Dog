@@ -1,4 +1,5 @@
 ﻿@page
+@using BiermanTech.CriticalDog.Helpers
 @model BiermanTech.CriticalDog.Pages.Admin.Units.IndexModel
 
 @{
@@ -34,7 +35,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UnitName)
+                    @(StringHelper.SplitPascalCase(item.UnitName))
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.UnitSymbol)
