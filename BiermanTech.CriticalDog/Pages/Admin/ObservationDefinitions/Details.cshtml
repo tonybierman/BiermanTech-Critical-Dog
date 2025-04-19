@@ -1,4 +1,5 @@
 ﻿@page "{id:int}"
+@using BiermanTech.CriticalDog.ViewModels
 @model BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions.DetailsModel
 
 @{
@@ -62,4 +63,4 @@
 </div>
 
 <hr />
-@await Html.PartialAsync("_MarkdownHelpPartial", Model.MarkdownHelpVM)
+@await Html.PartialAsync("_MarkdownRendererPartial", Model.MarkdownHelpVM)

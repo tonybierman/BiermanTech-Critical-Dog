@@ -12,7 +12,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
         private readonly IWebHostEnvironment _environment;
         private readonly IObservationDefinitionService _definitionService;
         private readonly IMapper _mapper;
-        public MarkdownHelpViewModel MarkdownHelpVM { get; set; }
+        public MarkdownRendererPartialViewModel MarkdownHelpVM { get; set; }
 
         public DetailsModel(IObservationDefinitionService definitionService, IWebHostEnvironment environment, IMapper mapper)
         {
@@ -39,24 +39,17 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
                 .Select(d => d.DisciplineName)
                 .ToList();
 
-            // Initialize MarkdownHelpVM
-            MarkdownHelpVM = new MarkdownHelpViewModel();
-
-            // Load and convert markdown file based on DefinitionName
+            // Construct markdown filename and initialize MarkdownHelpVM
+            string markdownFileName = null;
             if (!string.IsNullOrEmpty(DefinitionVM?.DefinitionName))
             {
-                var markdownFileName = $"{DefinitionVM.DefinitionName.Replace(" ", "_")}.md";
-                var markdownFilePath = Path.Combine(_environment.WebRootPath, "help", markdownFileName);
-
-                if (System.IO.File.Exists(markdownFilePath))
-                {
-                    var markdownContent = await System.IO.File.ReadAllTextAsync(markdownFilePath);
-                    var pipeline = new MarkdownPipelineBuilder()
-                        .UseAdvancedExtensions()
-                        .Build();
-                    MarkdownHelpVM.MarkdownHtml = Markdown.ToHtml(markdownContent, pipeline);
-                }
+                markdownFileName = $"{DefinitionVM.DefinitionName.Replace(" ", "_")}.md";
             }
+
+            MarkdownHelpVM = new MarkdownRendererPartialViewModel(
+                markdownFileName,
+                _environment.WebRootPath
+            );
 
             return Page();
         }
