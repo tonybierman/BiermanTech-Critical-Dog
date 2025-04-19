@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BiermanTech.CriticalDog.Helpers
+namespace BiermanTech.CriticalDog.Reports.Columns
 {
     /// <summary>
     /// Defines the Orthopedic Foundation for Animals (OFA) hip grades for evaluating hip dysplasia in dogs.

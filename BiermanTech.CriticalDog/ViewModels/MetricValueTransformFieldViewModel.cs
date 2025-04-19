@@ -1,5 +1,5 @@
 ﻿using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Helpers;
+using BiermanTech.CriticalDog.Reports.Columns;
 using System.Security.Cryptography.Xml;
 using UniversalReportCore;
 using UniversalReportCore.Ui.ViewModels;

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BiermanTech.CriticalDog.Helpers
+namespace BiermanTech.CriticalDog.Reports.Columns
 {
     public enum SexEnum
     {

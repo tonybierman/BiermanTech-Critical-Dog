@@ -1,5 +1,6 @@
 ﻿using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Helpers;
+using BiermanTech.CriticalDog.Reports.Columns;
 using UniversalReportCore.ViewModels;
 
 namespace BiermanTech.CriticalDog.ViewModels

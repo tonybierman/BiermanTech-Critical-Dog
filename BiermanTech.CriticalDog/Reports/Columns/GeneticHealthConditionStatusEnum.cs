@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BiermanTech.CriticalDog.Helpers
+namespace BiermanTech.CriticalDog.Reports.Columns
 {
     /// <summary>
     /// Covers the possible outcomes for canine genetic health conditions

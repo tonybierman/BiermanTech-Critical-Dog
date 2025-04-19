@@ -1,4 +1,6 @@
-﻿namespace BiermanTech.CriticalDog.Helpers
+﻿using BiermanTech.CriticalDog.Reports.Columns;
+
+namespace BiermanTech.CriticalDog.Helpers
 {
     /// <summary>
     /// Provides methods to calculate a dog's Resting Energy Requirement (RER) and Maintenance Energy Requirement (MER)

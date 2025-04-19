@@ -110,7 +110,8 @@ namespace BiermanTech.CriticalDog.Data
                     new ObservationType { TypeName = "Nutrition", Description = "Observation of dietary intake or digestion", IsActive = true },
                     new ObservationType { TypeName = "LifeStageFactor", Description = "Used in nutrition to determine energy requirements", IsActive = true },
                     new ObservationType { TypeName = "Grooming", Description = "Observation of coat, skin, or dental condition", IsActive = true },
-                    new ObservationType { TypeName = "Environment", Description = "Observation of environmental conditions", IsActive = true }
+                    new ObservationType { TypeName = "Environment", Description = "Observation of environmental conditions", IsActive = true },
+                    new ObservationType { TypeName = "StoolQualityScore", Description = "Score of stool consistency (1–7 scale)", IsActive = true }
                 );
                 await context.SaveChangesAsync();
             }
@@ -150,6 +151,7 @@ namespace BiermanTech.CriticalDog.Data
                 var lifeStageFactorType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "LifeStageFactor");
                 var groomingType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Grooming");
                 var environmentType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "Environment");
+                var stoolQualityType = await context.ObservationTypes.FirstAsync(ot => ot.TypeName == "StoolQualityScore");
 
                 context.ObservationDefinitions.AddRange(
                     new ObservationDefinition
@@ -288,18 +290,18 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "CanineLifeStageFactor",
                         ObservationTypeId = lifeStageFactorType.Id,
-                        MinimumValue = 1m,
-                        MaximumValue = 10m,
+                        MinimumValue = null,
+                        MaximumValue = null,
                         Description = "Used in nutrition to determine energy requirements",
                         IsActive = true
                     },
                     new ObservationDefinition
                     {
                         DefinitionName = "StoolQuality",
-                        ObservationTypeId = nutritionType.Id,
-                        MinimumValue = 1m,
-                        MaximumValue = 7m,
-                        Description = "Semi-quantitative score of stool consistency (1–7 scale)",
+                        ObservationTypeId = stoolQualityType.Id,
+                        MinimumValue = null,
+                        MaximumValue = null,
+                        Description = "Score of stool consistency (1–7 scale)",
                         IsActive = true
                     },
                     new ObservationDefinition

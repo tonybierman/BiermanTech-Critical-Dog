@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BiermanTech.CriticalDog.Helpers
+namespace BiermanTech.CriticalDog.Reports.Columns
 {
     /// <summary>
     /// Defines the life stages and conditions of a dog that affect its Maintenance Energy Requirement (MER) factors.

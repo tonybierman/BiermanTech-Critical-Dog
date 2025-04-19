@@ -1,9 +1,10 @@
 ﻿using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Helpers.BiermanTech.CriticalDog.Helpers;
+using BiermanTech.CriticalDog.Reports.Columns.BiermanTech.CriticalDog.Reports.Columns;
 using System;
 using System.Collections.Generic;
 
-namespace BiermanTech.CriticalDog.Helpers
+namespace BiermanTech.CriticalDog.Reports.Columns
 {
     public static class MetricValueTransformerFactory
     {
@@ -14,7 +15,9 @@ namespace BiermanTech.CriticalDog.Helpers
             { "EstrusStage", new MetricValueTransformer<EstrusStageEnum>() },
             { "OfaHipsGrade", new MetricValueTransformer<OfaHipsGradeEnum>() },
             { "GeneticHealthConditionStatus", new MetricValueTransformer<GeneticHealthConditionStatusEnum>() },
-            { "BodyConditionScore", new MetricValueTransformer<BodyConditionScoreEnum>() }
+            { "BodyConditionScore", new MetricValueTransformer<BodyConditionScoreEnum>() },
+            { "StoolQualityScore", new MetricValueTransformer<StoolQualityScoreEnum>() },
+            { "ExerciseIntensity", new MetricValueTransformer<ExerciseIntensityLevelEnum>() }
         };
 
         /// <summary>

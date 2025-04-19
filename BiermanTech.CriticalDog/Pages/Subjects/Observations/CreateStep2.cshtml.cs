@@ -1,7 +1,7 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Helpers;
 using BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders;
+using BiermanTech.CriticalDog.Reports.Columns;
 using BiermanTech.CriticalDog.Services;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;

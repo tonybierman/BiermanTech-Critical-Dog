@@ -1,4 +1,4 @@
-﻿namespace BiermanTech.CriticalDog.Helpers
+﻿namespace BiermanTech.CriticalDog.Reports.Columns
 {
     using System.ComponentModel.DataAnnotations;
 
