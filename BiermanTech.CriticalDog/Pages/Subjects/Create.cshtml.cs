@@ -54,25 +54,11 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             }
 
             SubjectVM.UserId = _userManager.GetUserId(User);
-
-            try
-            {
-                int rows = await _subjectService.CreateSubjectAsync(SubjectVM);
-
-                if (rows > 0)
-                {
-                    TempData[Constants.AlertSuccess] = $"Record saved.  {rows} rows affected.";
-                }
-                else
-                {
-                    TempData[Constants.AlertWarning] = $"Record not saved.  {rows} rows affected.";
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData[Constants.AlertDanger] = ex.GetAllExceptionMessages();
-                _logger.LogError(ex, ex.GetAllExceptionMessages());
-            }
+            var result = await ServiceHelper.ExecuteAsyncOperation(
+                () => _subjectService.CreateSubjectAsync(SubjectVM),
+                TempData,
+                _logger
+            );
 
             return RedirectToPage("./Index");
         }

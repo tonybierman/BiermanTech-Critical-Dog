@@ -78,25 +78,11 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 CreatedBy = User.Identity?.Name ?? "Unknown"
             };
 
-            try
-            {
-                int rows = await _service.SaveSubjectRecordAsync(dogRecord, Observation.SelectedMetaTagIds);
-
-                if (rows > 0)
-                {
-                    TempData[Constants.AlertSuccess] = $"Record saved.  {rows} rows affected.";
-                }
-                else
-                {
-                    TempData[Constants.AlertWarning] = $"Record not saved.  {rows} rows affected.";
-                }
-            }            
-            catch (Exception ex)
-            {
-                TempData[Constants.AlertDanger] = ex.GetAllExceptionMessages();
-                _logger.LogError(ex, ex.GetAllExceptionMessages());
-            }
-
+            var result = await ServiceHelper.ExecuteAsyncOperation(
+                () => _service.SaveSubjectRecordAsync(dogRecord, Observation.SelectedMetaTagIds),
+                TempData,
+                _logger
+            );
 
             TempData.Remove("Observation");
 
