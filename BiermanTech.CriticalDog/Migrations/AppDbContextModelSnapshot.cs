@@ -110,9 +110,6 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<bool>("IsQualitative")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<bool?>("IsSingular")
                         .IsRequired()
                         .ValueGeneratedOnAdd()

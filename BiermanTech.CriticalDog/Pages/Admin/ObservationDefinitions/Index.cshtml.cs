@@ -21,9 +21,9 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
         public async Task OnGetAsync()
         {
             var definitions = await _definitionService.GetAllDefinitionsAsync();
-            Definitions = definitions;
+            Definitions = definitions.OrderBy(a => a.DefinitionName).ToList();
 
-            foreach (var definition in definitions)
+            foreach (var definition in Definitions)
             {
                 var entity = await _definitionService.GetDefinitionByIdAsync(definition.Id);
                 ObservationTypeNames[definition.Id] = entity.ObservationType?.TypeName ?? "Unknown";

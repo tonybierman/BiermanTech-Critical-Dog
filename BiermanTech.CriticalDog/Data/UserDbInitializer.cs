@@ -118,13 +118,10 @@ namespace BiermanTech.CriticalDog.Data
 
                     // Generate MetricValue within the defined range
                     decimal? metricValue = null;
-                    if (!obsDef.IsQualitative && metricType != null)
-                    {
-                        var minValue = obsDef.MinimumValue ?? 0m;
-                        var maxValue = obsDef.MaximumValue ?? 100m;
-                        metricValue = minValue + (decimal)random.NextDouble() * (maxValue - minValue);
-                        metricValue = Math.Round(metricValue.Value, 2);
-                    }
+                    var minValue = obsDef.MinimumValue ?? 0m;
+                    var maxValue = obsDef.MaximumValue ?? 100m;
+                    metricValue = minValue + (decimal)random.NextDouble() * (maxValue - minValue);
+                    metricValue = Math.Round(metricValue.Value, 2);
 
                     // Generate random RecordTime within the last 30 days
                     var daysAgo = random.Next(0, 30);

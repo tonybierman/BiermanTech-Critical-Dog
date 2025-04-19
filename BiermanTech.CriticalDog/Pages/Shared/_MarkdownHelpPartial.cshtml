@@ -1,0 +1,38 @@
+﻿@model BiermanTech.CriticalDog.ViewModels.MarkdownHelpViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Help</h2>
+        @if (!string.IsNullOrEmpty(Model.MarkdownHtml))
+        {
+            <div class="markdown-content">
+                @Html.Raw(Model.MarkdownHtml)
+            </div>
+        }
+        else
+        {
+            <p>No help content available for this observation definition.</p>
+        }
+    </div>
+</div>
+
+<style>
+    .markdown-content {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+    }
+
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+
+        .markdown-content p {
+            margin-bottom: 1em;
+        }
+
+        .markdown-content ul, .markdown-content ol {
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+</style>

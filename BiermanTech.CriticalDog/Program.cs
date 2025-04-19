@@ -169,8 +169,13 @@ try
             throw new InvalidOperationException("Failed to obtain regular user ID.");
         }
 
+        var context = services.GetRequiredService<AppDbContext>();
         await UserDbInitializer.InitializeAsync(services, regularUserId, true);
         logger.LogInformation("Completed UserDbInitializer.");
+
+        // Explicitly dispose AppDbContext to release connections
+        await context.DisposeAsync();
+        logger.LogInformation("Completed AppDbContext initialization and disposed context.");
     }
 
     var successLogger = app.Services.GetRequiredService<ILogger<Program>>();

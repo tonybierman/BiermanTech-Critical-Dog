@@ -8,6 +8,7 @@ namespace BiermanTech.CriticalDog.ViewModels
 
         [Required]
         [StringLength(100)]
+        [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Definition Name must contain only alphanumeric characters (no spaces or special characters).")] 
         public string DefinitionName { get; set; } = string.Empty;
 
         [Required]

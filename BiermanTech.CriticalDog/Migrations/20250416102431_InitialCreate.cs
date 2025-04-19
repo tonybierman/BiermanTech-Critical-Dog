@@ -150,7 +150,6 @@ namespace BiermanTech.CriticalDog.Migrations
                     DefinitionName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ObservationTypeId = table.Column<int>(type: "int(11)", nullable: false),
-                    IsQualitative = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     MinimumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
                     MaximumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true)
