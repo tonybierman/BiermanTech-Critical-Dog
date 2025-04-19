@@ -11,6 +11,6 @@ namespace BiermanTech.CriticalDog.Services
         Task<SelectList> GetMetricTypesSelectListAsync(int observationDefinitionId, int? selectedId = null);
         Task<ObservationDefinition?> GetObservationDefinitionByIdAsync(int? observationDefinitionId);
         Task<SelectList> GetObservationDefinitionsSelectListAsync(int? selectedId = null);
-        Task SaveSubjectRecordAsync(SubjectRecord record, IEnumerable<int>? selectedMetaTagIds);
+        Task<int> SaveSubjectRecordAsync(SubjectRecord record, IEnumerable<int>? selectedMetaTagIds);
     }
 }

@@ -36,11 +36,12 @@ namespace BiermanTech.CriticalDog.Services
             return new SelectList(subjectTypes, nameof(SubjectType.Id), nameof(SubjectType.TypeName));
         }
 
-        public async Task CreateSubjectAsync(SubjectInputViewModel viewModel)
+        public async Task<int> CreateSubjectAsync(SubjectInputViewModel viewModel)
         {
             var entity = _mapper.Map<Subject>(viewModel);
             _context.Add(entity); // Use generic Add; UserId set by ApplyUserIdOnSave
-            await _context.SaveChangesAsync();
+
+            return await _context.SaveChangesAsync();
         }
 
         public async Task UpdateSubjectAsync(SubjectInputViewModel viewModel)

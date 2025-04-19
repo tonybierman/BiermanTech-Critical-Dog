@@ -90,12 +90,12 @@ namespace BiermanTech.CriticalDog.Services
             return new SelectList(items, "Value", "Text", selectedIds);
         }
 
-        public async Task SaveSubjectRecordAsync(SubjectRecord record, IEnumerable<int>? selectedMetaTagIds)
+        public async Task<int> SaveSubjectRecordAsync(SubjectRecord record, IEnumerable<int>? selectedMetaTagIds)
         {
             try
             {
                 _context.Add(record); // Use generic Add; UserId set by ApplyUserIdOnSave
-                await _context.SaveChangesAsync();
+                var retval = await _context.SaveChangesAsync();
 
                 if (selectedMetaTagIds?.Any() == true)
                 {
@@ -111,7 +111,9 @@ namespace BiermanTech.CriticalDog.Services
                             _logger.LogWarning("MetaTag with Id {TagId} not found.", tagId);
                         }
                     }
-                    await _context.SaveChangesAsync();
+                    retval +=  await _context.SaveChangesAsync();
+
+                    return retval;
                 }
             }
             catch (Exception ex)
@@ -119,6 +121,8 @@ namespace BiermanTech.CriticalDog.Services
                 _logger.LogError(ex, "Error saving SubjectRecord with MetaTagIds {MetaTagIds}", selectedMetaTagIds);
                 throw;
             }
+
+            return 0;
         }
     }
 }

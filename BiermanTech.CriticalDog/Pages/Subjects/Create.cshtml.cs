@@ -11,11 +11,13 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class CreateModel : PageModel
     {
+        private readonly ILogger<CreateModel> _logger;
         private readonly ISubjectService _subjectService;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public CreateModel(ISubjectService subjectService, UserManager<IdentityUser> userManager)
+        public CreateModel(ISubjectService subjectService, UserManager<IdentityUser> userManager, ILogger<CreateModel> logger)
         {
+            _logger = logger;
             _subjectService = subjectService;
             _userManager = userManager;
         }
@@ -52,7 +54,26 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             }
 
             SubjectVM.UserId = _userManager.GetUserId(User);
-            await _subjectService.CreateSubjectAsync(SubjectVM);
+
+            try
+            {
+                int rows = await _subjectService.CreateSubjectAsync(SubjectVM);
+
+                if (rows > 0)
+                {
+                    TempData[Constants.AlertSuccess] = $"Record saved.  {rows} rows affected.";
+                }
+                else
+                {
+                    TempData[Constants.AlertWarning] = $"Record not saved.  {rows} rows affected.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData[Constants.AlertDanger] = ex.GetAllExceptionMessages();
+                _logger.LogError(ex, ex.GetAllExceptionMessages());
+            }
+
             return RedirectToPage("./Index");
         }
     }

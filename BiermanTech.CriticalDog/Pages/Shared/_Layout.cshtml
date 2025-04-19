@@ -63,6 +63,24 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData[Constants.AlertSuccess] != null)
+            {
+                <div class="alert alert-dark" role="alert">
+                    @Html.Raw(@TempData[Constants.AlertSuccess])
+                </div>
+            }
+            @if (TempData[Constants.AlertDanger] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Html.Raw(@TempData[Constants.AlertDanger])
+                </div>
+            }
+            @if (TempData[Constants.AlertWarning] != null)
+            {
+                <div class="alert alert-warning" role="alert">
+                    @Html.Raw(@TempData[Constants.AlertWarning])
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

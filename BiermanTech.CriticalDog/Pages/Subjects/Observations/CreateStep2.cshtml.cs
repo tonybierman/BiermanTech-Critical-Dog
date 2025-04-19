@@ -78,7 +78,15 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 var calculator = _metricValueCalculatorFactory.GetCalculator(ObservationDefinitionName);
                 if (calculator != null && await calculator.CanHandle(dog, ObservationVM))
                 {
-                    calculator.Execute(dog, ObservationVM);
+                    try 
+                    {
+                        calculator.Execute(dog, ObservationVM);
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData[Constants.AlertDanger] = ex.GetAllExceptionMessages();
+                        _logger.LogError(ex, ex.GetAllExceptionMessages());
+                    }
                 }
             }
 
