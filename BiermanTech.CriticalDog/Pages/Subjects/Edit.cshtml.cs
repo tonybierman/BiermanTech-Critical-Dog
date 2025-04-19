@@ -37,6 +37,9 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Remove UserId from ModelState validation since it’s set programmatically
+            ModelState.Remove("SubjectVM.UserId");
+
             if (!ModelState.IsValid)
             {
                 SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();

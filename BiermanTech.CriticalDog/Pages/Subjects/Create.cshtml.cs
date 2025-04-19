@@ -44,13 +44,13 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             {
                 ModelState.AddModelError(string.Empty, "User not authenticated.");
                 SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
-                return Page();
+                return this.SetModelStateErrorMessage();
             }
 
             if (!ModelState.IsValid)
             {
                 SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
-                return Page();
+                return this.SetModelStateErrorMessage();
             }
 
             SubjectVM.UserId = _userManager.GetUserId(User);
