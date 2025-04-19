@@ -44,7 +44,7 @@ namespace BiermanTech.CriticalDog.Services
             return await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateSubjectAsync(SubjectInputViewModel viewModel)
+        public async Task<int> UpdateSubjectAsync(SubjectInputViewModel viewModel)
         {
             var subject = await _context.GetFilteredSubjects()
                 .FirstOrDefaultAsync(s => s.Id == viewModel.Id);
@@ -55,10 +55,10 @@ namespace BiermanTech.CriticalDog.Services
 
             _mapper.Map(viewModel, subject);
             _context.Update(subject);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteSubjectAsync(int id)
+        public async Task<int> DeleteSubjectAsync(int id)
         {
             var subject = await _context.GetFilteredSubjects()
                 .FirstOrDefaultAsync(s => s.Id == id);
@@ -68,7 +68,7 @@ namespace BiermanTech.CriticalDog.Services
             }
 
             _context.Remove(subject);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
     }
 }

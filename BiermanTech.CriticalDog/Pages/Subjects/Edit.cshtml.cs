@@ -9,10 +9,12 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class EditModel : PageModel
     {
+        private readonly ILogger<EditModel> _logger;
         private readonly ISubjectService _subjectService;
 
-        public EditModel(ISubjectService subjectService)
+        public EditModel(ISubjectService subjectService, ILogger<EditModel> logger)
         {
+            _logger = logger;
             _subjectService = subjectService;
         }
 
@@ -38,19 +40,32 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             if (!ModelState.IsValid)
             {
                 SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
-                return Page();
+                return this.SetModelStateErrorMessage();
             }
 
             try
             {
-                await _subjectService.UpdateSubjectAsync(SubjectVM);
+                bool success = await ServiceHelper.ExecuteAsyncOperation(
+                    () => _subjectService.UpdateSubjectAsync(SubjectVM),
+                    TempData,
+                    _logger,
+                    successMessage: "Record updated.",
+                    failureMessage: "Record not updated."
+                );
+
+                if (success)
+                {
+                    return RedirectToPage("./Index");
+                }
+
+                // If not successful, TempData already has the warning message
+                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                return Page();
             }
             catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            return RedirectToPage("./Index");
         }
     }
 }

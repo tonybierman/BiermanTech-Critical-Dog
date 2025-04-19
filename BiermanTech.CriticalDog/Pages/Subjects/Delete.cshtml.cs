@@ -8,11 +8,13 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class DeleteModel : PageModel
     {
+        private readonly ILogger<DeleteModel> _logger;
         private readonly ISubjectService _subjectService;
         private readonly IMapper _mapper;
 
-        public DeleteModel(ISubjectService subjectService, IMapper mapper)
+        public DeleteModel(ISubjectService subjectService, IMapper mapper, ILogger<DeleteModel> logger)
         {
+            _logger = logger;
             _subjectService = subjectService;
             _mapper = mapper;
         }
@@ -40,14 +42,26 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         {
             try
             {
-                await _subjectService.DeleteSubjectAsync(SubjectVM.Id);
+                bool success = await ServiceHelper.ExecuteAsyncOperation(
+                    () => _subjectService.DeleteSubjectAsync(SubjectVM.Id),
+                    TempData,
+                    _logger,
+                    successMessage: "Record deleted.",
+                    failureMessage: "Record not deleted."
+                );
+
+                if (success)
+                {
+                    return RedirectToPage("./Index");
+                }
+
+                // If not successful, TempData already has the warning message
+                return Page();
             }
             catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            return RedirectToPage("./Index");
         }
     }
 }

@@ -7,10 +7,10 @@ namespace BiermanTech.CriticalDog.Services
     public interface ISubjectService
     {
         Task<int> CreateSubjectAsync(SubjectInputViewModel viewModel);
-        Task DeleteSubjectAsync(int id);
+        Task<int> DeleteSubjectAsync(int id);
         Task<Subject> GetSubjectByIdAsync(int id);
         Task<SelectList> GetSubjectTypesSelectListAsync();
         Task<SubjectInputViewModel> GetSubjectViewModelByIdAsync(int id);
-        Task UpdateSubjectAsync(SubjectInputViewModel viewModel);
+        Task<int> UpdateSubjectAsync(SubjectInputViewModel viewModel);
     }
 }
