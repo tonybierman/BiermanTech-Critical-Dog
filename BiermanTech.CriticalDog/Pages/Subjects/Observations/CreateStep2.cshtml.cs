@@ -13,6 +13,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep2Model : PageModel
     {
+        private readonly IMetricValueCalculatorFactory _metricValueCalculatorFactory;
         private readonly ISubjectObservationService _service;
         private readonly ILogger<CreateStep2Model> _logger;
         private readonly IMapper _mapper;
@@ -21,8 +22,9 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         [BindProperty]
         public int SelectedItem { get; set; }
 
-        public CreateStep2Model(ISubjectObservationService service, ILogger<CreateStep2Model> logger, IMapper mapper)
+        public CreateStep2Model(ISubjectObservationService service, IMetricValueCalculatorFactory metricValueCalculatorFactory, ILogger<CreateStep2Model> logger, IMapper mapper)
         {
+            _metricValueCalculatorFactory = metricValueCalculatorFactory;
             _service = service;
             _logger = logger;
             _mapper = mapper;
@@ -121,9 +123,9 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             if (!ObservationVM.MetricValue.HasValue)
             {
                 // Check if a calculator exisits and run it
-                var calculator = MetricValueCalculatorFactory.GetProvider(ObservationDefinitionName);
+                var calculator = _metricValueCalculatorFactory.GetCalculator(ObservationDefinitionName);
                 var dog = await _service.GetByIdAsync(dogId);
-                if (calculator != null && calculator.CanHandle(dog, ObservationVM))
+                if (calculator != null && await calculator.CanHandle(dog, ObservationVM))
                 {
                     calculator.Execute(dog, ObservationVM);
                 }

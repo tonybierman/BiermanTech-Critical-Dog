@@ -17,6 +17,20 @@ namespace BiermanTech.CriticalDog.Services
             _mapper = mapper;
         }
 
+        public async Task<SubjectRecord> GetMostRecentSubjectRecordAsync(int subjectId, string definitionName)
+        {
+            return await _context.GetFilteredSubjectRecords()
+                .Include(s => s.Subject)
+                .ThenInclude(s => s.SubjectType)
+                .Include(s => s.ObservationDefinition)
+                .Include(s => s.MetricType)
+                .ThenInclude(mt => mt.Unit)
+                .Include(s => s.MetaTags)
+                .Where(s => s.SubjectId == subjectId && s.ObservationDefinition.DefinitionName == definitionName)
+                .OrderByDescending(s => s.CreatedAt)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<SubjectRecord> GetSubjectRecordByIdAsync(int id)
         {
             return await _context.GetFilteredSubjectRecords()

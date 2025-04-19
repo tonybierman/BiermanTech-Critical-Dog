@@ -2,30 +2,29 @@
 using BiermanTech.CriticalDog.Helpers.BiermanTech.CriticalDog.Helpers;
 using System;
 using System.Collections.Generic;
+using UniversalReportCore;
+using UniversalReportCore.PageMetadata;
 
 namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders
 {
-    public static class MetricValueCalculatorFactory
+    public class MetricValueCalculatorFactory : IMetricValueCalculatorFactory
     {
-        // Dictionary to map observation type names to provider instances
-        private static readonly Dictionary<string, IMetricValueCalculatorProvider> _providers = new()
-        {
-            { "DailyCaloricIntake", new DailyCaloricIntakeCalculator() }
-        };
+        private readonly IEnumerable<IMetricValueCalculatorProvider> _providers;
 
-        /// <summary>
-        /// Gets the appropriate IMetricValueCalculatorProvider.
-        /// </summary>
-        /// <param name="observationDefinitionName">The observation definition name.</param>
-        /// <returns>An IMetricValueCalculatorProvider or null if no matching provider is found.</returns>
-        public static IMetricValueCalculatorProvider? GetProvider(string? observationDefinitionName)
+        public MetricValueCalculatorFactory(IEnumerable<IMetricValueCalculatorProvider> providers)
         {
-            if (string.IsNullOrEmpty(observationDefinitionName))
-            {
-                return null;
-            }
+            _providers = providers;
+        }
 
-            return _providers.TryGetValue(observationDefinitionName, out var provider) ? provider : null;
+        public IMetricValueCalculatorProvider? GetCalculator(string? observationDefinitionName)
+        {
+            var calculator = _providers.FirstOrDefault(p => p.Slug == observationDefinitionName);
+            //if (calculator == null)
+            //{
+            //    throw new InvalidOperationException($"Unsupported calculator type: {observationDefinitionName}");
+            //}
+
+            return calculator;
         }
     }
 }

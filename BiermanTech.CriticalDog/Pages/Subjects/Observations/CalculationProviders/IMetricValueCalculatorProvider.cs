@@ -5,7 +5,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProvide
 {
     public interface IMetricValueCalculatorProvider
     {
-        bool CanHandle(Subject dog, CreateObservationViewModel observationVM);
-        void Execute(Subject dog, CreateObservationViewModel observationVM);
+        string Slug { get; }
+        Task<bool> CanHandle(Subject dog, CreateObservationViewModel observationVM);
+        Task Execute(Subject dog, CreateObservationViewModel observationVM);
     }
 }
