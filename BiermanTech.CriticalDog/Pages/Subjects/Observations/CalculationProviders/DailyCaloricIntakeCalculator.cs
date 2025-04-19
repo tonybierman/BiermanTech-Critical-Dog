@@ -35,7 +35,6 @@ namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProvide
                 observationVM.MetricTypeId = id;
             }
 
-            // TODO: Pull parms from dog's history or don't set
             observationVM.MetricValue = (decimal)CanineMerCalculator.CalculateMeanMer((LifeStageFactorsEnum)lifeStageRecord.MetricValue, (double)weightRecord.MetricValue);
         }
     }
