@@ -1,5 +1,6 @@
 using AutoMapper;
 using BiermanTech.CriticalDog;
+using BiermanTech.CriticalDog.Analytics;
 using BiermanTech.CriticalDog.Authorization;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders;
@@ -85,7 +86,12 @@ builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<ISubjectRecordService, SubjectRecordService>();
 builder.Services.AddScoped<IMetricValueCalculatorFactory, MetricValueCalculatorFactory>();
 builder.Services.AddScoped<IMetricValueCalculatorProvider, DailyCaloricIntakeCalculator>();
+
+// Auth
 builder.Services.AddScoped<IAuthorizationHandler, SubjectPermissionHandler>();
+
+// Analytics
+builder.Services.AddScoped<IWeightAnalyticsProvider, WeightAnalyticsProvider>();
 
 // Lob DB
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")

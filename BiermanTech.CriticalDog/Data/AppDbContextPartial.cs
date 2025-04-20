@@ -34,7 +34,7 @@ namespace BiermanTech.CriticalDog.Data
         {
             try
             {
-                var user = _httpContextAccessor.HttpContext?.User;
+                var user = _httpContextAccessor?.HttpContext?.User;
                 if (user == null)
                 {
                     _logger?.LogWarning("GetFilteredSubjects: User is null, returning anonymous-accessible subjects.");
@@ -122,7 +122,7 @@ namespace BiermanTech.CriticalDog.Data
         {
             try
             {
-                var user = _httpContextAccessor.HttpContext?.User;
+                var user = _httpContextAccessor?.HttpContext?.User;
                 if (user == null)
                 {
                     _logger?.LogWarning("GetFilteredSubjectRecords: User is null, returning records for anonymous-accessible subjects.");
@@ -220,7 +220,7 @@ namespace BiermanTech.CriticalDog.Data
 
         private void ApplyUserIdOnSave()
         {
-            var user = _httpContextAccessor.HttpContext?.User;
+            var user = _httpContextAccessor?.HttpContext?.User;
             if (user != null && user.Identity.IsAuthenticated)
             {
                 string userId = _userManager.GetUserId(user);
