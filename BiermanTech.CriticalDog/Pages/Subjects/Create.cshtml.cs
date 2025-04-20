@@ -11,7 +11,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
     [Authorize(Policy = "RequireAuthenticated")]
     public class CreateModel : SubjectBasePageModel
     {
-        public CreateModel(ISubjectService subjectService, IMapper mapper, IAuthorizationService authorizationService, ILogger logger) : base(subjectService, mapper, authorizationService, logger) { }
+        public CreateModel(ISubjectService subjectService, IMapper mapper, IAuthorizationService authorizationService, ILogger<CreateModel> logger) : base(subjectService, mapper, authorizationService, logger) { }
 
         public async Task<IActionResult> OnGetAsync()
         {

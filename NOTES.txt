@@ -18,7 +18,9 @@ docker-compose up --build
 dotnet ef migrations add InitialCreate --context AppDbContext
 dotnet ef database update --context AppDbContext
 
-ASPNETCORE_ENVIRONMENT=Production bash -c 'dotnet BiermanTech.CriticalDog.dll --urls http://localhost:5019'
+export ASPNETCORE_ENVIRONMENT=Production
+export ASPNETCORE_URLS=http://localhost:5019
+dotnet BiermanTech.CriticalDog.dll
 
 -- Drop the incorrect foreign key
 ALTER TABLE Subject DROP FOREIGN KEY FK_Subject_AspNetUsers_UserId;
