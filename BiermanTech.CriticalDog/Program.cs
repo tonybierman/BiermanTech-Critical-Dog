@@ -91,6 +91,7 @@ builder.Services.AddScoped<IMetricValueCalculatorProvider, DailyCaloricIntakeCal
 builder.Services.AddScoped<IAuthorizationHandler, SubjectPermissionHandler>();
 
 // Analytics
+builder.Services.AddScoped<IUnitConverter, UnitConverter>();
 builder.Services.AddScoped<IObservationAnalyticsProvider, ObservationAnalyticsProvider>();
 
 // Lob DB
