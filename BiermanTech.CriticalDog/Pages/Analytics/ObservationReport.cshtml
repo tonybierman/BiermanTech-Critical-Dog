@@ -1,10 +1,11 @@
 @page
+@using BiermanTech.CriticalDog.Helpers
 @model BiermanTech.CriticalDog.Pages.Analytics.ObservationReportModel
 @{
-    ViewData["Title"] = $"{Model.Report.ObservationType} Report";
+    ViewData["Title"] = $"{StringHelper.SplitPascalCase(Model.Report.ObservationType)} Report";
 }
 
-<h1>@Model.Report.ObservationType Report for @Model.Report.SubjectName</h1>
+<h1>@StringHelper.SplitPascalCase(Model.Report.ObservationType) Report for @Model.Report.SubjectName</h1>
 
 @if (Model.Report.Observations.Any())
 {
@@ -21,17 +22,17 @@
             {
                 <tr>
                     <td>@obs.RecordTime.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>@obs.Value</td>
+                    <td>@obs.Value.ToString("F2")</td>
                     <td>
                         @if (obs.PercentChangePerWeek.HasValue)
                         {
                             if (obs.PercentChangePerWeek > 0)
                             {
-                                <span class="text-success">+@(obs.PercentChangePerWeek.Value.ToString("F2"))</span>
+                                <span class="text-success">+@(obs.PercentChangePerWeek.Value.ToString("P2"))</span>
                             }
                             else if (obs.PercentChangePerWeek < 0)
                             {
-                                <span class="text-danger">@(obs.PercentChangePerWeek.Value.ToString("F2"))</span>
+                                <span class="text-danger">@(obs.PercentChangePerWeek.Value.ToString("P2"))</span>
                             }
                             else
                             {
