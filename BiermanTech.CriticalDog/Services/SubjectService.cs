@@ -4,8 +4,8 @@ using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace BiermanTech.CriticalDog.Services
 {
@@ -15,24 +15,37 @@ namespace BiermanTech.CriticalDog.Services
         private readonly IMapper _mapper;
         private readonly IAuthorizationService _authorizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<SubjectService> _logger;
 
         public SubjectService(
             AppDbContext context,
             IMapper mapper,
             IAuthorizationService authorizationService,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            ILogger<SubjectService> logger)
         {
             _context = context;
             _mapper = mapper;
             _authorizationService = authorizationService;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
 
         public async Task<Subject> GetSubjectByIdAsync(int id)
         {
-            return await _context.GetFilteredSubjects()
+            _logger.LogInformation($"GetSubjectByIdAsync: Retrieving Subject with ID {id}.");
+            var subject = await _context.GetFilteredSubjects()
                 .Include(s => s.SubjectType)
                 .FirstOrDefaultAsync(s => s.Id == id);
+            if (subject == null)
+            {
+                _logger.LogWarning($"GetSubjectByIdAsync: Subject with ID {id} not found or user lacks view permissions.");
+            }
+            else
+            {
+                _logger.LogInformation($"GetSubjectByIdAsync: Retrieved Subject ID={id}, Permissions={subject.Permissions}, UserId={subject.UserId}.");
+            }
+            return subject;
         }
 
         public async Task<SubjectInputViewModel> GetSubjectViewModelByIdAsync(int id)
@@ -56,29 +69,21 @@ namespace BiermanTech.CriticalDog.Services
             }
 
             var entity = _mapper.Map<Subject>(viewModel);
+            // UserId and default Permissions are set in AppDbContext.ApplyUserIdOnSave
 
-            // Set default permissions (complements AppDbContext.ApplyUserIdOnSave)
-            entity.Permissions = SubjectPermissions.OwnerCanView |
-                                SubjectPermissions.OwnerCanEdit |
-                                SubjectPermissions.OwnerCanDelete |
-                                SubjectPermissions.AdminCanView |
-                                SubjectPermissions.AdminCanEdit |
-                                SubjectPermissions.AdminCanDelete;
-
-            _context.Add(entity); // UserId and audit fields set by ApplyUserIdOnSave
+            _context.Add(entity);
             return await _context.SaveChangesAsync();
         }
 
         public async Task<int> UpdateSubjectAsync(SubjectInputViewModel viewModel)
         {
-            var subject = await _context.Subjects // Use Subjects directly to check existence
+            var subject = await _context.Subjects
                 .FirstOrDefaultAsync(s => s.Id == viewModel.Id);
             if (subject == null)
             {
                 throw new KeyNotFoundException($"Subject with ID {viewModel.Id} not found.");
             }
 
-            // Check CanEdit permission
             var authorizationResult = await _authorizationService.AuthorizeAsync(
                 _httpContextAccessor.HttpContext.User,
                 subject,
@@ -88,7 +93,6 @@ namespace BiermanTech.CriticalDog.Services
                 throw new UnauthorizedAccessException($"User lacks permission to edit Subject with ID {viewModel.Id}.");
             }
 
-            // Ensure immutable permissions are preserved
             viewModel.Permissions |= SubjectPermissions.OwnerCanView |
                                      SubjectPermissions.AdminCanView |
                                      SubjectPermissions.AdminCanEdit |
@@ -101,14 +105,13 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task<int> DeleteSubjectAsync(int id)
         {
-            var subject = await _context.Subjects // Use Subjects directly to check existence
+            var subject = await _context.Subjects
                 .FirstOrDefaultAsync(s => s.Id == id);
             if (subject == null)
             {
                 throw new KeyNotFoundException($"Subject with ID {id} not found.");
             }
 
-            // Check CanDelete permission
             var authorizationResult = await _authorizationService.AuthorizeAsync(
                 _httpContextAccessor.HttpContext.User,
                 subject,

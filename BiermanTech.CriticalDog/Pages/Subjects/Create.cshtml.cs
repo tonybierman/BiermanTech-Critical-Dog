@@ -1,31 +1,17 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Services;
-using BiermanTech.CriticalDog.ViewModels;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Composition;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace BiermanTech.CriticalDog.Pages.Subjects
 {
-    public class CreateModel : PageModel
+    [Authorize(Policy = "RequireAuthenticated")]
+    public class CreateModel : SubjectBasePageModel
     {
-        private readonly ILogger<CreateModel> _logger;
-        private readonly ISubjectService _subjectService;
-        private readonly UserManager<IdentityUser> _userManager;
-
-        public CreateModel(ISubjectService subjectService, UserManager<IdentityUser> userManager, ILogger<CreateModel> logger)
-        {
-            _logger = logger;
-            _subjectService = subjectService;
-            _userManager = userManager;
-        }
-
-        [BindProperty]
-        public SubjectInputViewModel SubjectVM { get; set; } = new SubjectInputViewModel();
-
-        public SelectList SubjectTypes { get; set; }
+        public CreateModel(ISubjectService subjectService, IMapper mapper, IAuthorizationService authorizationService, ILogger logger) : base(subjectService, mapper, authorizationService, logger) { }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -35,17 +21,16 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Remove UserId from ModelState validation since it’s set programmatically
             ModelState.Remove("SubjectVM.UserId");
-
-            // Set UserId
-            SubjectVM.UserId = _userManager.GetUserId(User);
-            if (SubjectVM.UserId == null)
-            {
-                ModelState.AddModelError(string.Empty, "User not authenticated.");
-                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
-                return this.SetModelStateErrorMessage();
-            }
+            ModelState.Remove("AnonymousCanView");
+            ModelState.Remove("AuthenticatedCanView");
+            ModelState.Remove("AuthenticatedCanEdit");
+            ModelState.Remove("OwnerCanView");
+            ModelState.Remove("OwnerCanEdit");
+            ModelState.Remove("OwnerCanDelete");
+            ModelState.Remove("AdminCanView");
+            ModelState.Remove("AdminCanEdit");
+            ModelState.Remove("AdminCanDelete");
 
             if (!ModelState.IsValid)
             {
@@ -53,14 +38,38 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 return this.SetModelStateErrorMessage();
             }
 
-            SubjectVM.UserId = _userManager.GetUserId(User);
-            var result = await ServiceHelper.ExecuteAsyncOperation(
-                () => _subjectService.CreateSubjectAsync(SubjectVM),
-                TempData,
-                _logger
-            );
+            // Update SubjectVM.Permissions based on checkbox states
+            UpdatePermissionsFromCheckboxes();
 
-            return RedirectToPage("./Index");
+            // AppDbContext will set UserId and default permissions, but we can ensure required permissions here as well
+            EnsureRequiredPermissions();
+
+            try
+            {
+                bool success = await ServiceHelper.ExecuteAsyncOperation(
+                    () => _subjectService.CreateSubjectAsync(SubjectVM),
+                    TempData,
+                    _logger,
+                    successMessage: "Record created.",
+                    failureMessage: "Record not created."
+                );
+
+                if (success)
+                {
+                    return RedirectToPage("./Index");
+                }
+
+                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                return Page();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Unauthorized attempt to create subject.");
+                TempData["WarningMessage"] = "You are not authorized to create a subject.";
+                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                return Page();
+            }
         }
     }
+
 }

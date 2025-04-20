@@ -1,39 +1,25 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Services;
-using BiermanTech.CriticalDog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace BiermanTech.CriticalDog.Pages.Subjects
 {
-    public class DeleteModel : PageModel
+    public class DeleteModel : SubjectBasePageModel
     {
-        private readonly ILogger<DeleteModel> _logger;
-        private readonly ISubjectService _subjectService;
-        private readonly IMapper _mapper;
-
-        public DeleteModel(ISubjectService subjectService, IMapper mapper, ILogger<DeleteModel> logger)
-        {
-            _logger = logger;
-            _subjectService = subjectService;
-            _mapper = mapper;
-        }
-
-        [BindProperty]
-        public SubjectInputViewModel SubjectVM { get; set; } = new SubjectInputViewModel();
-
-        public string SubjectTypeName { get; set; }
+        public DeleteModel(ISubjectService subjectService, IMapper mapper, IAuthorizationService authorizationService, ILogger<DeleteModel> logger) :
+            base(subjectService, mapper, authorizationService, logger)
+        { }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var subject = await _subjectService.GetSubjectByIdAsync(id);
-            if (subject == null)
+            if (!await RetrieveAndAuthorizeSubjectAsync(id, "CanDelete"))
             {
-                return NotFound();
+                return Forbid();
             }
-
-            SubjectVM = _mapper.Map<SubjectInputViewModel>(subject);
-            SubjectTypeName = subject.SubjectType?.TypeName ?? "Unknown";
 
             return Page();
         }
@@ -55,12 +41,17 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                     return RedirectToPage("./Index");
                 }
 
-                // If not successful, TempData already has the warning message
                 return Page();
             }
             catch (KeyNotFoundException)
             {
                 return NotFound();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Unauthorized attempt to delete subject.");
+                TempData["WarningMessage"] = "You are not authorized to delete this subject.";
+                return Page();
             }
         }
     }

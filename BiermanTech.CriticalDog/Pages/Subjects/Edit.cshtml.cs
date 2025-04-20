@@ -10,8 +10,14 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class EditModel : SubjectBasePageModel
     {
-        public EditModel(ISubjectService subjectService, IMapper mapper, IAuthorizationService authorizationService, ILogger<EditModel> logger) : 
-            base(subjectService, mapper, authorizationService, logger) { }
+        public EditModel(
+            ISubjectService subjectService,
+            IMapper mapper,
+            IAuthorizationService authorizationService,
+            ILogger<EditModel> logger)
+            : base(subjectService, mapper, authorizationService, logger)
+        {
+        }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -44,6 +50,10 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 return this.SetModelStateErrorMessage();
             }
 
+            // Update SubjectVM.Permissions based on checkbox states
+            UpdatePermissionsFromCheckboxes();
+
+            // Ensure required permissions are still set
             EnsureRequiredPermissions();
 
             try
@@ -77,5 +87,4 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             }
         }
     }
-
 }

@@ -1,36 +1,30 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Services;
-using BiermanTech.CriticalDog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace BiermanTech.CriticalDog.Pages.Subjects
 {
-    public class DetailsModel : PageModel
+    public class DetailsModel : SubjectBasePageModel
     {
-        private readonly ISubjectService _subjectService;
-        private readonly IMapper _mapper;
-
-        public DetailsModel(ISubjectService subjectService, IMapper mapper)
+        public DetailsModel(
+            ISubjectService subjectService,
+            IMapper mapper,
+            IAuthorizationService authorizationService,
+            ILogger<DetailsModel> logger)
+            : base(subjectService, mapper, authorizationService, logger)
         {
-            _subjectService = subjectService;
-            _mapper = mapper;
         }
-
-        public SubjectInputViewModel SubjectVM { get; set; } = new SubjectInputViewModel();
-
-        public string SubjectTypeName { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var subject = await _subjectService.GetSubjectByIdAsync(id);
-            if (subject == null)
+            if (!await RetrieveAndAuthorizeSubjectAsync(id, "CanView"))
             {
                 return NotFound();
             }
-
-            SubjectVM = _mapper.Map<SubjectInputViewModel>(subject);
-            SubjectTypeName = subject.SubjectType?.TypeName ?? "Unknown";
 
             return Page();
         }

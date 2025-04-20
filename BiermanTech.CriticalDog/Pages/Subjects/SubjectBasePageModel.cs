@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Services;
 using BiermanTech.CriticalDog.ViewModels;
@@ -35,6 +35,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
         public SelectList SubjectTypes { get; set; }
 
+        public string SubjectTypeName { get; set; }
+
         [BindProperty]
         public bool AnonymousCanView { get; set; }
         [BindProperty]
@@ -67,6 +69,10 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
             _logger.LogInformation($"RetrieveAndAuthorizeSubjectAsync: Subject retrieved: ID={SubjectVM.Id}, Permissions={SubjectVM.Permissions}, UserId={SubjectVM.UserId}");
 
+            // Set SubjectTypeName
+            var subjectEntity = await _subjectService.GetSubjectByIdAsync(id);
+            SubjectTypeName = subjectEntity?.SubjectType?.TypeName ?? "Unknown";
+
             // Map SubjectVM to Subject for authorization
             var subject = _mapper.Map<Subject>(SubjectVM);
 
@@ -96,6 +102,32 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             AdminCanView = true;
             AdminCanEdit = true;
             AdminCanDelete = true;
+        }
+
+        protected void UpdatePermissionsFromCheckboxes()
+        {
+            int permissions = 0;
+
+            if (AnonymousCanView)
+                permissions |= SubjectPermissions.AnonymousCanView;
+            if (AuthenticatedCanView)
+                permissions |= SubjectPermissions.AuthenticatedCanView;
+            if (AuthenticatedCanEdit)
+                permissions |= SubjectPermissions.AuthenticatedCanEdit;
+            if (OwnerCanView)
+                permissions |= SubjectPermissions.OwnerCanView;
+            if (OwnerCanEdit)
+                permissions |= SubjectPermissions.OwnerCanEdit;
+            if (OwnerCanDelete)
+                permissions |= SubjectPermissions.OwnerCanDelete;
+            if (AdminCanView)
+                permissions |= SubjectPermissions.AdminCanView;
+            if (AdminCanEdit)
+                permissions |= SubjectPermissions.AdminCanEdit;
+            if (AdminCanDelete)
+                permissions |= SubjectPermissions.AdminCanDelete;
+
+            SubjectVM.Permissions = permissions;
         }
 
         protected void EnsureRequiredPermissions()
