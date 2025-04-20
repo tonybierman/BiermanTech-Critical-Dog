@@ -64,11 +64,11 @@ namespace BiermanTech.CriticalDog.Analytics
                     };
                 }
 
-                // Convert all weights to Kilograms and calculate per-interval trends
+                // Convert all weights to Kilograms and calculate per-interval percent change per week
                 var observations = new List<WeightObservation>();
                 for (int i = 0; i < records.Count; i++)
                 {
-                    double? trendBetween = null;
+                    double? percentChangePerWeek = null;
                     if (i > 0)
                     {
                         var prev = records[i - 1];
@@ -76,12 +76,12 @@ namespace BiermanTech.CriticalDog.Analytics
                         var timeSpan = curr.RecordTime - prev.RecordTime;
                         var days = timeSpan.TotalDays;
 
-                        if (days > 0) // Avoid division by zero
+                        if (days > 0 && prev.MetricValue != 0) // Avoid division by zero
                         {
                             var prevWeightKg = ConvertToKilograms(prev.MetricValue ?? 0, prev.MetricType?.Unit?.UnitName);
                             var currWeightKg = ConvertToKilograms(curr.MetricValue ?? 0, curr.MetricType?.Unit?.UnitName);
-                            var weightChange = currWeightKg - prevWeightKg;
-                            trendBetween = (double)(weightChange / (decimal)days);
+                            var percentChange = ((currWeightKg - prevWeightKg) / prevWeightKg) * 100;
+                            percentChangePerWeek = (double)percentChange * (7.0 / days);
                         }
                     }
 
@@ -89,11 +89,11 @@ namespace BiermanTech.CriticalDog.Analytics
                     {
                         RecordTime = records[i].RecordTime,
                         WeightKg = ConvertToKilograms(records[i].MetricValue ?? 0, records[i].MetricType?.Unit?.UnitName),
-                        TrendBetween = trendBetween
+                        PercentChangePerWeek = percentChangePerWeek
                     });
                 }
 
-                // Calculate weight change rates
+                // Calculate weight change rates (in kg/day for AverageRateKgPerDay)
                 double? averageRateKgPerDay = CalculateAverageRate(observations);
 
                 // Determine trend

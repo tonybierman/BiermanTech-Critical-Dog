@@ -13,7 +13,7 @@
             <tr>
                 <th>Date</th>
                 <th>Weight (kg)</th>
-                <th>Trend Between (kg/day)</th>
+                <th>Percent Change per Week (%/week)</th>
             </tr>
         </thead>
         <tbody>
@@ -23,19 +23,19 @@
                     <td>@obs.RecordTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@obs.WeightKg</td>
                     <td>
-                        @if (obs.TrendBetween.HasValue)
+                        @if (obs.PercentChangePerWeek.HasValue)
                         {
-                            if (obs.TrendBetween > 0)
+                            if (obs.PercentChangePerWeek > 0)
                             {
-                                <span class="text-success">+@(obs.TrendBetween.Value.ToString("F3"))</span>
+                                <span class="text-success">+@(obs.PercentChangePerWeek.Value.ToString("F2"))</span>
                             }
-                            else if (obs.TrendBetween < 0)
+                            else if (obs.PercentChangePerWeek < 0)
                             {
-                                <span class="text-danger">@(obs.TrendBetween.Value.ToString("F3"))</span>
+                                <span class="text-danger">@(obs.PercentChangePerWeek.Value.ToString("F2"))</span>
                             }
                             else
                             {
-                                <span>0.000</span>
+                                <span>0.00</span>
                             }
                         }
                         else
