@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,9 +21,9 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<ScientificDiscipline> ScientificDisciplines { get; set; }
 
-    protected virtual DbSet<Subject> Subjects { get; set; }
+    public virtual DbSet<Subject> Subjects { get; set; } // Changed from protected to public for consistency
 
-    protected virtual DbSet<SubjectRecord> SubjectRecords { get; set; }
+    public virtual DbSet<SubjectRecord> SubjectRecords { get; set; } // Changed from protected to public for consistency
 
     public virtual DbSet<SubjectType> SubjectTypes { get; set; }
 
@@ -205,6 +205,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UpdatedBy).HasMaxLength(450);
             entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+            entity.Property(e => e.Permissions).HasColumnType("int(11)"); // Added Permissions property
 
             entity.HasOne(d => d.SubjectType)
                 .WithMany(p => p.Subjects)
@@ -232,7 +233,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.SubjectId, "IDX_SubjectRecord_SubjectId");
 
             entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.CreatedBy).HasMaxLength(450); // Updated from VARCHAR(50)
+            entity.Property(e => e.CreatedBy).HasMaxLength(450);
             entity.Property(e => e.UpdatedBy).HasMaxLength(450);
             entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");

@@ -231,6 +231,9 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
+                    b.Property<int>("Permissions")
+                        .HasColumnType("int(11)");
+
                     b.Property<sbyte>("Sex")
                         .HasColumnType("tinyint(4)");
 

@@ -1,4 +1,4 @@
-﻿using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace BiermanTech.CriticalDog.ViewModels
@@ -25,5 +25,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public string? UpdatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
+        public int Permissions { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders;
 using BiermanTech.CriticalDog.Reports;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
@@ -38,9 +39,17 @@ builder.Services.AddHttpContextAccessor();
 // Authorization
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("RequireAuthenticated", policy => policy.RequireAuthenticatedUser());
+    options.AddPolicy("RequireAuthenticated", policy => 
+        policy.RequireAuthenticatedUser());
     options.AddPolicy("RequireAdminRole", policy =>
         policy.RequireRole("Admin"));
+
+    options.AddPolicy("SubjectCanView", policy =>
+        policy.AddRequirements(new SubjectPermissionRequirement("CanView")));
+    options.AddPolicy("SubjectCanEdit", policy =>
+        policy.AddRequirements(new SubjectPermissionRequirement("CanEdit")));
+    options.AddPolicy("SubjectCanDelete", policy =>
+        policy.AddRequirements(new SubjectPermissionRequirement("CanDelete")));
 });
 
 builder.Services.AddRazorPages(options =>
@@ -74,6 +83,7 @@ builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<ISubjectRecordService, SubjectRecordService>();
 builder.Services.AddScoped<IMetricValueCalculatorFactory, MetricValueCalculatorFactory>();
 builder.Services.AddScoped<IMetricValueCalculatorProvider, DailyCaloricIntakeCalculator>();
+builder.Services.AddScoped<IAuthorizationHandler, SubjectPermissionHandler>();
 
 // Lob DB
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")

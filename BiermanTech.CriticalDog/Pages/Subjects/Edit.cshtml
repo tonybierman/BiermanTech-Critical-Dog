@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+@page "{id:int}"
 @model BiermanTech.CriticalDog.Pages.Subjects.EditModel
 
 @{
@@ -9,10 +9,15 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="SubjectVM.Id" />
+            <input type="hidden" asp-for="SubjectVM.UserId" />
+            <input type="hidden" asp-for="SubjectVM.CreatedBy" />
+            <input type="hidden" asp-for="SubjectVM.CreatedAt" />
+            <input type="hidden" asp-for="SubjectVM.UpdatedBy" />
+            <input type="hidden" asp-for="SubjectVM.UpdatedAt" />
 
             <div class="form-group">
                 <label asp-for="SubjectVM.Name" class="control-label"></label>
@@ -42,6 +47,47 @@
                 <span asp-validation-for="SubjectVM.SubjectTypeId" class="text-danger"></span>
             </div>
 
+            <div class="form-group">
+                <label class="control-label">Permissions</label>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="AnonymousCanView" />
+                    <label class="form-check-label" asp-for="AnonymousCanView">Anonymous Can View</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="AuthenticatedCanView" />
+                    <label class="form-check-label" asp-for="AuthenticatedCanView">Authenticated Can View</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="AuthenticatedCanEdit" />
+                    <label class="form-check-label" asp-for="AuthenticatedCanEdit">Authenticated Can Edit</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="OwnerCanView" checked disabled />
+                    <label class="form-check-label">Owner Can View (Required)</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="OwnerCanEdit" />
+                    <label class="form-check-label" asp-for="OwnerCanEdit">Owner Can Edit</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="OwnerCanDelete" />
+                    <label class="form-check-label" asp-for="OwnerCanDelete">Owner Can Delete</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="AdminCanView" checked disabled />
+                    <label class="form-check-label">Admin Can View (Required)</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="AdminCanEdit" checked disabled />
+                    <label class="form-check-label">Admin Can Edit (Required)</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="AdminCanDelete" checked disabled />
+                    <label class="form-check-label">Admin Can Delete (Required)</label>
+                </div>
+                <input type="hidden" asp-for="SubjectVM.Permissions" />
+            </div>
+
             <div class="form-group mt-3">
                 <input type="submit" value="Save" class="btn btn-primary" />
                 <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
@@ -54,4 +100,20 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Update hidden Permissions field based on checkbox states
+        document.querySelector('form').addEventListener('submit', function () {
+            let permissions = 0;
+            if (document.getElementById('AnonymousCanView').checked) permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.AnonymousCanView;
+            if (document.getElementById('AuthenticatedCanView').checked) permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.AuthenticatedCanView;
+            if (document.getElementById('AuthenticatedCanEdit').checked) permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.AuthenticatedCanEdit;
+            permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.OwnerCanView; // Always set
+            if (document.getElementById('OwnerCanEdit').checked) permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.OwnerCanEdit;
+            if (document.getElementById('OwnerCanDelete').checked) permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.OwnerCanDelete;
+            permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.AdminCanView; // Always set
+            permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.AdminCanEdit; // Always set
+            permissions |= @BiermanTech.CriticalDog.Data.SubjectPermissions.AdminCanDelete; // Always set
+            document.getElementById('SubjectVM_Permissions').value = permissions;
+        });
+    </script>
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BiermanTech.CriticalDog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250416102431_InitialCreate")]
+    [Migration("20250419231251_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -234,6 +234,9 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
+                    b.Property<int>("Permissions")
+                        .HasColumnType("int(11)");
+
                     b.Property<sbyte>("Sex")
                         .HasColumnType("tinyint(4)");
 
@@ -440,7 +443,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("IdentityUser");
                 });
 
             modelBuilder.Entity("ObservationDefinitionDiscipline", b =>

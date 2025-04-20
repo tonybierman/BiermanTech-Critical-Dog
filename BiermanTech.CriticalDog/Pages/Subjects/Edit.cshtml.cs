@@ -1,50 +1,50 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Services;
-using BiermanTech.CriticalDog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace BiermanTech.CriticalDog.Pages.Subjects
 {
-    public class EditModel : PageModel
+    public class EditModel : SubjectBasePageModel
     {
-        private readonly ILogger<EditModel> _logger;
-        private readonly ISubjectService _subjectService;
-
-        public EditModel(ISubjectService subjectService, ILogger<EditModel> logger)
-        {
-            _logger = logger;
-            _subjectService = subjectService;
-        }
-
-        [BindProperty]
-        public SubjectInputViewModel SubjectVM { get; set; } = new SubjectInputViewModel();
-
-        public SelectList SubjectTypes { get; set; }
+        public EditModel(ISubjectService subjectService, IMapper mapper, IAuthorizationService authorizationService, ILogger<EditModel> logger) : 
+            base(subjectService, mapper, authorizationService, logger) { }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            SubjectVM = await _subjectService.GetSubjectViewModelByIdAsync(id);
-            if (SubjectVM == null)
+            if (!await RetrieveAndAuthorizeSubjectAsync(id, "CanEdit"))
             {
-                return NotFound();
+                return Forbid();
             }
 
+            SetPermissionCheckboxes();
             SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Remove UserId from ModelState validation since it’s set programmatically
             ModelState.Remove("SubjectVM.UserId");
+            ModelState.Remove("AnonymousCanView");
+            ModelState.Remove("AuthenticatedCanView");
+            ModelState.Remove("AuthenticatedCanEdit");
+            ModelState.Remove("OwnerCanView");
+            ModelState.Remove("OwnerCanEdit");
+            ModelState.Remove("OwnerCanDelete");
+            ModelState.Remove("AdminCanView");
+            ModelState.Remove("AdminCanEdit");
+            ModelState.Remove("AdminCanDelete");
 
             if (!ModelState.IsValid)
             {
                 SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
                 return this.SetModelStateErrorMessage();
             }
+
+            EnsureRequiredPermissions();
 
             try
             {
@@ -61,7 +61,6 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                     return RedirectToPage("./Index");
                 }
 
-                // If not successful, TempData already has the warning message
                 SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
                 return Page();
             }
@@ -69,6 +68,14 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             {
                 return NotFound();
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Unauthorized attempt to edit subject.");
+                TempData["WarningMessage"] = "You are not authorized to edit this subject.";
+                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                return Page();
+            }
         }
     }
+
 }

@@ -183,6 +183,7 @@ namespace BiermanTech.CriticalDog.Migrations
                     Notes = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     SubjectTypeId = table.Column<int>(type: "int(11)", nullable: true),
+                    Permissions = table.Column<int>(type: "int(11)", nullable: false),
                     UserId = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedBy = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true)
