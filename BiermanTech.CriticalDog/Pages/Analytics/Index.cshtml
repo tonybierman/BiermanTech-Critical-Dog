@@ -1,6 +1,6 @@
-@page
+@page "{ObservationDefinitionName}/{SubjectId}"
 @using BiermanTech.CriticalDog.Helpers
-@model BiermanTech.CriticalDog.Pages.Analytics.ObservationReportModel
+@model BiermanTech.CriticalDog.Pages.Analytics.IndexModel
 @{
     ViewData["Title"] = $"{StringHelper.SplitPascalCase(Model.Report.ObservationType)} Report";
 }

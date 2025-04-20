@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 namespace BiermanTech.CriticalDog.Pages.Analytics
 {
     [Authorize]
-    public class ObservationReportModel : PageModel
+    public class IndexModel : PageModel
     {
         private readonly IObservationAnalyticsProvider _analyticsProvider;
-        private readonly ILogger<ObservationReportModel> _logger;
+        private readonly ILogger<IndexModel> _logger;
 
-        public ObservationReportModel(IObservationAnalyticsProvider analyticsProvider, ILogger<ObservationReportModel> logger)
+        public IndexModel(IObservationAnalyticsProvider analyticsProvider, ILogger<IndexModel> logger)
         {
             _analyticsProvider = analyticsProvider;
             _logger = logger;
