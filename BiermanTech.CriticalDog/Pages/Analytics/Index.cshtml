@@ -9,6 +9,142 @@
 
 @if (Model.Report.Observations.Any())
 {
+    <!-- Include Chart.js library with fallback -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Fallback if Chart.js fails to load
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js failed to load. Please check your network or include Chart.js locally.');
+        }
+    </script>
+
+    <!-- CSS for dark background -->
+    <style>
+        #observationChart {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+
+    <!-- Canvas for the line chart -->
+    <div class="mb-3">
+        <canvas id="observationChart"></canvas>
+    </div>
+
+    <!-- JavaScript to render the chart -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js is not available.');
+                return;
+            }
+
+            try {
+                const ctx = document.getElementById('observationChart').getContext('2d');
+                const observations = @Json.Serialize(Model.Report.Observations.OrderBy(o => o.RecordTime));
+
+                // Log the raw observations to debug
+                console.log('Raw observations:', observations);
+
+                // Filter out invalid observations and map labels
+                const validObservations = observations.filter(obs => obs.recordTime && typeof obs.recordTime === 'string');
+                if (validObservations.length === 0) {
+                    console.error('No valid observations with recordTime found.');
+                    return;
+                }
+
+                const labels = validObservations.map(obs => {
+                    const isoDateString = obs.recordTime.replace(' ', 'T');
+                    const date = new Date(isoDateString);
+                    if (isNaN(date.getTime())) {
+                        console.error('Invalid date format after conversion:', isoDateString);
+                        return 'Invalid Date';
+                    }
+                    return date.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                });
+
+                // Map values for valid observations
+                const data = validObservations.map(obs => {
+                    const value = parseFloat(obs.value);
+                    if (isNaN(value)) {
+                        console.warn('Invalid value:', obs.value);
+                        return null;
+                    }
+                    return value;
+                });
+
+                // Log the processed data
+                console.log('Chart labels:', labels);
+                console.log('Chart data:', data);
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '@StringHelper.SplitPascalCase(Model.Report.ObservationType) Chart for @Model.Report.SubjectName',
+                            data: data,
+                            borderColor: 'rgba(75, 192, 192, 1)', // Teal line
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: false,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date',
+                                    color: '#ffffff'
+                                },
+                                ticks: {
+                                    color: '#ffffff',
+                                    maxTicksLimit: 10 // Limit ticks for better readability
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Value (@Model.Report.DisplayUnitName)',
+                                    color: '#ffffff'
+                                },
+                                ticks: {
+                                    color: '#ffffff'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                beginAtZero: false
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#ffffff'
+                                }
+                            }
+                        },
+                        layout: {
+                            padding: 10
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error rendering chart:', error);
+            }
+        });
+    </script>
+
     <table class="table table-striped">
         <thead>
             <tr>
