@@ -102,7 +102,7 @@ namespace BiermanTech.CriticalDog.Analytics
                         {
                             var prevValue = await ConvertValueAsync(prev.MetricValue ?? 0, prev.MetricType?.Unit?.UnitName, standardUnitName, observationDefinitionName);
                             var currValue = await ConvertValueAsync(curr.MetricValue ?? 0, curr.MetricType?.Unit?.UnitName, standardUnitName, observationDefinitionName);
-                            var percentChange = ((currValue - prevValue) / prevValue) * 100;
+                            var percentChange = ((currValue - prevValue) / prevValue);
                             percentChangePerWeek = (double)(percentChange * (7m / (decimal)days));
                         }
                     }
