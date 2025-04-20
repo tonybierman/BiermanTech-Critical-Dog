@@ -1,5 +1,6 @@
 using AutoMapper;
 using BiermanTech.CriticalDog;
+using BiermanTech.CriticalDog.Authorization;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders;
 using BiermanTech.CriticalDog.Reports;

@@ -1,0 +1,28 @@
+﻿@page
+@model ManageAuthModel
+@{
+    ViewData["Title"] = "Manage Authentication Methods";
+}
+
+<h1>Manage Authentication Methods</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Input.UserId" />
+    <div class="form-group">
+        <label>Two-Factor Authentication</label>
+        <div class="form-check">
+            <input asp-for="Input.TwoFactorEnabled" class="form-check-input" />
+            <label class="form-check-label">Enable 2FA</label>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@if (Model.Input.TwoFactorEnabled)
+{
+    <h3>Reset 2FA</h3>
+    <form method="post" asp-page-handler="Reset2FA">
+        <input type="hidden" asp-for="Input.UserId" />
+        <button type="submit" class="btn btn-warning">Reset Two-Factor Authentication</button>
+    </form>
+}

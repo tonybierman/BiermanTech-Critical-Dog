@@ -5,18 +5,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace BiermanTech.CriticalDog.Data
+namespace BiermanTech.CriticalDog.Authorization
 {
-    public class SubjectPermissionRequirement : IAuthorizationRequirement
-    {
-        public string Permission { get; }
-
-        public SubjectPermissionRequirement(string permission)
-        {
-            Permission = permission;
-        }
-    }
-
     public class SubjectPermissionHandler : AuthorizationHandler<SubjectPermissionRequirement, Subject>
     {
         private readonly UserManager<IdentityUser> _userManager;
