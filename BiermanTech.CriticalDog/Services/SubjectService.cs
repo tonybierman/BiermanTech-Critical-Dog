@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace BiermanTech.CriticalDog.Services
 {
@@ -52,6 +53,14 @@ namespace BiermanTech.CriticalDog.Services
         {
             var subject = await GetSubjectByIdAsync(id);
             return subject == null ? null : _mapper.Map<SubjectInputViewModel>(subject);
+        }
+
+        public async Task<IList<Subject>> GetFilteredSubjectsAsync()
+        {
+            _logger.LogInformation("GetFilteredSubjectsAsync: Retrieving filtered subjects.");
+            var subjects = await _context.GetFilteredSubjects().ToListAsync();
+            _logger.LogInformation($"GetFilteredSubjectsAsync: Retrieved {subjects.Count} subjects.");
+            return subjects;
         }
 
         public async Task<SelectList> GetSubjectTypesSelectListAsync()
