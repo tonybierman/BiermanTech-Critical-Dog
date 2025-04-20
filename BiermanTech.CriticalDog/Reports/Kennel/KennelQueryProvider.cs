@@ -38,40 +38,5 @@ namespace BiermanTech.CriticalDog.Reports.Kennel
 
             return query;
         }
-
-        //public override IQueryable<SubjectRecord> EnsureReportQuery()
-        //{
-        //    var user = _httpContextAccessor.HttpContext?.User;
-        //    if (user == null)
-        //    {
-        //        // Return empty query for unauthenticated users
-        //        return _dbContext.SubjectRecords.Where(a => false);
-        //    }
-
-        //    // Get current user's ID
-        //    string userId = _userManager.GetUserId(user);
-        //    if (string.IsNullOrEmpty(userId))
-        //    {
-        //        // Return empty query for unauthenticated users
-        //        return _dbContext.SubjectRecords.Where(a => false);
-        //    }
-
-        //    IQueryable<SubjectRecord> query = _dbContext.SubjectRecords;
-
-        //    if (!user.IsInRole("Admin"))
-        //    {
-        //        query = query.Where(a => a.Subject.UserId == userId);
-        //    }
-
-        //    query = query
-        //        .Include(a => a.Subject)
-        //        .ThenInclude(a => a.SubjectType)
-        //        .Include(a => a.ObservationDefinition)
-        //        .Include(a => a.MetricType)
-        //        .ThenInclude(mt => mt.Unit)
-        //        .Include(a => a.MetaTags);
-
-        //    return query;
-        //}
     }
 }

@@ -181,8 +181,8 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "CanineOfaHipGrade",
                         ObservationTypeId = ofaHipsGradeType.Id,
-                        MinimumValue = 0m,
-                        MaximumValue = 200m,
+                        MinimumValue = 1m,
+                        MaximumValue = 7m,
                         Description = "OFA radiographic evaluation of canine hip joint structure",
                         IsActive = true
                     },
@@ -272,8 +272,8 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "ExerciseIntensity",
                         ObservationTypeId = exerciseIntensityType.Id,
-                        MinimumValue = null,
-                        MaximumValue = null,
+                        MinimumValue = 1m,
+                        MaximumValue = 4m,
                         Description = "Qualitative assessment of exercise intensity (low, moderate, high)",
                         IsActive = true
                     },
@@ -290,8 +290,8 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "CanineLifeStageFactor",
                         ObservationTypeId = lifeStageFactorType.Id,
-                        MinimumValue = null,
-                        MaximumValue = null,
+                        MinimumValue = 1m,
+                        MaximumValue = 10m,
                         Description = "Used in nutrition to determine energy requirements",
                         IsActive = true
                     },
@@ -299,8 +299,8 @@ namespace BiermanTech.CriticalDog.Data
                     {
                         DefinitionName = "StoolQuality",
                         ObservationTypeId = stoolQualityType.Id,
-                        MinimumValue = null,
-                        MaximumValue = null,
+                        MinimumValue = 1m,
+                        MaximumValue = 7m,
                         Description = "Score of stool consistency (1–7 scale)",
                         IsActive = true
                     },

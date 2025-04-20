@@ -68,6 +68,12 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                 ,
                 new ReportColumnDefinition
                 {
+                    PropertyName = "MetricType.Unit.UnitSymbol",
+                    ViewModelName = "UnitSymbol"
+                }
+                ,
+                new ReportColumnDefinition
+                {
                     DisplayName = "Note",
                     PropertyName = "Note",
                     IsSortable = true

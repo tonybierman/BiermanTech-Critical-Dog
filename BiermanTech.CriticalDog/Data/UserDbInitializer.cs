@@ -66,7 +66,8 @@ namespace BiermanTech.CriticalDog.Data
                         SubjectTypeId = dogSubjectType.Id,
                         UserId = userId,
                         CreatedBy = userId,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        Permissions = 504
                     },
                     new Subject
                     {
@@ -78,7 +79,8 @@ namespace BiermanTech.CriticalDog.Data
                         SubjectTypeId = dogSubjectType.Id,
                         UserId = userId,
                         CreatedBy = userId,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        Permissions = 504
                     }
                 };
 
@@ -101,43 +103,38 @@ namespace BiermanTech.CriticalDog.Data
             var observationDefinitions = await context.ObservationDefinitions.Where(od => od.IsActive == true).ToListAsync();
             var metricTypes = await context.MetricTypes.Where(mt => mt.IsActive == true).ToListAsync();
             var metaTags = await context.MetaTags.Where(mt => mt.IsActive == true).ToListAsync();
-            var random = new Random();
 
             foreach (var subject in subjects)
             {
-                logger.LogInformation($"Seeding 50 SubjectRecords for Subject: {subject.Name}...");
+                logger.LogInformation($"Seeding 10 SubjectRecords for Subject: {subject.Name}...");
                 var records = new List<SubjectRecord>();
                 const int batchSize = 5;
 
-                for (int i = 0; i < 50; i++)
+                // Generate 10 deterministic records per subject
+                for (int i = 0; i < 10; i++)
                 {
-                    // Randomly select an ObservationDefinition
-                    var obsDef = observationDefinitions[random.Next(observationDefinitions.Count())];
+                    // Deterministically select an ObservationDefinition (cycle through the list)
+                    var obsDef = observationDefinitions[i % observationDefinitions.Count];
                     var validMetricTypes = metricTypes.Where(mt => mt.ObservationDefinitionId == obsDef.Id).ToList();
-                    MetricType? metricType = validMetricTypes.Any() ? validMetricTypes[random.Next(validMetricTypes.Count())] : null;
+                    MetricType? metricType = validMetricTypes.Any() ? validMetricTypes[i % validMetricTypes.Count] : null;
 
-                    // Generate MetricValue within the defined range
+                    // Set deterministic MetricValue (midpoint of the range)
                     decimal? metricValue = null;
                     var minValue = obsDef.MinimumValue ?? 0m;
                     var maxValue = obsDef.MaximumValue ?? 100m;
-                    metricValue = minValue + (decimal)random.NextDouble() * (maxValue - minValue);
+                    metricValue = (minValue + maxValue) / 2; // Midpoint
                     metricValue = Math.Round(metricValue.Value, 2);
 
-                    // Generate random RecordTime within the last 30 days
-                    var daysAgo = random.Next(0, 30);
-                    var hours = random.Next(0, 24);
-                    var minutes = random.Next(0, 60);
-                    var recordTime = DateTime.UtcNow.AddDays(-daysAgo).AddHours(hours).AddMinutes(minutes);
+                    // Set deterministic RecordTime (spaced evenly over 10 days)
+                    var recordTime = DateTime.UtcNow.AddDays(-9 + i).AddHours(8); // 8 AM each day
 
-                    // Generate random Note
-                    string? note = null;
-                    if (random.NextDouble() > 0.5)
-                    {
-                        note = $"Observation for {obsDef.DefinitionName}: {GenerateRandomNote(obsDef.DefinitionName)}";
-                    }
+                    // Set deterministic Note based on ObservationDefinition
+                    string? note = $"Observation for {obsDef.DefinitionName}: {GenerateDeterministicNote(obsDef.DefinitionName)}";
 
-                    // Assign random MetaTags (0 to 3 tags)
-                    var selectedMetaTags = metaTags.OrderBy(_ => random.Next()).Take(random.Next(0, 4)).ToList();
+                    // Assign deterministic MetaTags (first 2 tags for even i, last 2 for odd i)
+                    var selectedMetaTags = i % 2 == 0
+                        ? metaTags.Take(Math.Min(2, metaTags.Count)).ToList()
+                        : metaTags.TakeLast(Math.Min(2, metaTags.Count)).ToList();
 
                     var record = new SubjectRecord
                     {
@@ -155,7 +152,7 @@ namespace BiermanTech.CriticalDog.Data
                     records.Add(record);
 
                     // Save in batches of 5
-                    if (records.Count >= batchSize || i == 49)
+                    if (records.Count >= batchSize || i == 9)
                     {
                         context.AddRange(records);
                         await RetryAsync(() => context.SaveChangesAsync(), logger, $"Saving batch of {records.Count} records for {subject.Name}");
@@ -188,39 +185,34 @@ namespace BiermanTech.CriticalDog.Data
             }
         }
 
-        private static string GenerateRandomNote(string definitionName)
+        private static string GenerateDeterministicNote(string definitionName)
         {
-            var notes = new Dictionary<string, string[]>
+            var notes = new Dictionary<string, string>
             {
-                { "WeighIn", new[] { "Stable weight", "Slight weight gain", "Weight loss observed" } },
-                { "TempCheck", new[] { "Normal temperature", "Slightly elevated", "Fever detected" } },
-                { "BehaviorNote", new[] { "Calm and relaxed", "Energetic and playful", "Slightly anxious" } },
-                { "MedicationDose", new[] { "Administered on schedule", "Missed dose", "Adjusted dosage" } },
-                { "LitterSize", new[] { "Healthy litter", "Small litter", "Large litter" } },
-                { "HeartRate", new[] { "Normal range", "Elevated during exercise", "Low at rest" } },
-                { "RespiratoryRate", new[] { "Normal breathing", "Rapid breathing post-exercise", "Slow and steady" } },
-                { "HydrationStatus", new[] { "Well hydrated", "Mild dehydration", "Needs fluids" } },
-                { "ExerciseDuration", new[] { "Completed full session", "Shortened due to fatigue", "Extended session" } },
-                { "ExerciseIntensity", new[] { "Low intensity", "Moderate intensity", "High intensity" } },
-                { "AppetiteLevel", new[] { "Good appetite", "Reduced appetite", "Very hungry" } },
-                { "StoolQuality", new[] { "Normal consistency", "Soft stool", "Firm stool" } },
-                { "DailyCaloricIntake", new[] { "Met caloric needs", "Underfed", "Overfed" } },
-                { "SocializationBehavior", new[] { "Friendly with others", "Shy around strangers", "Playful with dogs" } },
-                { "TrainingProgress", new[] { "Mastered command", "Needs practice", "Improving steadily" } },
-                { "EstrusCycleStage", new[] { "Proestrus observed", "Estrus phase", "Diestrus phase" } },
-                { "GestationProgress", new[] { "Early gestation", "Mid gestation", "Late gestation" } },
-                { "CoatCondition", new[] { "Shiny and healthy", "Needs grooming", "Slight shedding" } },
-                { "DentalHealth", new[] { "Clean teeth", "Mild tartar", "Needs dental check" } },
-                { "PainAssessment", new[] { "No pain observed", "Mild discomfort", "Needs vet attention" } },
-                { "AmbientHumidity", new[] { "Comfortable environment", "Too dry", "High humidity" } }
+                { "WeighIn", "Stable weight" },
+                { "TempCheck", "Normal temperature" },
+                { "BehaviorNote", "Calm and relaxed" },
+                { "MedicationDose", "Administered on schedule" },
+                { "LitterSize", "Healthy litter" },
+                { "HeartRate", "Normal range" },
+                { "RespiratoryRate", "Normal breathing" },
+                { "HydrationStatus", "Well hydrated" },
+                { "ExerciseDuration", "Completed full session" },
+                { "ExerciseIntensity", "Moderate intensity" },
+                { "AppetiteLevel", "Good appetite" },
+                { "StoolQuality", "Normal consistency" },
+                { "DailyCaloricIntake", "Met caloric needs" },
+                { "SocializationBehavior", "Friendly with others" },
+                { "TrainingProgress", "Improving steadily" },
+                { "EstrusCycleStage", "Proestrus observed" },
+                { "GestationProgress", "Early gestation" },
+                { "CoatCondition", "Shiny and healthy" },
+                { "DentalHealth", "Clean teeth" },
+                { "PainAssessment", "No pain observed" },
+                { "AmbientHumidity", "Comfortable environment" }
             };
 
-            if (notes.TryGetValue(definitionName, out var noteOptions))
-            {
-                return noteOptions[new Random().Next(noteOptions.Length)];
-            }
-
-            return "General observation";
+            return notes.TryGetValue(definitionName, out var note) ? note : "General observation";
         }
     }
 }
