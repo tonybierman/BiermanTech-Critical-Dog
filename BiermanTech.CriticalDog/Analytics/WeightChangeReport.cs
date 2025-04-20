@@ -12,5 +12,6 @@
     {
         public DateTime RecordTime { get; set; }
         public decimal WeightKg { get; set; } // Standardized to Kilograms
+        public double? TrendBetween { get; set; } // Rate of change (kg/day) from previous observation
     }
 }

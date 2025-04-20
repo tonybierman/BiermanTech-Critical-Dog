@@ -188,7 +188,7 @@ try
         }
 
         var context = services.GetRequiredService<AppDbContext>();
-        await UserDbInitializer.InitializeAsync(services, regularUserId, false);
+        await UserDbInitializer.InitializeAsync(services, regularUserId, true);
         logger.LogInformation("Completed UserDbInitializer.");
 
         // Explicitly dispose AppDbContext to release connections

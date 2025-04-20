@@ -64,12 +64,34 @@ namespace BiermanTech.CriticalDog.Analytics
                     };
                 }
 
-                // Convert all weights to Kilograms
-                var observations = records.Select(r => new WeightObservation
+                // Convert all weights to Kilograms and calculate per-interval trends
+                var observations = new List<WeightObservation>();
+                for (int i = 0; i < records.Count; i++)
                 {
-                    RecordTime = r.RecordTime,
-                    WeightKg = ConvertToKilograms(r.MetricValue ?? 0, r.MetricType?.Unit?.UnitName)
-                }).OrderBy(o => o.RecordTime).ToList();
+                    double? trendBetween = null;
+                    if (i > 0)
+                    {
+                        var prev = records[i - 1];
+                        var curr = records[i];
+                        var timeSpan = curr.RecordTime - prev.RecordTime;
+                        var days = timeSpan.TotalDays;
+
+                        if (days > 0) // Avoid division by zero
+                        {
+                            var prevWeightKg = ConvertToKilograms(prev.MetricValue ?? 0, prev.MetricType?.Unit?.UnitName);
+                            var currWeightKg = ConvertToKilograms(curr.MetricValue ?? 0, curr.MetricType?.Unit?.UnitName);
+                            var weightChange = currWeightKg - prevWeightKg;
+                            trendBetween = (double)(weightChange / (decimal)days);
+                        }
+                    }
+
+                    observations.Add(new WeightObservation
+                    {
+                        RecordTime = records[i].RecordTime,
+                        WeightKg = ConvertToKilograms(records[i].MetricValue ?? 0, records[i].MetricType?.Unit?.UnitName),
+                        TrendBetween = trendBetween
+                    });
+                }
 
                 // Calculate weight change rates
                 double? averageRateKgPerDay = CalculateAverageRate(observations);
