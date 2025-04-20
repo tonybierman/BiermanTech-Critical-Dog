@@ -91,7 +91,7 @@ builder.Services.AddScoped<IMetricValueCalculatorProvider, DailyCaloricIntakeCal
 builder.Services.AddScoped<IAuthorizationHandler, SubjectPermissionHandler>();
 
 // Analytics
-builder.Services.AddScoped<IWeightAnalyticsProvider, WeightAnalyticsProvider>();
+builder.Services.AddScoped<IObservationAnalyticsProvider, ObservationAnalyticsProvider>();
 
 // Lob DB
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
