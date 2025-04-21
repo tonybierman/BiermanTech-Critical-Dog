@@ -17,9 +17,36 @@
         Model?.WeightRecord?.MetricType?.Unit?.UnitName != null &&
         Model?.LifestageRecord?.MetricValue != null)
     {
-        decimal? metricValue = Model.WeightRecord.MetricValue;
-        double? weight = metricValue.HasValue ? (double)metricValue.Value : null;
-        if (weight.HasValue)
+        // Handle WeightRecord.MetricValue (decimal?)
+        decimal? weightMetricValue = Model.WeightRecord.MetricValue;
+        double? weight = weightMetricValue.HasValue ? (double)weightMetricValue.Value : null;
+
+        // Handle LifestageRecord.MetricValue (decimal?)
+        decimal? lifeStageMetricValue = Model.LifestageRecord.MetricValue;
+        bool isValidLifeStage = false;
+
+        if (lifeStageMetricValue.HasValue)
+        {
+            try
+            {
+                // Convert decimal to int (assuming LifeStageFactorsEnum has int underlying type)
+                int enumValue = (int)lifeStageMetricValue.Value;
+
+                // Verify if enumValue is a valid LifeStageFactorsEnum value
+                if (Enum.IsDefined(typeof(LifeStageFactorsEnum), enumValue))
+                {
+                    lifeStage = (LifeStageFactorsEnum)enumValue;
+                    isValidLifeStage = true;
+                }
+            }
+            catch
+            {
+                // Invalid cast or conversion (e.g., decimal value out of int range)
+                isValidLifeStage = false;
+            }
+        }
+
+        if (weight.HasValue && isValidLifeStage)
         {
             try
             {
@@ -33,7 +60,6 @@
                     "Pounds",
                     weight.Value);
 
-                lifeStage = (LifeStageFactorsEnum)Model.LifestageRecord.MetricValue;
                 (rer, double lowerMer, double upperMer) = CanineMerCalculator.CalculateMer(lifeStage, weightInKgs);
                 meanMer = CanineMerCalculator.CalculateMeanMer(lifeStage, weight.Value);
 
