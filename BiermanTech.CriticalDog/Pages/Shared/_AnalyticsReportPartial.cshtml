@@ -4,16 +4,38 @@
     <thead>
         <tr>
             <th>Date</th>
-            <th>Value (@Model.Report.DisplayUnitName)</th>
-            <th>Percent Change per Week (%/week)</th>
+            <th>Value (@Model.Report.DisplayUnitSymbol)</th>
+            <th>Change from Previous (@Model.Report.DisplayUnitSymbol)</th>
+            <th>Percent Change per Week (%)</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var obs in Model.Report.Observations)
+        @foreach (var obs in Model.Report.ObservationRecords)
         {
             <tr>
                 <td>@obs.RecordTime.ToString("yyyy-MM-dd HH:mm")</td>
                 <td>@obs.Value.ToString("F2")</td>
+                <td>
+                    @if (obs.AmountOfChange > 0)
+                    {
+                        <span class="text-success">+@(obs.AmountOfChange.ToString("N2"))</span>
+                    }
+                    else if (obs.AmountOfChange < 0)
+                    {
+                        <span class="text-danger">@(obs.AmountOfChange.ToString("N2"))</span>
+                    }
+                    else
+                    {
+                        @if (obs.PercentChangePerWeek.HasValue)
+                        {
+                            <span>0.00</span>
+                        }
+                        else
+                        {
+                            <span>N/A</span>
+                        }
+                    }
+                </td>
                 <td>
                     @if (obs.PercentChangePerWeek.HasValue)
                     {
@@ -39,7 +61,7 @@
         }
     </tbody>
 </table>
-<p><strong>Average Rate:</strong> @(Model.Report.AverageRatePerDay?.ToString("F3") ?? "N/A") @Model.Report.StandardUnitName/day</p>
+<p><strong>Average Weekly Rate:</strong> @(Model.Report.AverageWeeklyRate?.ToString("P5") ?? "N/A") @Model.Report.StandardUnitSymbol / week</p>
 <p><strong>Overall Trend:</strong> @Model.Report.TrendDescription</p>
 
 

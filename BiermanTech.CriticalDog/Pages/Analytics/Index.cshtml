@@ -4,12 +4,12 @@
 @using BiermanTech.CriticalDog.ViewModels
 @model BiermanTech.CriticalDog.Pages.Analytics.IndexModel
 @{
-    ViewData["Title"] = $"{StringHelper.SplitPascalCase(Model.Report.ObservationType)} Report";
+    ViewData["Title"] = $"{StringHelper.SplitPascalCase(Model.Report.ObservationTypeName)} Report";
 }
 
-<h1>@StringHelper.SplitPascalCase(Model.Report.ObservationType) Report for @Model.Report.SubjectName</h1>
+<h1>@StringHelper.SplitPascalCase(Model.Report.ObservationTypeName) Report for @Model.Report.SubjectName</h1>
 
-@if (Model.Report.Observations.Any())
+@if (Model.Report.ObservationRecords.Any())
 {
     <!-- Include Chart.js library with fallback -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -42,7 +42,7 @@
 
             try {
                 const ctx = document.getElementById('observationChart').getContext('2d');
-                const observations = @Json.Serialize(Model.Report.Observations.OrderBy(o => o.RecordTime));
+                const observations = @Json.Serialize(Model.Report.ObservationRecords.OrderBy(o => o.RecordTime));
 
                 // Log the raw observations to debug
                 console.log('Raw observations:', observations);
@@ -87,7 +87,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: '@StringHelper.SplitPascalCase(Model.Report.ObservationType) Chart for @Model.Report.SubjectName',
+                            label: '@StringHelper.SplitPascalCase(Model.Report.ObservationTypeName) Chart for @Model.Report.SubjectName',
                             data: data,
                             borderColor: 'rgba(75, 192, 192, 1)', // Teal line
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
