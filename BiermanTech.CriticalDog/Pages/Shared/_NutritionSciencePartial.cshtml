@@ -1,13 +1,34 @@
-﻿@using BiermanTech.CriticalDog.ViewModels
+﻿@using BiermanTech.CanineHealth
+@using BiermanTech.CriticalDog.Helpers
+@using BiermanTech.CriticalDog.ViewModels
+@inject IUnitConverter Units
 
 @model NutritionSciencePartialViewModel
+
+@{
+    var weight = (double)Model.WeightRecord.MetricValue;
+    double weightInKgs = await Units.ConvertAsync(Model.WeightRecord.MetricType.Unit.UnitName, "Kilograms", (double)weight);
+    double weightInLbs = await Units.ConvertAsync(Model.WeightRecord.MetricType.Unit.UnitName, "Pounds", (double)weight);
+    var lifeStage = (LifeStageFactorsEnum)Model.LifestageRecord.MetricValue;
+    var (rer, lowerMer, upperMer) = CanineMerCalculator.CalculateMer(lifeStage, weightInKgs);
+    var meanMer = CanineMerCalculator.CalculateMeanMer((LifeStageFactorsEnum)Model.LifestageRecord.MetricValue, (double)Model.WeightRecord.MetricValue);
+}
+
+<div class="section">
+    <h4>Energy Requirements</h4>
+    <ul>
+        <li>RER @rer.ToString("F2") kcal/day</li>
+        <li>MER @meanMer.ToString("F2") kcal/day</li>
+    </ul>
+    <p>A dog who weighs <strong>@weightInLbs.ToString("F2") lbs.</strong> with a life stage status of <strong>@EnumHelper.GetEnumDisplayName(lifeStage)</strong> has a <strong>RER</strong> of <strong>@rer.ToString("F2") kcal</strong> per day and an average <strong>MER</strong> of <strong>@meanMer.ToString("F2") kcal</strong> per day.</p>
+</div>
 
 @if (Model.WeightReport != null)
 {
     @* @await Html.PartialAsync("_SubjectRecordPartial", @Model.WeightRecordPartialVM) *@
 
     <div class="section">
-        <h4>Weight Report</h4>
+        <h4>Weight History Report</h4>
         @await Html.PartialAsync("_AnalyticsChartPartial", new AnalyticsReportPartialViewModel() { Report = Model.WeightReport })
         @await Html.PartialAsync("_AnalyticsReportPartial", new AnalyticsReportPartialViewModel() { Report = Model.WeightReport })
     </div>

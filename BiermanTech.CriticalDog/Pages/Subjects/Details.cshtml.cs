@@ -1,5 +1,6 @@
 using AutoMapper;
 using AutoMapper.Configuration.Annotations;
+using BiermanTech.CanineHealth;
 using BiermanTech.CriticalDog.Analytics;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Services;
@@ -43,15 +44,14 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             }
 
             WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
+
             var weightRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "WeighIn");
-            var weightRecordVM = _mapper.Map<SubjectRecordViewModel>(weightRecord);
+            var lifeStageRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "CanineLifeStageFactor");
 
             NutritionPartialViewModel = new NutritionSciencePartialViewModel()
             {
-                WeightRecordPartialVM = new SubjectRecordPartialViewModel()
-                {
-                    RecordVM = weightRecordVM
-                },
+                WeightRecord = weightRecord,
+                LifestageRecord = lifeStageRecord,
                 WeightReport = WeightReport,
                 AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = WeightReport }
             };
