@@ -124,7 +124,7 @@ namespace BiermanTech.CriticalDog.Analytics
                 double? averageRatePerDay = await CalculateAverageRateAsync(observations, standardUnit, selectedDisplayUnit, observationDefinitionName);
 
                 // Determine trend
-                string trendDescription = DetermineTrend(observations, averageRatePerDay);
+                string trendDescription = DetermineTrend(observations, averageRatePerDay, selectedDisplayUnit);
 
                 double? averageWeeklyRate = null;
                 var validObservations = observations.Where(a => a.PercentChangePerWeek.HasValue).ToList();
@@ -157,8 +157,8 @@ namespace BiermanTech.CriticalDog.Analytics
         {
             return observationDefinitionName switch
             {
-                "WeighIn" => supportedUnits.FirstOrDefault(u => u.UnitName == "Kilograms") ?? supportedUnits.First(),
-                "TempCheck" => supportedUnits.FirstOrDefault(u => u.UnitName == "DegreesCelsius") ?? supportedUnits.First(),
+                "WeighIn" => supportedUnits.FirstOrDefault(u => u.UnitName == "Pounds") ?? supportedUnits.First(),
+                "TempCheck" => supportedUnits.FirstOrDefault(u => u.UnitName == "DegreesFahrenheit") ?? supportedUnits.First(),
                 "HeartRate" or "RespiratoryRate" => supportedUnits.FirstOrDefault(u => u.UnitName == "BeatsPerMinute") ?? supportedUnits.First(),
                 _ => supportedUnits.First()
             };
@@ -210,7 +210,7 @@ namespace BiermanTech.CriticalDog.Analytics
             return intervals > 0 ? totalRate / intervals : null;
         }
 
-        private string DetermineTrend(List<ObservationRecord> observations, double? averageRate)
+        private string DetermineTrend(List<ObservationRecord> observations, double? averageRate, Unit unit)
         {
             if (observations.Count < 2)
                 return "Insufficient data to determine trend.";
@@ -219,9 +219,9 @@ namespace BiermanTech.CriticalDog.Analytics
                 return "No valid intervals to determine trend.";
 
             if (averageRate > 0.01)
-                return $"Increasing at an average rate of {averageRate:F3} units/day.";
+                return $"Increasing at an average rate of {averageRate:F3} {unit.UnitSymbol}/day.";
             else if (averageRate < -0.01)
-                return $"Decreasing at an average rate of {Math.Abs(averageRate.Value):F3} units/day.";
+                return $"Decreasing at an average rate of {Math.Abs(averageRate.Value):F3} {unit.UnitSymbol}/day.";
             else
                 return "Stable.";
         }
