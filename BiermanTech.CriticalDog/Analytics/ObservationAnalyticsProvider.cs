@@ -219,9 +219,9 @@ namespace BiermanTech.CriticalDog.Analytics
                 return "No valid intervals to determine trend.";
 
             if (averageRate > 0.01)
-                return $"Increasing at an average rate of {averageRate:F3} {unit.UnitSymbol}/day.";
+                return $"Increasing at an average rate of {averageRate:F3} {unit.UnitSymbol} / day.";
             else if (averageRate < -0.01)
-                return $"Decreasing at an average rate of {Math.Abs(averageRate.Value):F3} {unit.UnitSymbol}/day.";
+                return $"Decreasing at an average rate of {Math.Abs(averageRate.Value):F3} {unit.UnitSymbol} / day.";
             else
                 return "Stable.";
         }

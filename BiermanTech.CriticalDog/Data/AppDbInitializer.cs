@@ -184,7 +184,8 @@ namespace BiermanTech.CriticalDog.Data
                         MinimumValue = 1m,
                         MaximumValue = 7m,
                         Description = "OFA radiographic evaluation of canine hip joint structure",
-                        IsActive = true
+                        IsActive = true,
+                        IsSingular = true
                     },
                     new ObservationDefinition
                     {
