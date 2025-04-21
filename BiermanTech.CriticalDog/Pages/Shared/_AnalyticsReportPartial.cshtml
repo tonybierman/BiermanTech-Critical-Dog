@@ -1,67 +1,95 @@
 ﻿@model BiermanTech.CriticalDog.ViewModels.AnalyticsReportPartialViewModel
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Value (@Model.Report.DisplayUnitSymbol)</th>
-            <th>Change from Previous (@Model.Report.DisplayUnitSymbol)</th>
-            <th>Percent Change per Week (%)</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var obs in Model.Report.ObservationRecords)
-        {
+<div class="table-responsive">
+    <table class="table table-striped small">
+        <thead>
             <tr>
-                <td>@obs.RecordTime.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>@obs.Value.ToString("F2")</td>
-                <td>
-                    @if (obs.AmountOfChange > 0)
-                    {
-                        <span class="text-success">+@(obs.AmountOfChange.ToString("N2"))</span>
-                    }
-                    else if (obs.AmountOfChange < 0)
-                    {
-                        <span class="text-danger">@(obs.AmountOfChange.ToString("N2"))</span>
-                    }
-                    else
-                    {
+                <th>Date</th>
+                <th>Value (@Model.Report.DisplayUnitSymbol)</th>
+                <th>Weekly Change (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obs in Model.Report.ObservationRecords)
+            {
+                <tr>
+                    <td>@obs.RecordTime.ToString("yyyy-MM-dd")</td>
+                    <td>@obs.Value.ToString("F2")
+                        @if (obs.AmountOfChange > 0)
+                        {
+                            <span class="text-success">+@(obs.AmountOfChange.ToString("N2"))</span>
+                        }
+                        else if (obs.AmountOfChange < 0)
+                        {
+                            <span class="text-danger">@(obs.AmountOfChange.ToString("N2"))</span>
+                        }
+                    </td>
+                    <td>
                         @if (obs.PercentChangePerWeek.HasValue)
                         {
-                            <span>0.00</span>
+                            if (obs.PercentChangePerWeek > 0)
+                            {
+                                <span class="text-success">+@(obs.PercentChangePerWeek.Value.ToString("P2"))</span>
+                            }
+                            else if (obs.PercentChangePerWeek < 0)
+                            {
+                                <span class="text-danger">@(obs.PercentChangePerWeek.Value.ToString("P2"))</span>
+                            }
+                            else
+                            {
+                                <span>0.00%</span>
+                            }
                         }
                         else
                         {
                             <span>N/A</span>
                         }
-                    }
-                </td>
-                <td>
-                    @if (obs.PercentChangePerWeek.HasValue)
-                    {
-                        if (obs.PercentChangePerWeek > 0)
-                        {
-                            <span class="text-success">+@(obs.PercentChangePerWeek.Value.ToString("P2"))</span>
-                        }
-                        else if (obs.PercentChangePerWeek < 0)
-                        {
-                            <span class="text-danger">@(obs.PercentChangePerWeek.Value.ToString("P2"))</span>
-                        }
-                        else
-                        {
-                            <span>0.00</span>
-                        }
-                    }
-                    else
-                    {
-                        <span>N/A</span>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<p><strong>Average Weekly Rate:</strong> @(Model.Report.AverageWeeklyRate?.ToString("P5") ?? "N/A") @Model.Report.StandardUnitSymbol / week</p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.Report.AverageWeeklyRate.HasValue)
+{
+    var rate = Model.Report.AverageWeeklyRate.Value;
+    var unitSymbol = Model.Report.StandardUnitSymbol ?? Model.Report.StandardUnitName;
+    string cssClass, iconClass, rateDisplay;
+
+    if (rate > 0)
+    {
+        cssClass = "text-success";
+        iconClass = "fas fa-arrow-up";
+        rateDisplay = $"+{rate.ToString("P2")}";
+    }
+    else if (rate < 0)
+    {
+        cssClass = "text-danger";
+        iconClass = "fas fa-arrow-down";
+        rateDisplay = rate.ToString("P2");
+    }
+    else
+    {
+        cssClass = "";
+        iconClass = "";
+        rateDisplay = "0.00%";
+    }
+
+    <p aria-label="@(rate > 0 ? "Positive" : rate < 0 ? "Negative" : "Stable") average weekly rate">
+        <strong>Average Weekly Rate:</strong>
+        <span class="@cssClass">
+            @if (!string.IsNullOrEmpty(iconClass))
+            {
+                <span class="@iconClass"></span>
+            }
+            @rateDisplay per week
+        </span>
+    </p>
+}
+else
+{
+    <span aria-label="No average weekly rate available">N/A</span>
+}
+
 <p><strong>Overall Trend:</strong> @Model.Report.TrendDescription</p>
-
-

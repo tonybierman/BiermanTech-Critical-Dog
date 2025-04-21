@@ -1,23 +1,33 @@
 using AutoMapper;
+using BiermanTech.CriticalDog.Analytics;
+using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Composition;
 using System.Threading.Tasks;
 
 namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class DetailsModel : SubjectBasePageModel
     {
+        private readonly IObservationAnalyticsProvider _analyticsProvider;
+
         public DetailsModel(
             ISubjectService subjectService,
             IMapper mapper,
             IAuthorizationService authorizationService,
-            ILogger<DetailsModel> logger)
+            ILogger<DetailsModel> logger,
+            IObservationAnalyticsProvider analyticsProvider)
             : base(subjectService, mapper, authorizationService, logger)
         {
+            _analyticsProvider = analyticsProvider;
+
         }
+
+        public ObservationChangeReport WeightReport { get; private set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -25,6 +35,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             {
                 return NotFound();
             }
+
+            WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
 
             return Page();
         }

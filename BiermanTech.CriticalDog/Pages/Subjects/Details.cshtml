@@ -1,44 +1,55 @@
 ﻿@page "{id:int}"
+@using BiermanTech.CriticalDog.ViewModels
 @model BiermanTech.CriticalDog.Pages.Subjects.DetailsModel
 
 @{
     ViewData["Title"] = "Subject Details";
 }
 
-<h1>Subject Details</h1>
+<div class="container">
+    <h1>Subject Details</h1>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <dl class="row">
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.SubjectVM.Name)
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.SubjectVM.Name)
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.SubjectVM.Sex)
-            </dt>
-            <dd class="col-sm-9">
-                @(Model.SubjectVM.Sex == 1 ? "Male" : "Female")
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.SubjectVM.ArrivalDate)
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.SubjectVM.ArrivalDate)
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.SubjectVM.SubjectTypeId)
-            </dt>
-            <dd class="col-sm-9">
-                @Model.SubjectTypeName
-            </dd>
-        </dl>
-        <div class="form-group mt-3">
-            <a asp-page="./Edit" asp-route-id="@Model.SubjectVM.Id" class="btn btn-primary">Edit</a>
-            <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.SubjectVM.Name)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.SubjectVM.Name)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.SubjectVM.Sex)
+                </dt>
+                <dd class="col-sm-9">
+                    @(Model.SubjectVM.Sex == 1 ? "Male" : "Female")
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.SubjectVM.ArrivalDate)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.SubjectVM.ArrivalDate)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.SubjectVM.SubjectTypeId)
+                </dt>
+                <dd class="col-sm-9">
+                    @Model.SubjectTypeName
+                </dd>
+            </dl>
+            <div class="form-group mt-3">
+                <a asp-page="./Edit" asp-route-id="@Model.SubjectVM.Id" class="btn btn-primary">Edit</a>
+                <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
+            </div>
         </div>
+        @if (Model.WeightReport != null)
+        {
+            <div class="mt-3 col-md-12 border border-light rounded p-3 overflow-auto">
+                <p class="lead">Weight Report</p>
+                @await Html.PartialAsync("_AnalyticsChartPartial", new AnalyticsReportPartialViewModel() { Report = Model.WeightReport })
+                @await Html.PartialAsync("_AnalyticsReportPartial", new AnalyticsReportPartialViewModel() { Report = Model.WeightReport })
+            </div>
+        }
     </div>
 </div>
