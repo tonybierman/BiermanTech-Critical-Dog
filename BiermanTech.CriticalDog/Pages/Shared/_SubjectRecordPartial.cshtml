@@ -1,7 +1,14 @@
 ﻿@model BiermanTech.CriticalDog.ViewModels.SubjectRecordPartialViewModel
 
+<h5>Most Recent Weight</h5>
 <dt class="col-sm-3">
     @Html.DisplayNameFor(model => model.RecordVM.ObservationName)
+</dt>
+<dd class="col-sm-9">
+    @Html.DisplayFor(model => model.RecordVM.ObservationName)
+</dd>
+<dt class="col-sm-3">
+    @Html.DisplayNameFor(model => model.RecordVM.MetricValue)
 </dt>
 <dd class="col-sm-9">
     @Html.DisplayFor(model => model.RecordVM.MetricValue)

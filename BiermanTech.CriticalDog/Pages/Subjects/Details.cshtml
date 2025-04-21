@@ -45,11 +45,7 @@
         </div>
         <div class="mt-3 col-md-12 border border-light rounded p-3 overflow-auto">
             <h2>Nutrition</h2>
-            @await Html.PartialAsync("_NutritionSciencePartial", new NutritionSciencePartialViewModel()
-            { 
-                WeightReport = Model.WeightReport, 
-                AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = Model.WeightReport } 
-            })
+            @await Html.PartialAsync("_NutritionSciencePartial", @Model.NutritionPartialViewModel)
         </div>
     </div>
 </div>

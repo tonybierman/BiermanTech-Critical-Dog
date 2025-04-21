@@ -29,6 +29,9 @@ namespace BiermanTech.CriticalDog
     {
         public DefaultMappingProfile()
         {
+            CreateMap<SubjectRecord, SubjectRecordViewModel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
             CreateMap<SubjectRecord, SubjectRecordInputViewModel>()
                 .ForMember(dest => dest.SelectedMetaTagIds, opt => opt.Ignore())
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));

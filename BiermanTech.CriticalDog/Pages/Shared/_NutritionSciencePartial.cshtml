@@ -4,6 +4,8 @@
 
 @if (Model.WeightReport != null)
 {
+    @* @await Html.PartialAsync("_SubjectRecordPartial", @Model.WeightRecordPartialVM) *@
+
     <div class="section">
         <h4>Weight Report</h4>
         @await Html.PartialAsync("_AnalyticsChartPartial", new AnalyticsReportPartialViewModel() { Report = Model.WeightReport })
