@@ -20,6 +20,7 @@
 
 	<ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="BiermanTech.CanineHealth" Version="0.0.3" />
     <PackageReference Include="BiermanTech.UniversalReportCore.Ui" Version="0.2.34" />
     <PackageReference Include="Markdig" Version="0.41.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.14" />

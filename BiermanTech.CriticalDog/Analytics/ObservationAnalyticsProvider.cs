@@ -49,8 +49,8 @@ namespace BiermanTech.CriticalDog.Analytics
                     throw new InvalidOperationException($"ObservationDefinition '{observationDefinitionName}' not found.");
                 }
 
-                // Get supported units
-                var supportedUnits = observationDef.Units.Select(u => u.UnitName).ToList();
+                // Get supported units as Unit entities
+                var supportedUnits = observationDef.Units.ToList();
                 if (!supportedUnits.Any())
                 {
                     _logger.LogWarning($"No units defined for ObservationDefinition '{observationDefinitionName}'.");
@@ -58,12 +58,12 @@ namespace BiermanTech.CriticalDog.Analytics
                 }
 
                 // Determine standard unit
-                string standardUnitName = GetStandardUnit(observationDefinitionName, supportedUnits);
+                Unit standardUnit = GetStandardUnit(observationDefinitionName, supportedUnits);
 
                 // Validate display unit
-                string selectedDisplayUnit = displayUnitName != null && supportedUnits.Contains(displayUnitName)
-                    ? displayUnitName
-                    : standardUnitName;
+                Unit selectedDisplayUnit = displayUnitName != null && supportedUnits.Any(u => u.UnitName == displayUnitName)
+                    ? supportedUnits.First(u => u.UnitName == displayUnitName)
+                    : standardUnit;
 
                 // Fetch records
                 var records = await _context.GetFilteredSubjectRecords()
@@ -80,8 +80,8 @@ namespace BiermanTech.CriticalDog.Analytics
                     {
                         SubjectName = subject.Name,
                         ObservationType = observationDefinitionName,
-                        StandardUnitName = standardUnitName,
-                        DisplayUnitName = selectedDisplayUnit,
+                        StandardUnitName = standardUnit.UnitName,
+                        DisplayUnitName = selectedDisplayUnit.UnitName,
                         TrendDescription = $"No {observationDefinitionName} observations available."
                     };
                 }
@@ -100,8 +100,8 @@ namespace BiermanTech.CriticalDog.Analytics
 
                         if (days > 0 && prev.MetricValue != 0)
                         {
-                            var prevValue = await ConvertValueAsync(prev.MetricValue ?? 0, prev.MetricType?.Unit?.UnitName, standardUnitName, observationDefinitionName);
-                            var currValue = await ConvertValueAsync(curr.MetricValue ?? 0, curr.MetricType?.Unit?.UnitName, standardUnitName, observationDefinitionName);
+                            var prevValue = await ConvertValueAsync(prev.MetricValue ?? 0, prev.MetricType?.Unit, standardUnit, observationDefinitionName);
+                            var currValue = await ConvertValueAsync(curr.MetricValue ?? 0, curr.MetricType?.Unit, standardUnit, observationDefinitionName);
                             var percentChange = ((currValue - prevValue) / prevValue);
                             percentChangePerWeek = (double)(percentChange * (7m / (decimal)days));
                         }
@@ -110,13 +110,13 @@ namespace BiermanTech.CriticalDog.Analytics
                     observations.Add(new Observation
                     {
                         RecordTime = records[i].RecordTime,
-                        Value = await ConvertValueAsync(records[i].MetricValue ?? 0, records[i].MetricType?.Unit?.UnitName, selectedDisplayUnit, observationDefinitionName),
+                        Value = await ConvertValueAsync(records[i].MetricValue ?? 0, records[i].MetricType?.Unit, selectedDisplayUnit, observationDefinitionName),
                         PercentChangePerWeek = percentChangePerWeek
                     });
                 }
 
                 // Calculate average rate
-                double? averageRatePerDay = await CalculateAverageRateAsync(observations, standardUnitName, selectedDisplayUnit, observationDefinitionName);
+                double? averageRatePerDay = await CalculateAverageRateAsync(observations, standardUnit, selectedDisplayUnit, observationDefinitionName);
 
                 // Determine trend
                 string trendDescription = DetermineTrend(observations, averageRatePerDay);
@@ -125,8 +125,8 @@ namespace BiermanTech.CriticalDog.Analytics
                 {
                     SubjectName = subject.Name,
                     ObservationType = observationDefinitionName,
-                    StandardUnitName = standardUnitName,
-                    DisplayUnitName = selectedDisplayUnit,
+                    StandardUnitName = standardUnit.UnitName,
+                    DisplayUnitName = selectedDisplayUnit.UnitName,
                     Observations = observations,
                     AverageRatePerDay = averageRatePerDay,
                     TrendDescription = trendDescription
@@ -139,35 +139,35 @@ namespace BiermanTech.CriticalDog.Analytics
             }
         }
 
-        private string GetStandardUnit(string observationDefinitionName, List<string> supportedUnits)
+        private Unit GetStandardUnit(string observationDefinitionName, List<Unit> supportedUnits)
         {
             return observationDefinitionName switch
             {
-                "WeighIn" => supportedUnits.Contains("Kilograms") ? "Kilograms" : supportedUnits.First(),
-                "TempCheck" => supportedUnits.Contains("DegreesCelsius") ? "DegreesCelsius" : supportedUnits.First(),
-                "HeartRate" or "RespiratoryRate" => supportedUnits.Contains("BeatsPerMinute") ? "BeatsPerMinute" : supportedUnits.First(),
+                "WeighIn" => supportedUnits.FirstOrDefault(u => u.UnitName == "Kilograms") ?? supportedUnits.First(),
+                "TempCheck" => supportedUnits.FirstOrDefault(u => u.UnitName == "DegreesCelsius") ?? supportedUnits.First(),
+                "HeartRate" or "RespiratoryRate" => supportedUnits.FirstOrDefault(u => u.UnitName == "BeatsPerMinute") ?? supportedUnits.First(),
                 _ => supportedUnits.First()
             };
         }
 
-        private async Task<decimal> ConvertValueAsync(decimal value, string? sourceUnit, string targetUnit, string observationDefinitionName)
+        private async Task<decimal> ConvertValueAsync(decimal value, Unit? sourceUnit, Unit targetUnit, string observationDefinitionName)
         {
-            if (string.IsNullOrEmpty(sourceUnit) || sourceUnit == targetUnit)
+            if (sourceUnit == null || sourceUnit.UnitName == targetUnit.UnitName)
                 return value;
 
             try
             {
-                double convertedValue = await _unitConverter.ConvertAsync(sourceUnit, targetUnit, (double)value);
+                double convertedValue = await _unitConverter.ConvertAsync(sourceUnit.UnitName, targetUnit.UnitName, (double)value);
                 return (decimal)convertedValue;
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning($"No conversion rule for {sourceUnit} to {targetUnit} for {observationDefinitionName}. Returning original value. Error: {ex.Message}");
+                _logger.LogWarning($"No conversion rule for {sourceUnit.UnitName} to {targetUnit.UnitName} for {observationDefinitionName}. Returning original value. Error: {ex.Message}");
                 return value;
             }
         }
 
-        private async Task<double?> CalculateAverageRateAsync(List<Observation> observations, string standardUnitName, string displayUnitName, string observationDefinitionName)
+        private async Task<double?> CalculateAverageRateAsync(List<Observation> observations, Unit standardUnit, Unit displayUnit, string observationDefinitionName)
         {
             if (observations.Count < 2)
                 return null;
@@ -184,8 +184,8 @@ namespace BiermanTech.CriticalDog.Analytics
 
                 if (days > 0)
                 {
-                    var prevValue = await ConvertValueAsync(prev.Value, displayUnitName, standardUnitName, observationDefinitionName);
-                    var currValue = await ConvertValueAsync(curr.Value, displayUnitName, standardUnitName, observationDefinitionName);
+                    var prevValue = await ConvertValueAsync(prev.Value, displayUnit, standardUnit, observationDefinitionName);
+                    var currValue = await ConvertValueAsync(curr.Value, displayUnit, standardUnit, observationDefinitionName);
                     var valueChange = currValue - prevValue;
                     var rate = (double)(valueChange / (decimal)days);
                     totalRate += rate;

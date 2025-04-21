@@ -1,11 +1,6 @@
 ﻿using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Helpers;
-using BiermanTech.CriticalDog.Helpers.BiermanTech.CriticalDog.Helpers;
 using BiermanTech.CriticalDog.Reports.Columns;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json.Linq;
-using System.Linq.Expressions;
 using UniversalReportCore;
 
 namespace BiermanTech.CriticalDog.Reports.Domain

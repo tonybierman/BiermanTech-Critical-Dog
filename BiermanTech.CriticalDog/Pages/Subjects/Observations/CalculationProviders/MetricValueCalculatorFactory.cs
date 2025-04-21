@@ -1,11 +1,4 @@
-﻿using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Helpers.BiermanTech.CriticalDog.Helpers;
-using System;
-using System.Collections.Generic;
-using UniversalReportCore;
-using UniversalReportCore.PageMetadata;
-
-namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders
+﻿namespace BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders
 {
     public class MetricValueCalculatorFactory : IMetricValueCalculatorFactory
     {

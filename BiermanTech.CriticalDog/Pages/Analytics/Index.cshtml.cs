@@ -20,12 +20,15 @@ namespace BiermanTech.CriticalDog.Pages.Analytics
         }
 
         public ObservationChangeReport Report { get; set; } = new ObservationChangeReport();
+
         [BindProperty(SupportsGet = true)]
         public int SubjectId { get; set; }
+        
         [BindProperty(SupportsGet = true)]
         public string ObservationDefinitionName { get; set; } = string.Empty;
+        
         [BindProperty(SupportsGet = true)]
-        public string? UnitName { get; set; }
+        public string? Unit { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -37,7 +40,7 @@ namespace BiermanTech.CriticalDog.Pages.Analytics
 
             try
             {
-                Report = await _analyticsProvider.GetObservationChangeReportAsync(SubjectId, ObservationDefinitionName, UnitName);
+                Report = await _analyticsProvider.GetObservationChangeReportAsync(SubjectId, ObservationDefinitionName, Unit);
                 return Page();
             }
             catch (KeyNotFoundException ex)
@@ -47,7 +50,7 @@ namespace BiermanTech.CriticalDog.Pages.Analytics
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(ex, $"Invalid observation type or unit: {ObservationDefinitionName}, {UnitName}");
+                _logger.LogWarning(ex, $"Invalid observation type or unit: {ObservationDefinitionName}, {Unit}");
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }

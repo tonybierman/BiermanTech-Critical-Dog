@@ -1,4 +1,5 @@
-﻿using BiermanTech.CriticalDog.Data;
+﻿using BiermanTech.CanineHealth;
+using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Helpers;
 using BiermanTech.CriticalDog.Reports.Columns;
 using BiermanTech.CriticalDog.Services;

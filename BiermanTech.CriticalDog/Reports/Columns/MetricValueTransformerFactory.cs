@@ -1,8 +1,5 @@
-﻿using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Helpers.BiermanTech.CriticalDog.Helpers;
-using BiermanTech.CriticalDog.Reports.Columns.BiermanTech.CriticalDog.Reports.Columns;
-using System;
-using System.Collections.Generic;
+﻿using BiermanTech.CanineHealth;
+using BiermanTech.CriticalDog.Data;
 
 namespace BiermanTech.CriticalDog.Reports.Columns
 {
@@ -17,7 +14,10 @@ namespace BiermanTech.CriticalDog.Reports.Columns
             { "GeneticHealthConditionStatus", new MetricValueTransformer<GeneticHealthConditionStatusEnum>() },
             { "BodyConditionScore", new MetricValueTransformer<BodyConditionScoreEnum>() },
             { "StoolQualityScore", new MetricValueTransformer<StoolQualityScoreEnum>() },
-            { "ExerciseIntensity", new MetricValueTransformer<ExerciseIntensityLevelEnum>() }
+            { "ExerciseIntensity", new MetricValueTransformer<ExerciseIntensityLevelEnum>() },
+            { "Sex", new MetricValueTransformer<SexEnum>() },
+            { "BehaviorCategory", new MetricValueTransformer<CanineBehaviorCategoryEnum>() },
+            { "CoatCondition", new MetricValueTransformer<CoatConditionEnum>() }
         };
 
         /// <summary>
