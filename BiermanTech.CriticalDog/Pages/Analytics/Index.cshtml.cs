@@ -19,7 +19,7 @@ namespace BiermanTech.CriticalDog.Pages.Analytics
             _logger = logger;
         }
 
-        public ObservationChangeReport Report { get; set; } = new ObservationChangeReport();
+        public TrendReport Report { get; set; } = new TrendReport();
 
         [BindProperty(SupportsGet = true)]
         public int SubjectId { get; set; }

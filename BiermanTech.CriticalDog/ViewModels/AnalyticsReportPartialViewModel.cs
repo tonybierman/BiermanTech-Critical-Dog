@@ -4,7 +4,6 @@ namespace BiermanTech.CriticalDog.ViewModels
 {
     public class AnalyticsReportPartialViewModel
     {
-        public ObservationChangeReport Report { get; set; } = new ObservationChangeReport();
-
+        public TrendReport Report { get; set; } = new TrendReport();
     }
 }

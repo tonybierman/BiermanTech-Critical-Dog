@@ -9,7 +9,7 @@
 
 <h1>@StringHelper.SplitPascalCase(Model.Report.ObservationTypeName) Report for @Model.Report.SubjectName</h1>
 
-@if (Model.Report.ObservationRecords.Any())
+@if (Model.Report.Records.Any())
 {
     <!-- Include Chart.js library with fallback -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -42,7 +42,7 @@
 
             try {
                 const ctx = document.getElementById('observationChart').getContext('2d');
-                const observations = @Json.Serialize(Model.Report.ObservationRecords.OrderBy(o => o.RecordTime));
+                const observations = @Json.Serialize(Model.Report.Records.OrderBy(o => o.RecordTime));
 
                 // Log the raw observations to debug
                 console.log('Raw observations:', observations);

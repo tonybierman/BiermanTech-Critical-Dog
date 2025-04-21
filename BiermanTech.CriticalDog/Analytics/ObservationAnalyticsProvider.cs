@@ -20,7 +20,7 @@ namespace BiermanTech.CriticalDog.Analytics
             _unitConverter = unitConverter;
         }
 
-        public async Task<ObservationChangeReport> GetObservationChangeReportAsync(int subjectId, string observationDefinitionName, string? displayUnitName = null)
+        public async Task<TrendReport> GetObservationChangeReportAsync(int subjectId, string observationDefinitionName, string? displayUnitName = null)
         {
             _logger.LogInformation($"Generating observation change report for SubjectId: {subjectId}, Observation: {observationDefinitionName}, DisplayUnit: {displayUnitName ?? "default"}");
 
@@ -76,7 +76,7 @@ namespace BiermanTech.CriticalDog.Analytics
                 if (!records.Any())
                 {
                     _logger.LogInformation($"No {observationDefinitionName} records found for Subject: {subject.Name}");
-                    return new ObservationChangeReport
+                    return new TrendReport
                     {
                         SubjectName = subject.Name,
                         ObservationTypeName = observationDefinitionName,
@@ -89,7 +89,7 @@ namespace BiermanTech.CriticalDog.Analytics
                 }
 
                 // Process records
-                var observations = new List<ObservationRecord>();
+                var observations = new List<TrendReportRecord>();
                 for (int i = 0; i < records.Count; i++)
                 {
                     double? percentChangePerWeek = null;
@@ -111,7 +111,7 @@ namespace BiermanTech.CriticalDog.Analytics
                         }
                     }
 
-                    observations.Add(new ObservationRecord
+                    observations.Add(new TrendReportRecord
                     {
                         RecordTime = records[i].RecordTime,
                         Value = await ConvertValueAsync(records[i].MetricValue ?? 0, records[i].MetricType?.Unit, selectedDisplayUnit, observationDefinitionName),
@@ -133,7 +133,7 @@ namespace BiermanTech.CriticalDog.Analytics
                     averageWeeklyRate = validObservations.Average(a => a.PercentChangePerWeek.Value);
                 }
 
-                return new ObservationChangeReport
+                return new TrendReport
                 {
                     SubjectName = subject.Name,
                     ObservationTypeName = observationDefinitionName,
@@ -141,7 +141,7 @@ namespace BiermanTech.CriticalDog.Analytics
                     StandardUnitSymbol = standardUnit.UnitSymbol,
                     DisplayUnitName = selectedDisplayUnit.UnitName,
                     DisplayUnitSymbol = selectedDisplayUnit.UnitSymbol,
-                    ObservationRecords = observations,
+                    Records = observations,
                     AverageWeeklyRate = averageWeeklyRate,
                     TrendDescription = trendDescription
                 };
@@ -181,7 +181,7 @@ namespace BiermanTech.CriticalDog.Analytics
             }
         }
 
-        private async Task<double?> CalculateAverageRateAsync(List<ObservationRecord> observations, Unit standardUnit, Unit displayUnit, string observationDefinitionName)
+        private async Task<double?> CalculateAverageRateAsync(List<TrendReportRecord> observations, Unit standardUnit, Unit displayUnit, string observationDefinitionName)
         {
             if (observations.Count < 2)
                 return null;
@@ -210,7 +210,7 @@ namespace BiermanTech.CriticalDog.Analytics
             return intervals > 0 ? totalRate / intervals : null;
         }
 
-        private string DetermineTrend(List<ObservationRecord> observations, double? averageRate, Unit unit)
+        private string DetermineTrend(List<TrendReportRecord> observations, double? averageRate, Unit unit)
         {
             if (observations.Count < 2)
                 return "Insufficient data to determine trend.";

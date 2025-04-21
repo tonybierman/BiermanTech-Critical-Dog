@@ -4,7 +4,7 @@ namespace BiermanTech.CriticalDog.ViewModels
 {
     public class NutritionSciencePartialViewModel
     {
-        public ObservationChangeReport WeightReport { get; set; } = new ObservationChangeReport();
+        public TrendReport WeightReport { get; set; } = new TrendReport();
         public AnalyticsReportPartialViewModel AnalyticPartialVM { get; set; } = new AnalyticsReportPartialViewModel();
     }
 }

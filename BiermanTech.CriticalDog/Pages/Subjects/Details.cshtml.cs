@@ -27,7 +27,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
         }
 
-        public ObservationChangeReport WeightReport { get; private set; }
+        public TrendReport WeightReport { get; private set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {

@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var obs in Model.Report.ObservationRecords)
+            @foreach (var obs in Model.Report.Records)
             {
                 <tr>
                     <td>@obs.RecordTime.ToString("yyyy-MM-dd")</td>

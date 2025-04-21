@@ -32,7 +32,7 @@
 
         try {
             const ctx = document.getElementById('observationChart').getContext('2d');
-            const observations = @Json.Serialize(Model.Report.ObservationRecords.OrderBy(o => o.RecordTime));
+            const observations = @Json.Serialize(Model.Report.Records.OrderBy(o => o.RecordTime));
 
             // Log the raw observations to debug
             console.log('Raw observations:', observations);
