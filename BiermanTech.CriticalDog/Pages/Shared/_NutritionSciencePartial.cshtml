@@ -6,32 +6,65 @@
 @model NutritionSciencePartialViewModel
 
 @{
-    var weight = (double)Model.WeightRecord.MetricValue;
-    double weightInKgs = await Units.ConvertAsync(Model.WeightRecord.MetricType.Unit.UnitName, "Kilograms", (double)weight);
-    double weightInLbs = await Units.ConvertAsync(Model.WeightRecord.MetricType.Unit.UnitName, "Pounds", (double)weight);
-    var lifeStage = (LifeStageFactorsEnum)Model.LifestageRecord.MetricValue;
-    var (rer, lowerMer, upperMer) = CanineMerCalculator.CalculateMer(lifeStage, weightInKgs);
-    var meanMer = CanineMerCalculator.CalculateMeanMer((LifeStageFactorsEnum)Model.LifestageRecord.MetricValue, (double)Model.WeightRecord.MetricValue);
+    bool canShowCalc = false;
+    double weightInKgs = 0;
+    double weightInLbs = 0;
+    double rer = 0;
+    double meanMer = 0;
+    LifeStageFactorsEnum lifeStage = default;
+
+    if (Model?.WeightRecord?.MetricValue != null &&
+        Model?.WeightRecord?.MetricType?.Unit?.UnitName != null &&
+        Model?.LifestageRecord?.MetricValue != null)
+    {
+        decimal? metricValue = Model.WeightRecord.MetricValue;
+        double? weight = metricValue.HasValue ? (double)metricValue.Value : null;
+        if (weight.HasValue)
+        {
+            try
+            {
+                weightInKgs = await Units.ConvertAsync(
+                    Model.WeightRecord.MetricType.Unit.UnitName,
+                    "Kilograms",
+                    weight.Value);
+
+                weightInLbs = await Units.ConvertAsync(
+                    Model.WeightRecord.MetricType.Unit.UnitName,
+                    "Pounds",
+                    weight.Value);
+
+                lifeStage = (LifeStageFactorsEnum)Model.LifestageRecord.MetricValue;
+                (rer, double lowerMer, double upperMer) = CanineMerCalculator.CalculateMer(lifeStage, weightInKgs);
+                meanMer = CanineMerCalculator.CalculateMeanMer(lifeStage, weight.Value);
+
+                canShowCalc = true;
+            }
+            catch
+            {
+                // Log error if needed
+                canShowCalc = false;
+            }
+        }
+    }
 }
 
-<div class="section">
-    <h4>Energy Requirements</h4>
-    <ul>
-        <li>RER @rer.ToString("F2") kcal/day</li>
-        <li>MER @meanMer.ToString("F2") kcal/day</li>
-    </ul>
-    <p>A dog who weighs <strong>@weightInLbs.ToString("F2") lbs.</strong> with a life stage status of <strong>@EnumHelper.GetEnumDisplayName(lifeStage)</strong> has a <strong>RER</strong> of <strong>@rer.ToString("F2") kcal</strong> per day and an average <strong>MER</strong> of <strong>@meanMer.ToString("F2") kcal</strong> per day.</p>
-</div>
-
-@if (Model.WeightReport != null)
+@if (canShowCalc)
 {
-    @* @await Html.PartialAsync("_SubjectRecordPartial", @Model.WeightRecordPartialVM) *@
-
     <div class="section">
-        <h4>Weight History Report</h4>
-        @await Html.PartialAsync("_AnalyticsChartPartial", new AnalyticsReportPartialViewModel() { Report = Model.WeightReport })
-        @await Html.PartialAsync("_AnalyticsReportPartial", new AnalyticsReportPartialViewModel() { Report = Model.WeightReport })
+        <h4>Energy Requirements</h4>
+        <ul>
+            <li>RER @rer.ToString("F2") kcal/day</li>
+            <li>MER @meanMer.ToString("F2") kcal/day</li>
+        </ul>
+        <p>A dog who weighs <strong>@weightInLbs.ToString("F2") lbs.</strong> with a life stage status of <strong>@EnumHelper.GetEnumDisplayName(lifeStage)</strong> has a <strong>RER</strong> of <strong>@rer.ToString("F2") kcal</strong> per day and an average <strong>MER</strong> of <strong>@meanMer.ToString("F2") kcal</strong> per day.</p>
     </div>
 }
 
-
+@if (Model?.WeightReport != null)
+{
+    <div class="section">
+        <h4>Weight History Report</h4>
+        @await Html.PartialAsync("_AnalyticsChartPartial", new AnalyticsReportPartialViewModel { Report = Model.WeightReport })
+        @await Html.PartialAsync("_AnalyticsReportPartial", new AnalyticsReportPartialViewModel { Report = Model.WeightReport })
+    </div>
+}
