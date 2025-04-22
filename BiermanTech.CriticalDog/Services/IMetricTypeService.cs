@@ -11,8 +11,6 @@ namespace BiermanTech.CriticalDog.Services
         Task<List<MetricTypeInputViewModel>> GetAllMetricTypesAsync();
         Task<MetricType> GetMetricTypeByIdAsync(int id);
         Task<MetricTypeInputViewModel> GetMetricTypeViewModelByIdAsync(int id);
-        Task<SelectList> GetObservationDefinitionsSelectListAsync();
-        Task<SelectList> GetUnitsSelectListAsync();
         Task UpdateMetricTypeAsync(MetricTypeInputViewModel viewModel);
     }
 }

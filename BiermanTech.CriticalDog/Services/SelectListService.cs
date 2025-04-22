@@ -16,6 +16,34 @@ namespace BiermanTech.CriticalDog.Services
             _mapper = mapper;
         }
 
+        public async Task<SelectList> GetSubjectsSelectListAsync()
+        {
+            var subjects = await _context.GetFilteredSubjects()
+                .ToListAsync();
+            return new SelectList(subjects, nameof(Subject.Id), nameof(Subject.Name));
+        }
+
+        public async Task<SelectList> GetObservationDefinitionsSelectListAsync()
+        {
+            var definitions = await _context.ObservationDefinitions.ToListAsync();
+            return new SelectList(definitions, nameof(ObservationDefinition.Id), nameof(ObservationDefinition.DefinitionName));
+        }
+
+        public async Task<SelectList> GetMetaTagsSelectListAsync()
+        {
+            var metaTags = await _context.MetaTags.ToListAsync();
+            return new SelectList(metaTags, nameof(MetaTag.Id), nameof(MetaTag.TagName));
+        }
+
+        public async Task<SelectList> GetUnitsSelectListAsync()
+        {
+            var units = await _context.Units
+                .Where(u => u.IsActive == true)
+                .OrderBy(u => u.UnitName)
+                .ToListAsync();
+            return new SelectList(units, nameof(Unit.Id), nameof(Unit.UnitName));
+        }
+
         public async Task<SelectList> GetMetricTypesSelectListAsync(IEnumerable<int>? selectedIds = null)
         {
             var items = await _context.MetricTypes

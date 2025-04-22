@@ -74,31 +74,6 @@ namespace BiermanTech.CriticalDog.Services
             return viewModels;
         }
 
-        public async Task<SelectList> GetSubjectsSelectListAsync()
-        {
-            var subjects = await _context.GetFilteredSubjects()
-                .ToListAsync();
-            return new SelectList(subjects, nameof(Subject.Id), nameof(Subject.Name));
-        }
-
-        public async Task<SelectList> GetObservationDefinitionsSelectListAsync()
-        {
-            var definitions = await _context.ObservationDefinitions.ToListAsync();
-            return new SelectList(definitions, nameof(ObservationDefinition.Id), nameof(ObservationDefinition.DefinitionName));
-        }
-
-        public async Task<SelectList> GetMetricTypesSelectListAsync()
-        {
-            var metricTypes = await _context.MetricTypes.ToListAsync();
-            return new SelectList(metricTypes, nameof(MetricType.Id), nameof(MetricType.Id));
-        }
-
-        public async Task<SelectList> GetMetaTagsSelectListAsync()
-        {
-            var metaTags = await _context.MetaTags.ToListAsync();
-            return new SelectList(metaTags, nameof(MetaTag.Id), nameof(MetaTag.TagName));
-        }
-
         public async Task CreateSubjectRecordAsync(SubjectRecordInputViewModel viewModel)
         {
             var entity = _mapper.Map<SubjectRecord>(viewModel);

@@ -39,24 +39,6 @@ namespace BiermanTech.CriticalDog.Services
             return _mapper.Map<List<MetricTypeInputViewModel>>(metricTypes);
         }
 
-        public async Task<SelectList> GetObservationDefinitionsSelectListAsync()
-        {
-            var definitions = await _context.ObservationDefinitions
-                .Where(od => od.IsActive == true)
-                .OrderBy(od => od.DefinitionName)
-                .ToListAsync();
-            return new SelectList(definitions, nameof(ObservationDefinition.Id), nameof(ObservationDefinition.DefinitionName));
-        }
-
-        public async Task<SelectList> GetUnitsSelectListAsync()
-        {
-            var units = await _context.Units
-                .Where(u => u.IsActive == true)
-                .OrderBy(u => u.UnitName)
-                .ToListAsync();
-            return new SelectList(units, nameof(Unit.Id), nameof(Unit.UnitName));
-        }
-
         public async Task CreateMetricTypeAsync(MetricTypeInputViewModel viewModel)
         {
             var entity = _mapper.Map<MetricType>(viewModel);

@@ -9,10 +9,12 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
     public class CreateModel : PageModel
     {
         private readonly IMetricTypeService _metricTypeService;
+        private readonly ISelectListService _selectListService;
 
-        public CreateModel(IMetricTypeService metricTypeService)
+        public CreateModel(IMetricTypeService metricTypeService, ISelectListService selectListService)
         {
             _metricTypeService = metricTypeService;
+            _selectListService = selectListService;
         }
 
         [BindProperty]
@@ -23,8 +25,8 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
 
         public async Task<IActionResult> OnGetAsync()
         {
-            ObservationDefinitions = await _metricTypeService.GetObservationDefinitionsSelectListAsync();
-            Units = await _metricTypeService.GetUnitsSelectListAsync();
+            ObservationDefinitions = await _selectListService.GetObservationDefinitionsSelectListAsync();
+            Units = await _selectListService.GetUnitsSelectListAsync();
             return Page();
         }
 
@@ -32,8 +34,8 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
         {
             if (!ModelState.IsValid)
             {
-                ObservationDefinitions = await _metricTypeService.GetObservationDefinitionsSelectListAsync();
-                Units = await _metricTypeService.GetUnitsSelectListAsync();
+                ObservationDefinitions = await _selectListService.GetObservationDefinitionsSelectListAsync();
+                Units = await _selectListService.GetUnitsSelectListAsync();
                 return Page();
             }
 

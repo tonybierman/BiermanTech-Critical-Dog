@@ -8,10 +8,12 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
 {
     public class EditModel : PageModel
     {
+        private readonly ISelectListService _selectListService;
         private readonly IMetricTypeService _metricTypeService;
 
-        public EditModel(IMetricTypeService metricTypeService)
+        public EditModel(IMetricTypeService metricTypeService, ISelectListService selectListService)
         {
+            _selectListService = selectListService;
             _metricTypeService = metricTypeService;
         }
 
@@ -29,8 +31,8 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
                 return NotFound();
             }
 
-            ObservationDefinitions = await _metricTypeService.GetObservationDefinitionsSelectListAsync();
-            Units = await _metricTypeService.GetUnitsSelectListAsync();
+            ObservationDefinitions = await _selectListService.GetObservationDefinitionsSelectListAsync();
+            Units = await _selectListService.GetUnitsSelectListAsync();
             return Page();
         }
 
@@ -38,8 +40,8 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
         {
             if (!ModelState.IsValid)
             {
-                ObservationDefinitions = await _metricTypeService.GetObservationDefinitionsSelectListAsync();
-                Units = await _metricTypeService.GetUnitsSelectListAsync();
+                ObservationDefinitions = await _selectListService.GetObservationDefinitionsSelectListAsync();
+                Units = await _selectListService.GetUnitsSelectListAsync();
                 return Page();
             }
 

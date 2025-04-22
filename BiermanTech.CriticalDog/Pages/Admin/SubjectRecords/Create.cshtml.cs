@@ -9,10 +9,12 @@ namespace BiermanTech.CriticalDog.Pages.Admin.SubjectRecords
     public class CreateModel : PageModel
     {
         private readonly ISubjectRecordService _recordService;
+        private readonly ISelectListService _selectListService;
 
-        public CreateModel(ISubjectRecordService recordService)
+        public CreateModel(ISubjectRecordService recordService, ISelectListService selectListService)
         {
             _recordService = recordService;
+            _selectListService = selectListService;
         }
 
         [BindProperty]
@@ -25,10 +27,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.SubjectRecords
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Subjects = await _recordService.GetSubjectsSelectListAsync();
-            ObservationDefinitions = await _recordService.GetObservationDefinitionsSelectListAsync();
-            MetricTypes = await _recordService.GetMetricTypesSelectListAsync();
-            MetaTags = await _recordService.GetMetaTagsSelectListAsync();
+            await EnsureSelectLists();
             return Page();
         }
 
@@ -36,15 +35,20 @@ namespace BiermanTech.CriticalDog.Pages.Admin.SubjectRecords
         {
             if (!ModelState.IsValid)
             {
-                Subjects = await _recordService.GetSubjectsSelectListAsync();
-                ObservationDefinitions = await _recordService.GetObservationDefinitionsSelectListAsync();
-                MetricTypes = await _recordService.GetMetricTypesSelectListAsync();
-                MetaTags = await _recordService.GetMetaTagsSelectListAsync();
+                await EnsureSelectLists();
                 return Page();
             }
 
             await _recordService.CreateSubjectRecordAsync(RecordVM);
             return RedirectToPage("./Index");
+        }
+
+        private async Task EnsureSelectLists()
+        {
+            Subjects = await _selectListService.GetSubjectsSelectListAsync();
+            ObservationDefinitions = await _selectListService.GetObservationDefinitionsSelectListAsync();
+            MetricTypes = await _selectListService.GetMetricTypesSelectListAsync();
+            MetaTags = await _selectListService.GetMetaTagsSelectListAsync();
         }
     }
 }
