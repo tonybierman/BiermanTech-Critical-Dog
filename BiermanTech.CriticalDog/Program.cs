@@ -86,6 +86,7 @@ builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<ISubjectRecordService, SubjectRecordService>();
 builder.Services.AddScoped<IMetricValueCalculatorFactory, MetricValueCalculatorFactory>();
 builder.Services.AddScoped<IMetricValueCalculatorProvider, DailyCaloricIntakeCalculator>();
+builder.Services.AddScoped<IEnergyCalculationService, EnergyCalculationService>();
 
 // Auth
 builder.Services.AddScoped<IAuthorizationHandler, SubjectPermissionHandler>();
