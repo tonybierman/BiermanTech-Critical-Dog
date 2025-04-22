@@ -29,6 +29,12 @@
             </div>
 
             <div class="form-group">
+                <label asp-for="DefinitionVM.Description" class="control-label"></label>
+                <input asp-for="DefinitionVM.Description" class="form-control" />
+                <span asp-validation-for="DefinitionVM.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="DefinitionVM.ObservationTypeId" class="control-label"></label>
                 <select asp-for="DefinitionVM.ObservationTypeId" class="form-control" asp-items="Model.ObservationTypes"></select>
                 <span asp-validation-for="DefinitionVM.ObservationTypeId" class="text-danger"></span>

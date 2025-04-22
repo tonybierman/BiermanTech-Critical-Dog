@@ -55,6 +55,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
                 var clonedDefinition = new ObservationDefinitionInputViewModel
                 {
                     DefinitionName = $"{definition.DefinitionName}_Copy_{DateTime.UtcNow:yyyyMMddHHmmss}",
+                    Description = definition.Description,
                     MinimumValue = definition.MinimumValue,
                     MaximumValue = definition.MaximumValue,
                     IsActive = definition.IsActive,
