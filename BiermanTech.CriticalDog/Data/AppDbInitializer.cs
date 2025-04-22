@@ -452,6 +452,15 @@ namespace BiermanTech.CriticalDog.Data
                 },
                 new ObservationDefinitionData
                 {
+                    Name = "IdealWeight",
+                    ObservationTypeName = "Weight",
+                    MinimumValue = 0m,
+                    MaximumValue = 200m,
+                    Description = "Quantitative measurement of subject's ideal weight",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
                     Name = "TempCheck",
                     ObservationTypeName = "Temperature",
                     MinimumValue = 36m,
@@ -643,6 +652,8 @@ namespace BiermanTech.CriticalDog.Data
                 ("CanineOfaHipGrade", "CanineBiology"),
                 ("WeighIn", "CanineBiology"),
                 ("WeighIn", "NutritionScience"),
+                ("IdealWeight", "CanineBiology"),
+                ("IdealWeight", "NutritionScience"),
                 ("TempCheck", "VeterinaryMedicine"),
                 ("BehaviorNote", "Ethology"),
                 ("MedicationDose", "VeterinaryMedicine"),
@@ -674,6 +685,11 @@ namespace BiermanTech.CriticalDog.Data
                 ("WeighIn", "Milligrams"),
                 ("WeighIn", "Pounds"),
                 ("WeighIn", "Ounces"),
+                ("IdealWeight", "Kilograms"),
+                ("IdealWeight", "Grams"),
+                ("IdealWeight", "Milligrams"),
+                ("IdealWeight", "Pounds"),
+                ("IdealWeight", "Ounces"),
                 ("TempCheck", "DegreesCelsius"),
                 ("TempCheck", "DegreesFahrenheit"),
                 ("MedicationDose", "Milliliters"),
