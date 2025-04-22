@@ -9,10 +9,12 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
     public class EditModel : PageModel
     {
         private readonly IObservationDefinitionService _definitionService;
+        private readonly ISelectListService _selectListService;
 
-        public EditModel(IObservationDefinitionService definitionService)
+        public EditModel(IObservationDefinitionService definitionService, ISelectListService selectListService)
         {
             _definitionService = definitionService;
+            _selectListService = selectListService;
         }
 
         [BindProperty]
@@ -30,9 +32,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
                 return NotFound();
             }
 
-            ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
-            ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
-            MetricTypes = await _definitionService.GetMetricTypesSelectListAsync(DefinitionVM.MetricTypeIds);
+            await EnsureSelectLists();
 
             return Page();
         }
@@ -41,9 +41,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
         {
             if (!ModelState.IsValid)
             {
-                ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
-                ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
-                MetricTypes = await _definitionService.GetMetricTypesSelectListAsync(DefinitionVM.MetricTypeIds);
+                await EnsureSelectLists();
                 return Page();
             }
 
@@ -62,11 +60,16 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
                 TempData["ErrorMessage"] = "An error occurred while updating the observation definition. Please try again.";
                 // Log the error (assuming ILogger is injected)
                 // _logger.LogError(ex, "Error updating ObservationDefinition with ID {Id}", DefinitionVM.Id);
-                ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
-                ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
-                MetricTypes = await _definitionService.GetMetricTypesSelectListAsync(DefinitionVM.MetricTypeIds);
+                await EnsureSelectLists();
                 return Page();
             }
+        }
+
+        private async Task EnsureSelectLists()
+        {
+            ObservationTypes = await _selectListService.GetObservationTypesSelectListAsync();
+            ScientificDisciplines = await _selectListService.GetScientificDisciplinesSelectListAsync();
+            MetricTypes = await _selectListService.GetMetricTypesSelectListAsync(DefinitionVM.MetricTypeIds);
         }
     }
 }

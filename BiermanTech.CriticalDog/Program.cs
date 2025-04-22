@@ -73,6 +73,7 @@ IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 // Add services to the container.
+builder.Services.AddScoped<ISelectListService, SelectListService>();
 builder.Services.AddScoped<ISubjectObservationService, SubjectObservationService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IScientificDisciplineService, ScientificDisciplineService>();

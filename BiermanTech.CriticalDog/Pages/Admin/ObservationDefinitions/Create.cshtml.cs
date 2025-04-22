@@ -11,11 +11,13 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
 {
     public class CreateModel : PageModel
     {
+        private readonly ISelectListService _selectListService;
         private readonly IObservationDefinitionService _definitionService;
         private readonly ILogger<CreateModel> _logger;
 
-        public CreateModel(IObservationDefinitionService definitionService, ILogger<CreateModel> logger)
+        public CreateModel(IObservationDefinitionService definitionService, ISelectListService selectListService, ILogger<CreateModel> logger)
         {
+            _selectListService = selectListService;
             _definitionService = definitionService;
             _logger = logger;
         }
@@ -30,9 +32,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
         public async Task<IActionResult> OnGetAsync()
         {
             // Load select lists
-            ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
-            ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
-            MetricTypes = await _definitionService.GetMetricTypesSelectListAsync();
+            await EnsureSelectLists();
 
             // Check for cloned definition in TempData
             if (TempData["ClonedDefinition"] is string clonedJson)
@@ -48,9 +48,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
         {
             if (!ModelState.IsValid)
             {
-                ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
-                ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
-                MetricTypes = await _definitionService.GetMetricTypesSelectListAsync();
+                await EnsureSelectLists();
                 return Page();
             }
 
@@ -64,11 +62,16 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
             {
                 TempData[Constants.AlertDanger] = $"An error occurred while creating the observation definition. {ex.GetAllExceptionMessages()}";
                 _logger.LogError(ex, "Error creating ObservationDefinition.");
-                ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
-                ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
-                MetricTypes = await _definitionService.GetMetricTypesSelectListAsync();
+                await EnsureSelectLists();
                 return Page();
             }
+        }
+
+        private async Task EnsureSelectLists()
+        {
+            ObservationTypes = await _selectListService.GetObservationTypesSelectListAsync();
+            ScientificDisciplines = await _selectListService.GetScientificDisciplinesSelectListAsync();
+            MetricTypes = await _selectListService.GetMetricTypesSelectListAsync();
         }
     }
 }
