@@ -45,56 +45,6 @@ namespace BiermanTech.CriticalDog.Services
                 .FirstOrDefaultAsync(mt => mt.Id == metricTypeId);
         }
 
-        public async Task<SelectList> GetObservationDefinitionsSelectListAsync(int? selectedId = null)
-        {
-            var items = await _context.ObservationDefinitions
-                .Where(od => od.IsActive == true)
-                .OrderBy(od => od.DefinitionName)
-                .Select(od => new SelectListItem
-                {
-                    Value = od.Id.ToString(),
-                    Text = StringHelper.SplitPascalCase(od.DefinitionName)
-                })
-                .ToListAsync();
-
-            return new SelectList(items, "Value", "Text", selectedId?.ToString());
-        }
-
-        public async Task<SelectList> GetMetricTypesSelectListAsync(int observationDefinitionId, int? selectedId = null)
-        {
-            var metricTypeIds = await _context.Set<Dictionary<string, object>>("ObservationDefinitionMetricType")
-                .Where(j => (int)j["ObservationDefinitionId"] == observationDefinitionId)
-                .Select(j => (int)j["MetricTypeId"])
-                .ToListAsync();
-
-            var items = await _context.MetricTypes
-                .Where(mt => metricTypeIds.Contains(mt.Id) && mt.IsActive == true)
-                .OrderBy(mt => mt.Description)
-                .Select(mt => new SelectListItem
-                {
-                    Value = mt.Id.ToString(),
-                    Text = mt.Description
-                })
-                .ToListAsync();
-
-            return new SelectList(items, "Value", "Text", selectedId?.ToString());
-        }
-
-        public async Task<SelectList> GetMetaTagsSelectListAsync(IEnumerable<int>? selectedIds = null)
-        {
-            var items = await _context.MetaTags
-                .Where(mt => mt.IsActive == true)
-                .OrderBy(mt => mt.TagName)
-                .Select(mt => new SelectListItem
-                {
-                    Value = mt.Id.ToString(),
-                    Text = mt.TagName
-                })
-                .ToListAsync();
-
-            return new SelectList(items, "Value", "Text", selectedIds);
-        }
-
         public async Task<int> SaveSubjectRecordAsync(SubjectRecord record, IEnumerable<int>? selectedMetaTagIds)
         {
             try

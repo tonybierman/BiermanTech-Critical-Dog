@@ -12,7 +12,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep2Model : PageModel
     {
-        private readonly ISubjectObservationService _service;
+        private readonly ISelectListService _selectListService;
+        private readonly ISubjectObservationService _observationService;
         private readonly ILogger<CreateStep2Model> _logger;
         private readonly IMapper _mapper;
 
@@ -21,11 +22,13 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         public int SelectedItem { get; set; }
 
         public CreateStep2Model(
-            ISubjectObservationService service,
+            ISubjectObservationService observationService,
+            ISelectListService selectListService,
             ILogger<CreateStep2Model> logger,
             IMapper mapper)
         {
-            _service = service;
+            _selectListService = selectListService;
+            _observationService = observationService;
             _logger = logger;
             _mapper = mapper;
         }
@@ -43,14 +46,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 return RedirectToPage("CreateStep1", new { dogId });
             }
 
-            var dog = await _service.GetByIdAsync(dogId);
+            var dog = await _observationService.GetByIdAsync(dogId);
             if (dog == null)
             {
                 _logger.LogError("Dog with ID {DogId} not found.", dogId);
                 return NotFound();
             }
 
-            var observationDefinition = await _service.GetObservationDefinitionByIdAsync(definitionId);
+            var observationDefinition = await _observationService.GetObservationDefinitionByIdAsync(definitionId);
             if (observationDefinition == null)
             {
                 _logger.LogError("ObservationDefinition with ID {ObservationDefinitionId} not found.", definitionId);
@@ -74,7 +77,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
-            var observationDefinition = await _service.GetObservationDefinitionByIdAsync(ObservationVM.ObservationDefinitionId);
+            var observationDefinition = await _observationService.GetObservationDefinitionByIdAsync(ObservationVM.ObservationDefinitionId);
             if (observationDefinition == null)
             {
                 _logger.LogError("ObservationDefinition with ID {ObservationDefinitionId} not found.", ObservationVM.ObservationDefinitionId);
@@ -91,7 +94,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 {
                     ModelState.AddModelError($"ObservationVM.{error.Key}", error.Value);
                 }
-                ObservationVM.MetricTypes = await _service.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
+                ObservationVM.MetricTypes = await _selectListService.GetMetricTypesSelectListAsync(ObservationVM.ObservationDefinitionId.Value);
                 return Page();
             }
 

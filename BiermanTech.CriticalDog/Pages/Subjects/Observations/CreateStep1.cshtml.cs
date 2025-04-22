@@ -9,12 +9,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep1Model : PageModel
     {
-        private readonly ISubjectObservationService _service;
+        private readonly ISelectListService _selectListService;
+        private readonly ISubjectObservationService _observationService;
         private readonly ILogger<CreateStep1Model> _logger;
 
-        public CreateStep1Model(ISubjectObservationService service, ILogger<CreateStep1Model> logger)
+        public CreateStep1Model(ISubjectObservationService observationService, ISelectListService selectListService, ILogger<CreateStep1Model> logger)
         {
-            _service = service;
+            _selectListService = selectListService;
+            _observationService = observationService;
             _logger = logger;
         }
 
@@ -23,7 +25,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public async Task<IActionResult> OnGetAsync(int dogId)
         {
-            var dog = await _service.GetByIdAsync(dogId);
+            var dog = await _observationService.GetByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
@@ -31,14 +33,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             Observation.SubjectId = dogId;
             Observation.SubjectName = dog.Name ?? "Unknown";
-            Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
+            Observation.ObservationDefinitions = await _selectListService.GetObservationDefinitionsSelectListAsync();
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
-            var dog = await _service.GetByIdAsync(dogId);
+            var dog = await _observationService.GetByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
@@ -47,12 +49,12 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             if (!Observation.ObservationDefinitionId.HasValue)
             {
                 ModelState.AddModelError("Observation.ObservationDefinitionId", "Please select an observation type.");
-                Observation.ObservationDefinitions = await _service.GetObservationDefinitionsSelectListAsync();
+                Observation.ObservationDefinitions = await _selectListService.GetObservationDefinitionsSelectListAsync();
 
                 return Page();
             }
 
-            var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
+            var observationDefinition = await _observationService.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
 
             // Resolve providers (injected via DI or instantiated)
             var providers = new List<IObservationRouteProvider>

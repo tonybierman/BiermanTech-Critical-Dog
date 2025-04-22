@@ -9,12 +9,14 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep3Model : PageModel
     {
-        private readonly ISubjectObservationService _service;
+        private readonly ISelectListService _selectListService;
+        private readonly ISubjectObservationService _observationService;
         private readonly ILogger<CreateStep3Model> _logger;
 
-        public CreateStep3Model(ISubjectObservationService service, ILogger<CreateStep3Model> logger)
+        public CreateStep3Model(ISubjectObservationService observationService, ISelectListService selectListService, ILogger<CreateStep3Model> logger)
         {
-            _service = service;
+            _selectListService = selectListService;
+            _observationService = observationService;
             _logger = logger;
         }
 
@@ -34,7 +36,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             Observation = System.Text.Json.JsonSerializer.Deserialize<CreateObservationViewModel>(TempData["Observation"].ToString());
             Observation.SubjectId = dogId;
-            var dog = await _service.GetByIdAsync(dogId);
+            var dog = await _observationService.GetByIdAsync(dogId);
             if (dog == null)
             {
                 return NotFound();
@@ -42,7 +44,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             Observation.SubjectName = dog.Name ?? "Unknown";
 
-            var observationDefinition = await _service.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
+            var observationDefinition = await _observationService.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
             if (observationDefinition == null)
             {
                 return NotFound();
@@ -50,12 +52,12 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
             ObservationDefinitionName = observationDefinition.DefinitionName;
 
-            var metricType = await _service.GetMetricTypeByIdAsync(Observation.MetricTypeId);
+            var metricType = await _observationService.GetMetricTypeByIdAsync(Observation.MetricTypeId);
             MetricTypeDescription = metricType?.Description ?? "Unknown";
 
             MetricValueTransformer = MetricValueTransformerFactory.GetProvider(observationDefinition);
 
-            Observation.MetaTags = await _service.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
+            Observation.MetaTags = await _selectListService.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
             TempData.Keep("Observation");
 
             return Page();
@@ -78,7 +80,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             };
 
             var result = await ServiceHelper.ExecuteAsyncOperation(
-                () => _service.SaveSubjectRecordAsync(dogRecord, Observation.SelectedMetaTagIds),
+                () => _observationService.SaveSubjectRecordAsync(dogRecord, Observation.SelectedMetaTagIds),
                 TempData,
                 _logger
             );
