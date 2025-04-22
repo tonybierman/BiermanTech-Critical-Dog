@@ -12,66 +12,39 @@ public partial class AppDbContext : DbContext
     }
 
     public virtual DbSet<MetaTag> MetaTags { get; set; }
-
     public virtual DbSet<MetricType> MetricTypes { get; set; }
-
     public virtual DbSet<ObservationDefinition> ObservationDefinitions { get; set; }
-
     public virtual DbSet<ObservationType> ObservationTypes { get; set; }
-
     public virtual DbSet<ScientificDiscipline> ScientificDisciplines { get; set; }
-
-    public virtual DbSet<Subject> Subjects { get; set; } // Changed from protected to public for consistency
-
-    public virtual DbSet<SubjectRecord> SubjectRecords { get; set; } // Changed from protected to public for consistency
-
+    public virtual DbSet<Subject> Subjects { get; set; }
+    public virtual DbSet<SubjectRecord> SubjectRecords { get; set; }
     public virtual DbSet<SubjectType> SubjectTypes { get; set; }
-
     public virtual DbSet<Unit> Units { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .HasCharSet("utf8mb4");
+        modelBuilder.HasCharSet("utf8mb4");
 
         modelBuilder.Entity<MetaTag>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("MetaTag");
-
             entity.HasIndex(e => e.TagName, "TagName").IsUnique();
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
             entity.Property(e => e.TagName).HasMaxLength(50);
         });
 
         modelBuilder.Entity<MetricType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("MetricType");
-
             entity.HasIndex(e => e.UnitId, "FK_MetricType_Unit");
-
-            entity.HasIndex(e => new { e.ObservationDefinitionId, e.UnitId }, "ObservationDefinitionId").IsUnique();
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.ObservationDefinitionId).HasColumnType("int(11)");
+            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
             entity.Property(e => e.UnitId).HasColumnType("int(11)");
-
-            entity.HasOne(d => d.ObservationDefinition).WithMany(p => p.MetricTypes)
-                .HasForeignKey(d => d.ObservationDefinitionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MetricType_ObservationDefinition");
 
             entity.HasOne(d => d.Unit).WithMany(p => p.MetricTypes)
                 .HasForeignKey(d => d.UnitId)
@@ -82,22 +55,14 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<ObservationDefinition>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("ObservationDefinition");
-
             entity.HasIndex(e => e.DefinitionName, "DefinitionName").IsUnique();
-
             entity.HasIndex(e => e.ObservationTypeId, "FK_ObservationDefinition_ObservationType");
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.DefinitionName).HasMaxLength(50);
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.IsSingular)
-                .IsRequired()
-                .HasDefaultValueSql("'0'");
+            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsSingular).IsRequired().HasDefaultValueSql("'0'");
             entity.Property(e => e.MaximumValue).HasPrecision(10, 2);
             entity.Property(e => e.MinimumValue).HasPrecision(10, 2);
             entity.Property(e => e.ObservationTypeId).HasColumnType("int(11)");
@@ -112,10 +77,11 @@ public partial class AppDbContext : DbContext
                     "ObservationDefinitionDiscipline",
                     r => r.HasOne<ScientificDiscipline>().WithMany()
                         .HasForeignKey("ScientificDisciplineId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_ObservationDefinitionDiscipline_ScientificDiscipline"),
                     l => l.HasOne<ObservationDefinition>().WithMany()
                         .HasForeignKey("ObservationDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_ObservationDefinitionDiscipline_ObservationDefinition"),
                     j =>
                     {
@@ -128,15 +94,38 @@ public partial class AppDbContext : DbContext
                         j.IndexerProperty<int>("ScientificDisciplineId").HasColumnType("int(11)");
                     });
 
+            entity.HasMany(d => d.MetricTypes).WithMany(p => p.ObservationDefinitions)
+                .UsingEntity<Dictionary<string, object>>(
+                    "ObservationDefinitionMetricType",
+                    r => r.HasOne<MetricType>().WithMany()
+                        .HasForeignKey("MetricTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_ObservationDefinitionMetricType_MetricType"),
+                    l => l.HasOne<ObservationDefinition>().WithMany()
+                        .HasForeignKey("ObservationDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_ObservationDefinitionMetricType_ObservationDefinition"),
+                    j =>
+                    {
+                        j.HasKey("ObservationDefinitionId", "MetricTypeId")
+                            .HasName("PRIMARY")
+                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        j.ToTable("ObservationDefinitionMetricType");
+                        j.HasIndex(new[] { "MetricTypeId" }, "FK_ObservationDefinitionMetricType_MetricType");
+                        j.IndexerProperty<int>("ObservationDefinitionId").HasColumnType("int(11)");
+                        j.IndexerProperty<int>("MetricTypeId").HasColumnType("int(11)");
+                    });
+
             entity.HasMany(d => d.Units).WithMany(p => p.ObservationDefinitions)
                 .UsingEntity<Dictionary<string, object>>(
                     "ObservationDefinitionUnit",
                     r => r.HasOne<Unit>().WithMany()
                         .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_ObservationDefinitionUnit_Unit"),
                     l => l.HasOne<ObservationDefinition>().WithMany()
                         .HasForeignKey("ObservationDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_ObservationDefinitionUnit_ObservationDefinition"),
                     j =>
                     {
@@ -153,47 +142,32 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<ObservationType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("ObservationType");
-
             entity.HasIndex(e => e.TypeName, "TypeName").IsUnique();
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
             entity.Property(e => e.TypeName).HasMaxLength(50);
         });
 
         modelBuilder.Entity<ScientificDiscipline>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("ScientificDiscipline");
-
             entity.HasIndex(e => e.DisciplineName, "DisciplineName").IsUnique();
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.DisciplineName).HasMaxLength(50);
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
         });
 
         modelBuilder.Entity<Subject>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("Subject");
-
             entity.HasIndex(e => e.SubjectTypeId, "FK_Subject_SubjectType");
-
             entity.HasIndex(e => e.Name, "IDX_Subject_Name");
-
             entity.HasIndex(e => new { e.Name, e.Breed, e.ArrivalDate }, "Name").IsUnique();
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Breed).HasMaxLength(50);
             entity.Property(e => e.Name).HasMaxLength(50);
@@ -205,15 +179,13 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UpdatedBy).HasMaxLength(450);
             entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.Permissions).HasColumnType("int(11)"); // Added Permissions property
+            entity.Property(e => e.Permissions).HasColumnType("int(11)");
 
-            entity.HasOne(d => d.SubjectType)
-                .WithMany(p => p.Subjects)
+            entity.HasOne(d => d.SubjectType).WithMany(p => p.Subjects)
                 .HasForeignKey(d => d.SubjectTypeId)
                 .HasConstraintName("FK_Subject_SubjectType");
 
-            entity.HasOne(d => d.User)
-                .WithMany()
+            entity.HasOne(d => d.User).WithMany()
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Subject_AspNetUsers_UserId");
         });
@@ -221,17 +193,11 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<SubjectRecord>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("SubjectRecord");
-
             entity.HasIndex(e => e.MetricTypeId, "IDX_SubjectRecord_MetricTypeId");
-
             entity.HasIndex(e => e.ObservationDefinitionId, "IDX_SubjectRecord_ObservationDefinitionId");
-
             entity.HasIndex(e => e.RecordTime, "IDX_SubjectRecord_RecordTime");
-
             entity.HasIndex(e => e.SubjectId, "IDX_SubjectRecord_SubjectId");
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.CreatedBy).HasMaxLength(450);
             entity.Property(e => e.UpdatedBy).HasMaxLength(450);
@@ -241,9 +207,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.MetricValue).HasPrecision(10, 2);
             entity.Property(e => e.Note).HasColumnType("text");
             entity.Property(e => e.ObservationDefinitionId).HasColumnType("int(11)");
-            entity.Property(e => e.RecordTime)
-                .HasDefaultValueSql("current_timestamp()")
-                .HasColumnType("datetime");
+            entity.Property(e => e.RecordTime).HasDefaultValueSql("current_timestamp()").HasColumnType("datetime");
             entity.Property(e => e.SubjectId).HasColumnType("int(11)");
 
             entity.HasOne(d => d.MetricType).WithMany(p => p.SubjectRecords)
@@ -253,7 +217,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasOne(d => d.ObservationDefinition).WithMany(p => p.SubjectRecords)
                 .HasForeignKey(d => d.ObservationDefinitionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // Changed to Cascade for consistency
                 .HasConstraintName("FK_SubjectRecord_ObservationDefinition");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.SubjectRecords)
@@ -265,16 +229,15 @@ public partial class AppDbContext : DbContext
                     "SubjectRecordMetaTag",
                     r => r.HasOne<MetaTag>().WithMany()
                         .HasForeignKey("MetaTagId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_SubjectRecordMetaTag_MetaTag"),
                     l => l.HasOne<SubjectRecord>().WithMany()
                         .HasForeignKey("SubjectRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_SubjectRecordMetaTag_SubjectRecord"),
                     j =>
                     {
-                        j.HasKey("SubjectRecordId", "MetaTagId")
-                            .HasName("PRIMARY")
-                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        j.HasKey("SubjectRecordId", "MetaTagId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
                         j.ToTable("SubjectRecordMetaTag");
                         j.HasIndex(new[] { "MetaTagId" }, "FK_SubjectRecordMetaTag_MetaTag");
                         j.IndexerProperty<int>("SubjectRecordId").HasColumnType("int(11)");
@@ -285,11 +248,8 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<SubjectType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("SubjectType");
-
             entity.HasIndex(e => e.TypeName, "TypeName").IsUnique();
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.TypeName).HasMaxLength(50);
@@ -298,18 +258,12 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<Unit>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
-
             entity.ToTable("Unit");
-
             entity.HasIndex(e => e.UnitName, "UnitName").IsUnique();
-
             entity.HasIndex(e => e.UnitSymbol, "UnitSymbol").IsUnique();
-
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
             entity.Property(e => e.UnitName).HasMaxLength(20);
             entity.Property(e => e.UnitSymbol).HasMaxLength(5);
         });

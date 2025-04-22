@@ -1,4 +1,4 @@
-﻿using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -62,8 +62,13 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task<SelectList> GetMetricTypesSelectListAsync(int observationDefinitionId, int? selectedId = null)
         {
+            var metricTypeIds = await _context.Set<Dictionary<string, object>>("ObservationDefinitionMetricType")
+                .Where(j => (int)j["ObservationDefinitionId"] == observationDefinitionId)
+                .Select(j => (int)j["MetricTypeId"])
+                .ToListAsync();
+
             var items = await _context.MetricTypes
-                .Where(mt => mt.ObservationDefinitionId == observationDefinitionId && mt.IsActive == true)
+                .Where(mt => metricTypeIds.Contains(mt.Id) && mt.IsActive == true)
                 .OrderBy(mt => mt.Description)
                 .Select(mt => new SelectListItem
                 {
@@ -111,18 +116,16 @@ namespace BiermanTech.CriticalDog.Services
                             _logger.LogWarning("MetaTag with Id {TagId} not found.", tagId);
                         }
                     }
-                    retval +=  await _context.SaveChangesAsync();
-
-                    return retval;
+                    retval += await _context.SaveChangesAsync();
                 }
+
+                return retval;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error saving SubjectRecord with MetaTagIds {MetaTagIds}", selectedMetaTagIds);
                 throw;
             }
-
-            return 0;
         }
     }
 }

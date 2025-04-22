@@ -45,11 +45,13 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
             WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
 
+            var idealWeightRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "IdealWeight");
             var weightRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "WeighIn");
             var lifeStageRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "CanineLifeStageFactor");
 
             NutritionPartialViewModel = new NutritionSciencePartialViewModel()
             {
+                IdealWeightRecord = idealWeightRecord,
                 WeightRecord = weightRecord,
                 LifestageRecord = lifeStageRecord,
                 WeightReport = WeightReport,

@@ -149,13 +149,13 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     DefinitionName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ObservationTypeId = table.Column<int>(type: "int(11)", nullable: false),
-                    MinimumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
-                    MaximumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true)
+                    Description = table.Column<string>(type: "text", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
-                    IsSingular = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'0'")
+                    IsSingular = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'0'"),
+                    MaximumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
+                    MinimumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
+                    ObservationTypeId = table.Column<int>(type: "int(11)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -216,20 +216,14 @@ namespace BiermanTech.CriticalDog.Migrations
                 {
                     Id = table.Column<int>(type: "int(11)", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ObservationDefinitionId = table.Column<int>(type: "int(11)", nullable: false),
-                    UnitId = table.Column<int>(type: "int(11)", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true)
+                    Description = table.Column<string>(type: "text", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
+                    UnitId = table.Column<int>(type: "int(11)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MetricType_ObservationDefinition",
-                        column: x => x.ObservationDefinitionId,
-                        principalTable: "ObservationDefinition",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_MetricType_Unit",
                         column: x => x.UnitId,
@@ -259,7 +253,8 @@ namespace BiermanTech.CriticalDog.Migrations
                         name: "FK_ObservationDefinitionDiscipline_ScientificDiscipline",
                         column: x => x.ScientificDisciplineId,
                         principalTable: "ScientificDiscipline",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -284,7 +279,34 @@ namespace BiermanTech.CriticalDog.Migrations
                         name: "FK_ObservationDefinitionUnit_Unit",
                         column: x => x.UnitId,
                         principalTable: "Unit",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ObservationDefinitionMetricType",
+                columns: table => new
+                {
+                    ObservationDefinitionId = table.Column<int>(type: "int(11)", nullable: false),
+                    MetricTypeId = table.Column<int>(type: "int(11)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => new { x.ObservationDefinitionId, x.MetricTypeId })
+                        .Annotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                    table.ForeignKey(
+                        name: "FK_ObservationDefinitionMetricType_MetricType",
+                        column: x => x.MetricTypeId,
+                        principalTable: "MetricType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ObservationDefinitionMetricType_ObservationDefinition",
+                        column: x => x.ObservationDefinitionId,
+                        principalTable: "ObservationDefinition",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -321,7 +343,8 @@ namespace BiermanTech.CriticalDog.Migrations
                         name: "FK_SubjectRecord_ObservationDefinition",
                         column: x => x.ObservationDefinitionId,
                         principalTable: "ObservationDefinition",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SubjectRecord_Subject",
                         column: x => x.SubjectId,
@@ -346,7 +369,8 @@ namespace BiermanTech.CriticalDog.Migrations
                         name: "FK_SubjectRecordMetaTag_MetaTag",
                         column: x => x.MetaTagId,
                         principalTable: "MetaTag",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SubjectRecordMetaTag_SubjectRecord",
                         column: x => x.SubjectRecordId,
@@ -368,12 +392,6 @@ namespace BiermanTech.CriticalDog.Migrations
                 column: "UnitId");
 
             migrationBuilder.CreateIndex(
-                name: "ObservationDefinitionId",
-                table: "MetricType",
-                columns: new[] { "ObservationDefinitionId", "UnitId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "DefinitionName",
                 table: "ObservationDefinition",
                 column: "DefinitionName",
@@ -388,6 +406,11 @@ namespace BiermanTech.CriticalDog.Migrations
                 name: "FK_ObservationDefinitionDiscipline_ScientificDiscipline",
                 table: "ObservationDefinitionDiscipline",
                 column: "ScientificDisciplineId");
+
+            migrationBuilder.CreateIndex(
+                name: "FK_ObservationDefinitionMetricType_MetricType",
+                table: "ObservationDefinitionMetricType",
+                column: "MetricTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "FK_ObservationDefinitionUnit_Unit",
@@ -478,6 +501,9 @@ namespace BiermanTech.CriticalDog.Migrations
                 name: "ObservationDefinitionDiscipline");
 
             migrationBuilder.DropTable(
+                name: "ObservationDefinitionMetricType");
+
+            migrationBuilder.DropTable(
                 name: "ObservationDefinitionUnit");
 
             migrationBuilder.DropTable(
@@ -496,22 +522,22 @@ namespace BiermanTech.CriticalDog.Migrations
                 name: "MetricType");
 
             migrationBuilder.DropTable(
-                name: "Subject");
-
-            migrationBuilder.DropTable(
                 name: "ObservationDefinition");
 
             migrationBuilder.DropTable(
+                name: "Subject");
+
+            migrationBuilder.DropTable(
                 name: "Unit");
+
+            migrationBuilder.DropTable(
+                name: "ObservationType");
 
             migrationBuilder.DropTable(
                 name: "IdentityUser");
 
             migrationBuilder.DropTable(
                 name: "SubjectType");
-
-            migrationBuilder.DropTable(
-                name: "ObservationType");
         }
     }
 }

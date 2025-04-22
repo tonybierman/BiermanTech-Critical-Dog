@@ -1,7 +1,7 @@
 /* Root-level variables for Bootstrap customization */
 :root {
     --bs-body-bg: #1c2526; /* Dark background from screenshot */
-    --bs-body-color: #e0e0e5; /* Light gray text for high contrast */
+    --bs-body-color: #ffffff; /*  White text for high contrast */
     --bs-primary: #4a90e2; /* Soft blue for primary actions */
     --bs-primary-bg-subtle: #3b73b5; /* Darker for hover */
     --bs-secondary: #6c757d; /* Neutral gray */
@@ -265,4 +265,53 @@ button.accept-policy {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
+}
+
+/* Select2 Customizations */
+.select2-container .select2-selection--multiple {
+    background-color: #1A1B1C; /* Match form-control background */
+    border: 1px solid var(--bs-border-color); /* Match form-control border */
+    color: var(--bs-body-color); /* Light gray text */
+}
+
+    .select2-container .select2-selection--multiple .select2-selection__rendered {
+        color: var(--bs-body-color); /* Ensure selected items text is visible */
+    }
+
+    .select2-container .select2-selection--multiple .select2-selection__choice {
+        background-color: var(--bs-secondary-bg-subtle); /* Darker gray for selected items */
+        color: var(--bs-body-color); /* Light gray text for selected items */
+        border: 1px solid var(--bs-border-color);
+        padding: 2px 6px;
+        margin: 2px;
+    }
+
+    .select2-container .select2-selection--multiple .select2-selection__choice__remove {
+        color: var(--bs-body-color); /* Light gray "x" for removing selected items */
+        margin-right: 4px;
+    }
+
+        .select2-container .select2-selection--multiple .select2-selection__choice__remove:hover {
+            color: var(--bs-link-hover-color); /* Lighter blue on hover */
+        }
+
+.select2-container .select2-dropdown {
+    background-color: #1A1B1C; /* Match dropdown to form background */
+    border: 1px solid var(--bs-border-color);
+    color: var(--bs-body-color);
+}
+
+.select2-container .select2-results__option {
+    color: var(--bs-body-color); /* Light gray text for dropdown options */
+    padding: 6px 12px;
+}
+
+.select2-container .select2-results__option--highlighted {
+    background-color: var(--bs-secondary-bg-subtle); /* Highlighted option background */
+    color: var(--bs-link-hover-color); /* Lighter blue text on highlight */
+}
+
+.select2-container .select2-results__option--selected {
+    background-color: var(--bs-primary-bg-subtle); /* Selected option background */
+    color: #fff; /* White text for selected options */
 }

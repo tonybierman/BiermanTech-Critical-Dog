@@ -20,6 +20,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
 
         public SelectList ObservationTypes { get; set; }
         public SelectList ScientificDisciplines { get; set; }
+        public SelectList MetricTypes { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -31,6 +32,8 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
 
             ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
             ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
+            MetricTypes = await _definitionService.GetMetricTypesSelectListAsync(DefinitionVM.MetricTypeIds);
+
             return Page();
         }
 
@@ -40,19 +43,30 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
             {
                 ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
                 ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
+                MetricTypes = await _definitionService.GetMetricTypesSelectListAsync(DefinitionVM.MetricTypeIds);
                 return Page();
             }
 
             try
             {
                 await _definitionService.UpdateDefinitionAsync(DefinitionVM);
+                TempData["SuccessMessage"] = "Observation definition updated successfully.";
+                return RedirectToPage("./Index");
             }
             catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            return RedirectToPage("./Index");
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the observation definition. Please try again.";
+                // Log the error (assuming ILogger is injected)
+                // _logger.LogError(ex, "Error updating ObservationDefinition with ID {Id}", DefinitionVM.Id);
+                ObservationTypes = await _definitionService.GetObservationTypesSelectListAsync();
+                ScientificDisciplines = await _definitionService.GetScientificDisciplinesSelectListAsync();
+                MetricTypes = await _definitionService.GetMetricTypesSelectListAsync(DefinitionVM.MetricTypeIds);
+                return Page();
+            }
         }
     }
 }

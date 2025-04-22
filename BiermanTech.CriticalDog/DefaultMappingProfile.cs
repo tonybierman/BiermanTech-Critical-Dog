@@ -59,9 +59,12 @@ namespace BiermanTech.CriticalDog
                 .ForMember(dest => dest.ObservationDefinitions, opt => opt.Ignore())
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<MetricType, MetricTypeInputViewModel>();
+            CreateMap<MetricType, MetricTypeInputViewModel>()
+                .ForMember(dest => dest.ObservationDefinitionIds,
+                    opt => opt.MapFrom(src => src.ObservationDefinitions.Select(od => od.Id).ToList()));
+
             CreateMap<MetricTypeInputViewModel, MetricType>()
-                .ForMember(dest => dest.ObservationDefinition, opt => opt.Ignore())
+                .ForMember(dest => dest.ObservationDefinitions, opt => opt.Ignore())
                 .ForMember(dest => dest.Unit, opt => opt.Ignore())
                 .ForMember(dest => dest.SubjectRecords, opt => opt.Ignore())
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
@@ -83,8 +86,10 @@ namespace BiermanTech.CriticalDog
 
 
             CreateMap<ObservationDefinition, ObservationDefinitionInputViewModel>()
-                .ForMember(dest => dest.SelectedScientificDisciplineIds, opt => opt.Ignore())
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForMember(dest => dest.SelectedScientificDisciplineIds,
+                    opt => opt.MapFrom(src => src.ScientificDisciplines.Select(d => d.Id).ToList()))
+                .ForMember(dest => dest.MetricTypeIds,
+                    opt => opt.MapFrom(src => src.MetricTypes.Select(d => d.Id).ToList()));
 
             CreateMap<ObservationDefinitionInputViewModel, ObservationDefinition>()
                 .ForMember(dest => dest.ScientificDisciplines, opt => opt.Ignore())

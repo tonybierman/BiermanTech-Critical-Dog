@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+@page "{id:int}"
 @model BiermanTech.CriticalDog.Pages.Admin.MetricTypes.DetailsModel
 
 @{
@@ -12,10 +12,10 @@
     <div class="col-md-4">
         <dl class="row">
             <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.MetricTypeVM.ObservationDefinitionId)
+                Observation Definitions
             </dt>
             <dd class="col-sm-9">
-                @Model.ObservationDefinitionName
+                @Model.ObservationDefinitionNames
             </dd>
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.MetricTypeVM.UnitId)
@@ -33,7 +33,7 @@
                 @Html.DisplayNameFor(model => model.MetricTypeVM.IsActive)
             </dt>
             <dd class="col-sm-9">
-                @(Model.MetricTypeVM.IsActive.HasValue ? (Model.MetricTypeVM.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+                @(Model.MetricTypeVM.IsActive ? (Model.MetricTypeVM.IsActive ? "Active" : "Inactive") : "Not Set")
             </dd>
         </dl>
         <div class="form-group mt-3">

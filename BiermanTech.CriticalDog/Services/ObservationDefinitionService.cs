@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,6 +22,7 @@ namespace BiermanTech.CriticalDog.Services
             return await _context.ObservationDefinitions
                 .Include(d => d.ObservationType)
                 .Include(d => d.ScientificDisciplines)
+                .Include(d => d.MetricTypes)
                 .FirstOrDefaultAsync(d => d.Id == id);
         }
 
@@ -30,14 +31,10 @@ namespace BiermanTech.CriticalDog.Services
             var definition = await GetDefinitionByIdAsync(id);
             if (definition == null)
             {
-                return null;
+                throw new KeyNotFoundException($"ObservationDefinition with ID {id} not found.");
             }
 
-            var viewModel = _mapper.Map<ObservationDefinitionInputViewModel>(definition);
-            viewModel.SelectedScientificDisciplineIds = definition.ScientificDisciplines
-                .Select(d => d.Id)
-                .ToList();
-            return viewModel;
+            return _mapper.Map<ObservationDefinitionInputViewModel>(definition);
         }
 
         public async Task<List<ObservationDefinitionInputViewModel>> GetAllDefinitionsAsync()
@@ -45,15 +42,25 @@ namespace BiermanTech.CriticalDog.Services
             var definitions = await _context.ObservationDefinitions
                 .Include(d => d.ObservationType)
                 .Include(d => d.ScientificDisciplines)
+                .Include(d => d.MetricTypes)
                 .ToListAsync();
-            var viewModels = _mapper.Map<List<ObservationDefinitionInputViewModel>>(definitions);
-            for (int i = 0; i < definitions.Count; i++)
-            {
-                viewModels[i].SelectedScientificDisciplineIds = definitions[i].ScientificDisciplines
-                    .Select(d => d.Id)
-                    .ToList();
-            }
-            return viewModels;
+
+            return _mapper.Map<List<ObservationDefinitionInputViewModel>>(definitions);
+        }
+
+        public async Task<SelectList> GetMetricTypesSelectListAsync(IEnumerable<int>? selectedIds = null)
+        {
+            var items = await _context.MetricTypes
+                .Where(mt => mt.IsActive == true)
+                .OrderBy(mt => mt.Description)
+                .Select(mt => new SelectListItem
+                {
+                    Value = mt.Id.ToString(),
+                    Text = mt.Description
+                })
+                .ToListAsync();
+
+            return new SelectList(items, "Value", "Text", selectedIds);
         }
 
         public async Task<SelectList> GetObservationTypesSelectListAsync()
@@ -71,9 +78,35 @@ namespace BiermanTech.CriticalDog.Services
         public async Task CreateDefinitionAsync(ObservationDefinitionInputViewModel viewModel)
         {
             var entity = _mapper.Map<ObservationDefinition>(viewModel);
-            entity.ScientificDisciplines = await _context.ScientificDisciplines
-                .Where(d => viewModel.SelectedScientificDisciplineIds.Contains(d.Id))
-                .ToListAsync();
+
+            if (viewModel.SelectedScientificDisciplineIds != null)
+            {
+                var disciplines = await _context.ScientificDisciplines
+                    .Where(d => viewModel.SelectedScientificDisciplineIds.Contains(d.Id))
+                    .ToListAsync();
+                if (disciplines.Count != viewModel.SelectedScientificDisciplineIds.Count)
+                    throw new InvalidOperationException("One or more ScientificDiscipline IDs are invalid.");
+                entity.ScientificDisciplines = disciplines;
+            }
+            else
+            {
+                entity.ScientificDisciplines = new List<ScientificDiscipline>();
+            }
+
+            if (viewModel.MetricTypeIds != null)
+            {
+                var metricTypes = await _context.MetricTypes
+                    .Where(mt => viewModel.MetricTypeIds.Contains(mt.Id))
+                    .ToListAsync();
+                if (metricTypes.Count != viewModel.MetricTypeIds.Count)
+                    throw new InvalidOperationException("One or more MetricType IDs are invalid.");
+                entity.MetricTypes = metricTypes;
+            }
+            else
+            {
+                entity.MetricTypes = new List<MetricType>();
+            }
+
             _context.ObservationDefinitions.Add(entity);
             await _context.SaveChangesAsync();
         }
@@ -82,28 +115,57 @@ namespace BiermanTech.CriticalDog.Services
         {
             var definition = await _context.ObservationDefinitions
                 .Include(d => d.ScientificDisciplines)
+                .Include(d => d.MetricTypes)
                 .FirstOrDefaultAsync(d => d.Id == viewModel.Id);
+
             if (definition == null)
             {
                 throw new KeyNotFoundException($"ObservationDefinition with ID {viewModel.Id} not found.");
             }
 
             _mapper.Map(viewModel, definition);
+
             definition.ScientificDisciplines.Clear();
-            definition.ScientificDisciplines = await _context.ScientificDisciplines
-                .Where(d => viewModel.SelectedScientificDisciplineIds.Contains(d.Id))
-                .ToListAsync();
+            if (viewModel.SelectedScientificDisciplineIds != null)
+            {
+                var disciplines = await _context.ScientificDisciplines
+                    .Where(d => viewModel.SelectedScientificDisciplineIds.Contains(d.Id))
+                    .ToListAsync();
+                if (disciplines.Count != viewModel.SelectedScientificDisciplineIds.Count)
+                    throw new InvalidOperationException("One or more ScientificDiscipline IDs are invalid.");
+                definition.ScientificDisciplines = disciplines;
+            }
+
+            definition.MetricTypes.Clear();
+            if (viewModel.MetricTypeIds != null)
+            {
+                var metricTypes = await _context.MetricTypes
+                    .Where(mt => viewModel.MetricTypeIds.Contains(mt.Id))
+                    .ToListAsync();
+                if (metricTypes.Count != viewModel.MetricTypeIds.Count)
+                    throw new InvalidOperationException("One or more MetricType IDs are invalid.");
+                definition.MetricTypes = metricTypes;
+            }
+
             _context.ObservationDefinitions.Update(definition);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteDefinitionAsync(int id)
         {
-            var definition = await _context.ObservationDefinitions.FindAsync(id);
+            var definition = await _context.ObservationDefinitions
+                .Include(d => d.ScientificDisciplines)
+                .Include(d => d.MetricTypes)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
             if (definition == null)
             {
                 throw new KeyNotFoundException($"ObservationDefinition with ID {id} not found.");
             }
+
+            // Clear many-to-many relationships
+            definition.ScientificDisciplines.Clear();
+            definition.MetricTypes.Clear();
 
             _context.ObservationDefinitions.Remove(definition);
             await _context.SaveChangesAsync();

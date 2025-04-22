@@ -1,4 +1,4 @@
-﻿@page
+@page
 @using BiermanTech.CriticalDog.Helpers
 @model BiermanTech.CriticalDog.Pages.Admin.MetricTypes.IndexModel
 
@@ -15,7 +15,6 @@
 <table class="table table-striped">
     <thead>
         <tr>
-
             <th>
                 Unit
             </th>
@@ -42,7 +41,7 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @(item.IsActive.HasValue ? (item.IsActive.Value ? "Active" : "Inactive") : "Not Set")
+                    @(item.IsActive ? (item.IsActive ? "Active" : "Inactive") : "Not Set")
                 </td>
                 <td>
                     @(StringHelper.SplitPascalCase(Model.ObservationDefinitionNames[item.Id]))

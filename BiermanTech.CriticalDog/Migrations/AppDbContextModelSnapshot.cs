@@ -63,16 +63,13 @@ namespace BiermanTech.CriticalDog.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool?>("IsActive")
-                        .IsRequired()
+                    b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
-
-                    b.Property<int>("ObservationDefinitionId")
-                        .HasColumnType("int(11)");
 
                     b.Property<int>("UnitId")
                         .HasColumnType("int(11)");
@@ -81,9 +78,6 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "UnitId" }, "FK_MetricType_Unit");
-
-                    b.HasIndex(new[] { "ObservationDefinitionId", "UnitId" }, "ObservationDefinitionId")
-                        .IsUnique();
 
                     b.ToTable("MetricType", (string)null);
                 });
@@ -102,16 +96,15 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool?>("IsActive")
-                        .IsRequired()
+                    b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<bool?>("IsSingular")
-                        .IsRequired()
+                    b.Property<bool>("IsSingular")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'0'");
@@ -460,6 +453,23 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.ToTable("ObservationDefinitionDiscipline", (string)null);
                 });
 
+            modelBuilder.Entity("ObservationDefinitionMetricType", b =>
+                {
+                    b.Property<int>("ObservationDefinitionId")
+                        .HasColumnType("int(11)");
+
+                    b.Property<int>("MetricTypeId")
+                        .HasColumnType("int(11)");
+
+                    b.HasKey("ObservationDefinitionId", "MetricTypeId")
+                        .HasName("PRIMARY")
+                        .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                    b.HasIndex(new[] { "MetricTypeId" }, "FK_ObservationDefinitionMetricType_MetricType");
+
+                    b.ToTable("ObservationDefinitionMetricType", (string)null);
+                });
+
             modelBuilder.Entity("ObservationDefinitionUnit", b =>
                 {
                     b.Property<int>("ObservationDefinitionId")
@@ -496,19 +506,11 @@ namespace BiermanTech.CriticalDog.Migrations
 
             modelBuilder.Entity("BiermanTech.CriticalDog.Data.MetricType", b =>
                 {
-                    b.HasOne("BiermanTech.CriticalDog.Data.ObservationDefinition", "ObservationDefinition")
-                        .WithMany("MetricTypes")
-                        .HasForeignKey("ObservationDefinitionId")
-                        .IsRequired()
-                        .HasConstraintName("FK_MetricType_ObservationDefinition");
-
                     b.HasOne("BiermanTech.CriticalDog.Data.Unit", "Unit")
                         .WithMany("MetricTypes")
                         .HasForeignKey("UnitId")
                         .IsRequired()
                         .HasConstraintName("FK_MetricType_Unit");
-
-                    b.Navigation("ObservationDefinition");
 
                     b.Navigation("Unit");
                 });
@@ -554,6 +556,7 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasOne("BiermanTech.CriticalDog.Data.ObservationDefinition", "ObservationDefinition")
                         .WithMany("SubjectRecords")
                         .HasForeignKey("ObservationDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_SubjectRecord_ObservationDefinition");
 
@@ -583,8 +586,26 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasOne("BiermanTech.CriticalDog.Data.ScientificDiscipline", null)
                         .WithMany()
                         .HasForeignKey("ScientificDisciplineId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_ObservationDefinitionDiscipline_ScientificDiscipline");
+                });
+
+            modelBuilder.Entity("ObservationDefinitionMetricType", b =>
+                {
+                    b.HasOne("BiermanTech.CriticalDog.Data.MetricType", null)
+                        .WithMany()
+                        .HasForeignKey("MetricTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ObservationDefinitionMetricType_MetricType");
+
+                    b.HasOne("BiermanTech.CriticalDog.Data.ObservationDefinition", null)
+                        .WithMany()
+                        .HasForeignKey("ObservationDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ObservationDefinitionMetricType_ObservationDefinition");
                 });
 
             modelBuilder.Entity("ObservationDefinitionUnit", b =>
@@ -599,6 +620,7 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasOne("BiermanTech.CriticalDog.Data.Unit", null)
                         .WithMany()
                         .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_ObservationDefinitionUnit_Unit");
                 });
@@ -608,6 +630,7 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasOne("BiermanTech.CriticalDog.Data.MetaTag", null)
                         .WithMany()
                         .HasForeignKey("MetaTagId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_SubjectRecordMetaTag_MetaTag");
 
@@ -626,8 +649,6 @@ namespace BiermanTech.CriticalDog.Migrations
 
             modelBuilder.Entity("BiermanTech.CriticalDog.Data.ObservationDefinition", b =>
                 {
-                    b.Navigation("MetricTypes");
-
                     b.Navigation("SubjectRecords");
                 });
 

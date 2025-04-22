@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BiermanTech.CriticalDog.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace BiermanTech.CriticalDog.ViewModels
 {
@@ -25,5 +26,8 @@ namespace BiermanTech.CriticalDog.ViewModels
         public bool? IsSingular { get; set; }
 
         public List<int> SelectedScientificDisciplineIds { get; set; } = new List<int>();
+
+        public List<int> MetricTypeIds { get; set; } = new List<int>();
+
     }
 }

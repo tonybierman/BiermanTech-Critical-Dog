@@ -1,6 +1,7 @@
 using BiermanTech.CriticalDog.Services;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Linq;
 
 namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
 {
@@ -24,7 +25,9 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
             foreach (var metricType in MetricTypes)
             {
                 var entity = await _metricTypeService.GetMetricTypeByIdAsync(metricType.Id);
-                ObservationDefinitionNames[metricType.Id] = entity.ObservationDefinition?.DefinitionName ?? "Unknown";
+                ObservationDefinitionNames[metricType.Id] = entity.ObservationDefinitions.Any()
+                    ? string.Join(", ", entity.ObservationDefinitions.Select(od => od.DefinitionName))
+                    : "None";
                 UnitNames[metricType.Id] = entity.Unit?.UnitName ?? "Unknown";
             }
         }

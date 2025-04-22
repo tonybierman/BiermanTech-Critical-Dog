@@ -1,23 +1,15 @@
-﻿using System;
 using System.Collections.Generic;
 
-namespace BiermanTech.CriticalDog.Data;
-
-public partial class MetricType
+namespace BiermanTech.CriticalDog.Data
 {
-    public int Id { get; set; }
-
-    public int ObservationDefinitionId { get; set; }
-
-    public int UnitId { get; set; }
-
-    public string? Description { get; set; }
-
-    public bool? IsActive { get; set; }
-
-    public virtual ObservationDefinition ObservationDefinition { get; set; } = null!;
-
-    public virtual ICollection<SubjectRecord> SubjectRecords { get; set; } = new List<SubjectRecord>();
-
-    public virtual Unit Unit { get; set; } = null!;
+    public class MetricType
+    {
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public bool IsActive { get; set; }
+        public int UnitId { get; set; }
+        public Unit Unit { get; set; }
+        public ICollection<ObservationDefinition> ObservationDefinitions { get; set; } = new List<ObservationDefinition>();
+        public ICollection<SubjectRecord> SubjectRecords { get; set; } = new List<SubjectRecord>();
+    }
 }

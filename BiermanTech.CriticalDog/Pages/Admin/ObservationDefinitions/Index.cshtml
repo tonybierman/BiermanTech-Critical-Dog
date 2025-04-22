@@ -1,4 +1,4 @@
-﻿@page
+@page
 @using BiermanTech.CriticalDog.Helpers
 @model BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions.IndexModel
 
@@ -22,16 +22,13 @@
                 Observation Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Definitions[0].MinimumValue)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Definitions[0].MaximumValue)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Definitions[0].IsActive)
-            </th>
-            <th>
                 Scientific Disciplines
+            </th>
+            <th>
+                Metric Types
+            </th>
+            <th>
+                Status
             </th>
             <th>Actions</th>
         </tr>
@@ -44,27 +41,22 @@
                     @(StringHelper.SplitPascalCase(item.DefinitionName))
                 </td>
                 <td>
-                    @Model.ObservationTypeNames[item.Id]
+                    @(StringHelper.SplitPascalCase(Model.ObservationTypeNames[item.Id]))
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MinimumValue)
+                    @(StringHelper.SplitPascalCase(Model.ScientificDisciplineNames[item.Id]))
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MaximumValue)
+                    @(StringHelper.SplitPascalCase(Model.MetricTypeNames[item.Id]))
                 </td>
                 <td>
-                    @(item.IsActive.HasValue ? (item.IsActive.Value ? "Active" : "Inactive") : "Not Set")
-                </td>
-                <td>
-                    @(item.SelectedScientificDisciplineIds.Any()
-                        ? string.Join(", ", Model.ScientificDisciplineNames[item.Id].Select(name => StringHelper.SplitPascalCase(name)))
-                        : "None")
+                    @(item.IsActive == true ? "Active" : "Inactive")
                 </td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
                     <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
                     <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                    <a asp-page="./Index" asp-page-handler="Clone" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Clone</a>
+                    <a asp-page="./Index" asp-route-id="@item.Id" asp-page-handler="Clone" class="btn btn-sm btn-secondary">Clone</a>
                 </td>
             </tr>
         }

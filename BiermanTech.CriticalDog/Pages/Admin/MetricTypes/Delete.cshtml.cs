@@ -3,6 +3,7 @@ using BiermanTech.CriticalDog.Services;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Linq;
 
 namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
 {
@@ -19,7 +20,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
 
         [BindProperty]
         public MetricTypeInputViewModel MetricTypeVM { get; set; } = new MetricTypeInputViewModel();
-        public string ObservationDefinitionName { get; set; }
+        public string ObservationDefinitionNames { get; set; }
         public string UnitName { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
@@ -31,7 +32,9 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
             }
 
             MetricTypeVM = _mapper.Map<MetricTypeInputViewModel>(metricType);
-            ObservationDefinitionName = metricType.ObservationDefinition?.DefinitionName ?? "Unknown";
+            ObservationDefinitionNames = metricType.ObservationDefinitions.Any()
+                ? string.Join(", ", metricType.ObservationDefinitions.Select(od => od.DefinitionName))
+                : "None";
             UnitName = metricType.Unit?.UnitName ?? "Unknown";
 
             return Page();
