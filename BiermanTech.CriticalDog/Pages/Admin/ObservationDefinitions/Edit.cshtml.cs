@@ -69,7 +69,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
         {
             ObservationTypes = await _selectListService.GetObservationTypesSelectListAsync();
             ScientificDisciplines = await _selectListService.GetScientificDisciplinesSelectListAsync();
-            MetricTypes = await _selectListService.GetMetricTypesSelectListAsync(DefinitionVM.MetricTypeIds);
+            MetricTypes = await _selectListService.GetMetricTypesSelectListAsync(null, null, DefinitionVM.MetricTypeIds);
         }
     }
 }

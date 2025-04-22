@@ -4,23 +4,13 @@ namespace BiermanTech.CriticalDog.Services
 {
     public interface ISelectListService
     {
-        Task<SelectList> GetObservationDefinitionsSelectListAsync();
-        Task<SelectList> GetObservationDefinitionsSelectListAsync(int? selectedId = null);
-
-        Task<SelectList> GetUnitsSelectListAsync();
-
-        Task<SelectList> GetMetricTypesSelectListAsync(int observationDefinitionId, int? selectedId = null);
-        Task<SelectList> GetMetricTypesSelectListAsync(IEnumerable<int>? selectedIds = null);
-
-        Task<SelectList> GetObservationTypesSelectListAsync();
-        Task<SelectList> GetScientificDisciplinesSelectListAsync();
-
-        Task<SelectList> GetMetaTagsSelectListAsync();
-        Task<SelectList> GetMetaTagsSelectListAsync(IEnumerable<int>? selectedIds = null);
-
+        Task<SelectList> GetMetaTagsSelectListAsync(IEnumerable<int>? selectedIds = null, bool filterActive = true);
+        Task<SelectList> GetMetricTypesSelectListAsync(int? observationDefinitionId = null, int? selectedId = null, IEnumerable<int>? selectedIds = null, bool filterActive = true);
+        Task<SelectList> GetObservationDefinitionsSelectListAsync(int? selectedId = null, bool filterActive = true);
+        Task<SelectList> GetObservationTypesSelectListAsync(bool filterActive = true);
+        Task<SelectList> GetScientificDisciplinesSelectListAsync(bool filterActive = true);
         Task<SelectList> GetSubjectsSelectListAsync();
         Task<SelectList> GetSubjectTypesSelectListAsync();
-
-
+        Task<SelectList> GetUnitsSelectListAsync(bool filterActive = true);
     }
 }
