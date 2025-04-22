@@ -11,5 +11,7 @@ namespace BiermanTech.CriticalDog.Services
         Task<SelectList> GetScientificDisciplinesSelectListAsync();
         Task<SelectList> GetMetaTagsSelectListAsync();
         Task<SelectList> GetSubjectsSelectListAsync();
+        Task<SelectList> GetSubjectTypesSelectListAsync();
+
     }
 }

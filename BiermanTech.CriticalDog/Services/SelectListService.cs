@@ -16,6 +16,12 @@ namespace BiermanTech.CriticalDog.Services
             _mapper = mapper;
         }
 
+        public async Task<SelectList> GetSubjectTypesSelectListAsync()
+        {
+            var subjectTypes = await _context.SubjectTypes.ToListAsync();
+            return new SelectList(subjectTypes, nameof(SubjectType.Id), nameof(SubjectType.TypeName));
+        }
+
         public async Task<SelectList> GetSubjectsSelectListAsync()
         {
             var subjects = await _context.GetFilteredSubjects()

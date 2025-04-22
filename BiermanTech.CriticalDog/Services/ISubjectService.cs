@@ -10,7 +10,6 @@ namespace BiermanTech.CriticalDog.Services
         Task<int> DeleteSubjectAsync(int id);
         Task<IList<Subject>> GetFilteredSubjectsAsync();
         Task<Subject> GetSubjectByIdAsync(int id);
-        Task<SelectList> GetSubjectTypesSelectListAsync();
         Task<SubjectInputViewModel> GetSubjectViewModelByIdAsync(int id);
         Task<int> UpdateSubjectAsync(SubjectInputViewModel viewModel);
     }

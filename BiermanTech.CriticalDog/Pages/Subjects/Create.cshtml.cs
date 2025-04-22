@@ -11,11 +11,17 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
     [Authorize(Policy = "RequireAuthenticated")]
     public class CreateModel : SubjectBasePageModel
     {
-        public CreateModel(ISubjectService subjectService, IMapper mapper, IAuthorizationService authorizationService, ILogger<CreateModel> logger) : base(subjectService, mapper, authorizationService, logger) { }
+        private readonly ISelectListService _selectListService;
+
+        public CreateModel(ISubjectService subjectService, ISelectListService selectListService, IMapper mapper, IAuthorizationService authorizationService, ILogger<CreateModel> logger) :
+            base(subjectService, mapper, authorizationService, logger) 
+        {
+            _selectListService = selectListService;
+        }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+            SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
             return Page();
         }
 
@@ -34,7 +40,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
             if (!ModelState.IsValid)
             {
-                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
                 return this.SetModelStateErrorMessage();
             }
 
@@ -59,14 +65,14 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                     return RedirectToPage("./Index");
                 }
 
-                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
                 return Page();
             }
             catch (UnauthorizedAccessException ex)
             {
                 _logger.LogWarning(ex, "Unauthorized attempt to create subject.");
                 TempData["WarningMessage"] = "You are not authorized to create a subject.";
-                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
                 return Page();
             }
         }

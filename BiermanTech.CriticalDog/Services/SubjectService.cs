@@ -63,12 +63,6 @@ namespace BiermanTech.CriticalDog.Services
             return subjects;
         }
 
-        public async Task<SelectList> GetSubjectTypesSelectListAsync()
-        {
-            var subjectTypes = await _context.SubjectTypes.ToListAsync();
-            return new SelectList(subjectTypes, nameof(SubjectType.Id), nameof(SubjectType.TypeName));
-        }
-
         public async Task<int> CreateSubjectAsync(SubjectInputViewModel viewModel)
         {
             var user = _httpContextAccessor.HttpContext?.User;

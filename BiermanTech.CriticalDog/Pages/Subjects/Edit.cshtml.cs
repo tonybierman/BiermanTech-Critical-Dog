@@ -10,13 +10,17 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class EditModel : SubjectBasePageModel
     {
+        private readonly ISelectListService _selectListService;
+
         public EditModel(
             ISubjectService subjectService,
+            ISelectListService selectListService,
             IMapper mapper,
             IAuthorizationService authorizationService,
             ILogger<EditModel> logger)
             : base(subjectService, mapper, authorizationService, logger)
         {
+            _selectListService = selectListService;
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
@@ -27,7 +31,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             }
 
             SetPermissionCheckboxes();
-            SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+            SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
             return Page();
         }
 
@@ -46,7 +50,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
             if (!ModelState.IsValid)
             {
-                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
                 return this.SetModelStateErrorMessage();
             }
 
@@ -71,7 +75,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                     return RedirectToPage("./Index");
                 }
 
-                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
                 return Page();
             }
             catch (KeyNotFoundException)
@@ -82,7 +86,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             {
                 _logger.LogWarning(ex, "Unauthorized attempt to edit subject.");
                 TempData["WarningMessage"] = "You are not authorized to edit this subject.";
-                SubjectTypes = await _subjectService.GetSubjectTypesSelectListAsync();
+                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
                 return Page();
             }
         }
