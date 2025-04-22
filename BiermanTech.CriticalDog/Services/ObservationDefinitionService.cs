@@ -164,11 +164,25 @@ namespace BiermanTech.CriticalDog.Services
                 throw new KeyNotFoundException($"ObservationDefinition with ID {id} not found.");
             }
 
-            // Clear many-to-many relationships
+            // Check for associated SubjectRecords
+            var hasSubjectRecords = await _context.SubjectRecords
+                .AnyAsync(sr => sr.ObservationDefinitionId == id);
+
+            if (hasSubjectRecords)
+            {
+                // Soft-delete: set IsActive to false instead of deleting
+                definition.IsActive = false;
+            }
+            else
+            {
+                // No SubjectRecords, proceed with deletion
+                _context.ObservationDefinitions.Remove(definition);
+            }
+
+            // Clear many-to-many relationships in both cases
             definition.ScientificDisciplines.Clear();
             definition.MetricTypes.Clear();
 
-            _context.ObservationDefinitions.Remove(definition);
             await _context.SaveChangesAsync();
         }
     }
