@@ -1,6 +1,5 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders;
 using BiermanTech.CriticalDog.Reports.Columns;
 using BiermanTech.CriticalDog.Services;
 using BiermanTech.CriticalDog.ViewModels;
@@ -13,7 +12,6 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep2Model : PageModel
     {
-        private readonly IMetricValueCalculatorFactory _metricValueCalculatorFactory;
         private readonly ISubjectObservationService _service;
         private readonly ILogger<CreateStep2Model> _logger;
         private readonly IMapper _mapper;
@@ -24,11 +22,9 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         public CreateStep2Model(
             ISubjectObservationService service,
-            IMetricValueCalculatorFactory metricValueCalculatorFactory,
             ILogger<CreateStep2Model> logger,
             IMapper mapper)
         {
-            _metricValueCalculatorFactory = metricValueCalculatorFactory;
             _service = service;
             _logger = logger;
             _mapper = mapper;
@@ -71,23 +67,6 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             if (SelectedListItems == null)
             {
                 _logger.LogWarning("Failed to populate select list items for ObservationDefinition {DefinitionId}.", definitionId);
-            }
-
-            if (!ObservationVM.MetricValue.HasValue)
-            {
-                var calculator = _metricValueCalculatorFactory.GetCalculator(ObservationDefinitionName);
-                if (calculator != null && await calculator.CanHandle(dog, ObservationVM))
-                {
-                    try 
-                    {
-                        calculator.Execute(dog, ObservationVM);
-                    }
-                    catch (Exception ex)
-                    {
-                        TempData[Constants.AlertDanger] = ex.GetAllExceptionMessages();
-                        _logger.LogError(ex, ex.GetAllExceptionMessages());
-                    }
-                }
             }
 
             return Page();

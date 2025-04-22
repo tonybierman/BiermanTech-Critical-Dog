@@ -3,7 +3,6 @@ using BiermanTech.CriticalDog;
 using BiermanTech.CriticalDog.Analytics;
 using BiermanTech.CriticalDog.Authorization;
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Pages.Subjects.Observations.CalculationProviders;
 using BiermanTech.CriticalDog.Reports;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -84,8 +83,6 @@ builder.Services.AddScoped<IMetricTypeService, MetricTypeService>();
 builder.Services.AddScoped<IObservationTypeService, ObservationTypeService>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<ISubjectRecordService, SubjectRecordService>();
-builder.Services.AddScoped<IMetricValueCalculatorFactory, MetricValueCalculatorFactory>();
-builder.Services.AddScoped<IMetricValueCalculatorProvider, DailyCaloricIntakeCalculator>();
 builder.Services.AddScoped<IEnergyCalculationService, EnergyCalculationService>();
 
 // Auth
