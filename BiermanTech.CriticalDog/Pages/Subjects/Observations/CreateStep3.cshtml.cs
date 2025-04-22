@@ -50,10 +50,10 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 return NotFound();
             }
 
-            ObservationDefinitionName = observationDefinition.DefinitionName;
+            ObservationDefinitionName = observationDefinition.Name;
 
             var metricType = await _observationService.GetMetricTypeByIdAsync(Observation.MetricTypeId);
-            MetricTypeDescription = metricType?.Description ?? "Unknown";
+            MetricTypeDescription = metricType?.Name ?? "Unknown";
 
             MetricValueTransformer = MetricValueTransformerFactory.GetProvider(observationDefinition);
 

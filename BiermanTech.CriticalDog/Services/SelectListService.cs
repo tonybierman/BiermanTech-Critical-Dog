@@ -35,11 +35,11 @@ namespace BiermanTech.CriticalDog.Services
             }
 
             var items = await query
-                .OrderBy(mt => mt.Description)
+                .OrderBy(mt => mt.Name)
                 .Select(mt => new SelectListItem
                 {
                     Value = mt.Id.ToString(),
-                    Text = mt.Description
+                    Text = mt.Name
                 })
                 .ToListAsync();
 
@@ -58,7 +58,7 @@ namespace BiermanTech.CriticalDog.Services
                 query = query.Where(mt => mt.IsActive == true);
             }
 
-            query = query.OrderBy(mt => mt.TagName);
+            query = query.OrderBy(mt => mt.Name);
 
             if (selectedIds != null)
             {
@@ -66,7 +66,7 @@ namespace BiermanTech.CriticalDog.Services
                     .Select(mt => new SelectListItem
                     {
                         Value = mt.Id.ToString(),
-                        Text = StringHelper.SplitPascalCase(mt.TagName)
+                        Text = StringHelper.SplitPascalCase(mt.Name)
                     })
                     .ToListAsync();
 
@@ -75,18 +75,18 @@ namespace BiermanTech.CriticalDog.Services
             else
             {
                 var metaTags = await query.ToListAsync();
-                return new SelectList(metaTags, nameof(MetaTag.Id), nameof(MetaTag.TagName));
+                return new SelectList(metaTags, nameof(MetaTag.Id), nameof(MetaTag.Name));
             }
         }
 
         public async Task<SelectList> GetSubjectTypesSelectListAsync()
         {
             var subjectTypes = await _context.SubjectTypes
-                .OrderBy(st => st.TypeName)
+                .OrderBy(st => st.Name)
                 .Select(st => new SelectListItem
                 {
                     Value = st.Id.ToString(),
-                    Text = StringHelper.SplitPascalCase(st.TypeName)
+                    Text = StringHelper.SplitPascalCase(st.Name)
                 })
                 .ToListAsync();
 
@@ -111,13 +111,13 @@ namespace BiermanTech.CriticalDog.Services
                 query = query.Where(od => od.IsActive == true);
             }
 
-            query = query.OrderBy(od => od.DefinitionName);
+            query = query.OrderBy(od => od.Name);
 
             var items = await query
                 .Select(od => new SelectListItem
                 {
                     Value = od.Id.ToString(),
-                    Text = StringHelper.SplitPascalCase(od.DefinitionName)
+                    Text = StringHelper.SplitPascalCase(od.Name)
                 })
                 .ToListAsync();
 
@@ -134,11 +134,11 @@ namespace BiermanTech.CriticalDog.Services
             }
 
             var units = await query
-                .OrderBy(u => u.UnitName)
+                .OrderBy(u => u.Name)
                 .Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
-                    Text = StringHelper.SplitPascalCase(u.UnitName)
+                    Text = StringHelper.SplitPascalCase(u.Name)
                 })
                 .ToListAsync();
 
@@ -155,11 +155,11 @@ namespace BiermanTech.CriticalDog.Services
             }
 
             var types = await query
-                .OrderBy(ot => ot.TypeName)
+                .OrderBy(ot => ot.Name)
                 .Select(ot => new SelectListItem
                 {
                     Value = ot.Id.ToString(),
-                    Text = StringHelper.SplitPascalCase(ot.TypeName)
+                    Text = StringHelper.SplitPascalCase(ot.Name)
                 })
                 .ToListAsync();
 
@@ -176,11 +176,11 @@ namespace BiermanTech.CriticalDog.Services
             }
 
             var disciplines = await query
-                .OrderBy(sd => sd.DisciplineName)
+                .OrderBy(sd => sd.Name)
                 .Select(sd => new SelectListItem
                 {
                     Value = sd.Id.ToString(),
-                    Text = StringHelper.SplitPascalCase(sd.DisciplineName)
+                    Text = StringHelper.SplitPascalCase(sd.Name)
                 })
                 .ToListAsync();
 

@@ -49,7 +49,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
 
             // Dynamically fetch Observation Definition names
             var observationDefinitionNames = _dbContext.GetFilteredSubjectRecords()
-                .Select(p => p.ObservationDefinition.DefinitionName)
+                .Select(p => p.ObservationDefinition.Name)
                 .Distinct()
                 .ToList();
 
@@ -57,7 +57,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
             var observationDefinitionNameFacetValues = observationDefinitionNames.Select(c =>
                 new FacetValue<SubjectRecord>(
                     key: c,
-                    filter: p => p.ObservationDefinition.DefinitionName == c,
+                    filter: p => p.ObservationDefinition.Name == c,
                     displayName: c
                 )).ToList();
 
@@ -66,7 +66,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
 
             // Dynamically fetch subject type names
             var subjectTypeNames = _dbContext.GetFilteredSubjectRecords()
-                .Select(p => p.Subject.SubjectType.TypeName)
+                .Select(p => p.Subject.SubjectType.Name)
                 .Distinct()
                 .ToList();
 
@@ -74,7 +74,7 @@ namespace BiermanTech.CriticalDog.Reports.Domain
             var subjectTypeNameFacetValues = subjectTypeNames.Select(c =>
                 new FacetValue<SubjectRecord>(
                     key: c,
-                    filter: p => p.Subject.SubjectType.TypeName == c,
+                    filter: p => p.Subject.SubjectType.Name == c,
                     displayName: c
                 )).ToList();
 

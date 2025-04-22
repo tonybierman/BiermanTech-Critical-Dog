@@ -40,7 +40,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<string>("TagName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
@@ -48,7 +48,7 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "TagName" }, "TagName")
+                    b.HasIndex(new[] { "Name" }, "Name")
                         .IsUnique();
 
                     b.ToTable("MetaTag", (string)null);
@@ -62,14 +62,14 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("UnitId")
                         .HasColumnType("int(11)");
@@ -78,6 +78,10 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "UnitId" }, "FK_MetricType_Unit");
+
+                    b.HasIndex(new[] { "Name" }, "Name")
+                        .IsUnique()
+                        .HasDatabaseName("Name1");
 
                     b.ToTable("MetricType", (string)null);
                 });
@@ -89,11 +93,6 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("int(11)");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DefinitionName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -117,16 +116,22 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<int>("ObservationTypeId")
                         .HasColumnType("int(11)");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "DefinitionName" }, "DefinitionName")
-                        .IsUnique();
-
                     b.HasIndex(new[] { "ObservationTypeId" }, "FK_ObservationDefinition_ObservationType");
+
+                    b.HasIndex(new[] { "Name" }, "Name")
+                        .IsUnique()
+                        .HasDatabaseName("Name2");
 
                     b.ToTable("ObservationDefinition", (string)null);
                 });
@@ -148,7 +153,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<string>("TypeName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
@@ -156,8 +161,9 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "TypeName" }, "TypeName")
-                        .IsUnique();
+                    b.HasIndex(new[] { "Name" }, "Name")
+                        .IsUnique()
+                        .HasDatabaseName("Name3");
 
                     b.ToTable("ObservationType", (string)null);
                 });
@@ -173,22 +179,23 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("DisciplineName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
                     b.Property<bool?>("IsActive")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "DisciplineName" }, "DisciplineName")
-                        .IsUnique();
+                    b.HasIndex(new[] { "Name" }, "Name")
+                        .IsUnique()
+                        .HasDatabaseName("Name4");
 
                     b.ToTable("ScientificDiscipline", (string)null);
                 });
@@ -255,7 +262,8 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasIndex(new[] { "Name" }, "IDX_Subject_Name");
 
                     b.HasIndex(new[] { "Name", "Breed", "ArrivalDate" }, "Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("Name5");
 
                     b.ToTable("Subject", (string)null);
                 });
@@ -330,7 +338,7 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("TypeName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
@@ -338,9 +346,9 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "TypeName" }, "TypeName")
+                    b.HasIndex(new[] { "Name" }, "Name")
                         .IsUnique()
-                        .HasDatabaseName("TypeName1");
+                        .HasDatabaseName("Name6");
 
                     b.ToTable("SubjectType", (string)null);
                 });
@@ -362,7 +370,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<string>("UnitName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
@@ -375,8 +383,9 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "UnitName" }, "UnitName")
-                        .IsUnique();
+                    b.HasIndex(new[] { "Name" }, "Name")
+                        .IsUnique()
+                        .HasDatabaseName("Name7");
 
                     b.HasIndex(new[] { "UnitSymbol" }, "UnitSymbol")
                         .IsUnique();

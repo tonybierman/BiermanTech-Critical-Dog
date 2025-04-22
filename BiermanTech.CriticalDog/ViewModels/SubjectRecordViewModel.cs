@@ -25,7 +25,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public DateTime? UpdatedAt { get; set; }
 
         public string? SubjectName => Subject?.Name;
-        public string? SubjectTypeName => Subject?.SubjectType?.TypeName;
+        public string? SubjectTypeName => Subject?.SubjectType?.Name;
 
         public string? SubjectSex => Subject?.Sex == null ? SexEnum.None.ToString() :  ((SexEnum)Subject?.Sex).ToString();
 
@@ -37,7 +37,7 @@ namespace BiermanTech.CriticalDog.ViewModels
 
         public string? UnitSymbol => MetricType?.Unit?.UnitSymbol;
 
-        public string? ObservationName => StringHelper.SplitPascalCase(ObservationDefinition?.DefinitionName);
+        public string? ObservationName => StringHelper.SplitPascalCase(ObservationDefinition?.Name);
 
         public string? MetricValueWithSymbol => $"{MetricValue} {UnitSymbol}";
 

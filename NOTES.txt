@@ -29,3 +29,15 @@ ALTER TABLE Subject DROP FOREIGN KEY FK_Subject_AspNetUsers_UserId;
 ALTER TABLE Subject
 ADD CONSTRAINT FK_Subject_AspNetUsers_UserId
 FOREIGN KEY (UserId) REFERENCES AspNetUsers(Id) ON DELETE CASCADE;
+
+
+Connascence of Name List
+Entity,Property
+MetricType,Description
+MetaTag,TagName
+SubjectType,TypeName
+Subject,Name
+ObservationDefinition,DefinitionName
+Unit,UnitName
+ObservationType,TypeName
+ScientificDiscipline,DisciplineName

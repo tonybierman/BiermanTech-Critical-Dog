@@ -5,7 +5,7 @@ namespace BiermanTech.CriticalDog.Data
     public class ObservationDefinition
     {
         public int Id { get; set; }
-        public string DefinitionName { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public bool IsSingular { get; set; }

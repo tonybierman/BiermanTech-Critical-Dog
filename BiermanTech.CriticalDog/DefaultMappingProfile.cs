@@ -18,7 +18,7 @@ namespace BiermanTech.CriticalDog
             var items = source.Select(mt => new SelectListItem
             {
                 Value = mt.Id.ToString(), // Assuming MetricType has an Id property
-                Text = mt.Description // Assuming MetricType has a Name property
+                Text = mt.Name // Assuming MetricType has a Name property
             });
 
             return new SelectList(items, "Value", "Text");

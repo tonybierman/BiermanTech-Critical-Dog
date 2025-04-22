@@ -26,9 +26,9 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
             {
                 var entity = await _metricTypeService.GetMetricTypeByIdAsync(metricType.Id);
                 ObservationDefinitionNames[metricType.Id] = entity.ObservationDefinitions.Any()
-                    ? string.Join(", ", entity.ObservationDefinitions.Select(od => od.DefinitionName))
+                    ? string.Join(", ", entity.ObservationDefinitions.Select(od => od.Name))
                     : "None";
-                UnitNames[metricType.Id] = entity.Unit?.UnitName ?? "Unknown";
+                UnitNames[metricType.Id] = entity.Unit?.Name ?? "Unknown";
             }
         }
     }

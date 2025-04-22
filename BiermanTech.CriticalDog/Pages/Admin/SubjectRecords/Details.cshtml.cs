@@ -33,9 +33,9 @@ namespace BiermanTech.CriticalDog.Pages.Admin.SubjectRecords
 
             RecordVM = _mapper.Map<SubjectRecordInputViewModel>(record);
             SubjectName = record.Subject?.Name ?? "Unknown";
-            ObservationDefinitionName = record.ObservationDefinition?.DefinitionName ?? "Unknown";
+            ObservationDefinitionName = record.ObservationDefinition?.Name ?? "Unknown";
             MetricTypeId = record.MetricTypeId;
-            MetaTagNames = record.MetaTags.Select(m => m.TagName).ToList();
+            MetaTagNames = record.MetaTags.Select(m => m.Name).ToList();
 
             return Page();
         }

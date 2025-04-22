@@ -39,7 +39,7 @@ namespace BiermanTech.CriticalDog.Data
         private static async Task SeedUserDataAsync(AppDbContext context, string userId, ILogger logger, bool subjectsOnly)
         {
             // Get SubjectType for "Dog"
-            var dogSubjectType = await context.SubjectTypes.FirstOrDefaultAsync(st => st.TypeName == "Dog");
+            var dogSubjectType = await context.SubjectTypes.FirstOrDefaultAsync(st => st.Name == "Dog");
             if (dogSubjectType == null)
             {
                 logger.LogError("SubjectType 'Dog' not found. Ensure AppDbInitializer has been run.");

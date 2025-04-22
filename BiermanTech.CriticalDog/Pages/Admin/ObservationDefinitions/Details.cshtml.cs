@@ -34,16 +34,16 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
             }
 
             DefinitionVM = _mapper.Map<ObservationDefinitionInputViewModel>(definition);
-            ObservationTypeName = definition.ObservationType?.TypeName ?? "Unknown";
+            ObservationTypeName = definition.ObservationType?.Name ?? "Unknown";
             ScientificDisciplineNames = definition.ScientificDisciplines
-                .Select(d => d.DisciplineName)
+                .Select(d => d.Name)
                 .ToList();
 
             // Construct markdown filename and initialize MarkdownHelpVM
             string markdownFileName = null;
-            if (!string.IsNullOrEmpty(DefinitionVM?.DefinitionName))
+            if (!string.IsNullOrEmpty(DefinitionVM?.Name))
             {
-                markdownFileName = $"{DefinitionVM.DefinitionName.Replace(" ", "_")}.md";
+                markdownFileName = $"{DefinitionVM.Name.Replace(" ", "_")}.md";
             }
 
             MarkdownHelpVM = new MarkdownRendererPartialViewModel(

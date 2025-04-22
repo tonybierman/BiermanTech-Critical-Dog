@@ -7,7 +7,7 @@ public partial class Unit
 {
     public int Id { get; set; }
 
-    public string UnitName { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
     public string UnitSymbol { get; set; } = null!;
 

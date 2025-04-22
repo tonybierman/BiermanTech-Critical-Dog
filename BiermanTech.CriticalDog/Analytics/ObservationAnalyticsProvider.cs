@@ -39,7 +39,7 @@ namespace BiermanTech.CriticalDog.Analytics
 
                 // Fetch observation definition with units
                 var observationDef = await _context.ObservationDefinitions
-                    .Where(od => od.DefinitionName == observationDefinitionName && od.IsActive == true)
+                    .Where(od => od.Name == observationDefinitionName && od.IsActive == true)
                     .Include(od => od.Units)
                     .FirstOrDefaultAsync();
 
@@ -61,8 +61,8 @@ namespace BiermanTech.CriticalDog.Analytics
                 Unit standardUnit = GetStandardUnit(observationDefinitionName, supportedUnits);
 
                 // Validate display unit
-                Unit selectedDisplayUnit = displayUnitName != null && supportedUnits.Any(u => u.UnitName == displayUnitName)
-                    ? supportedUnits.First(u => u.UnitName == displayUnitName)
+                Unit selectedDisplayUnit = displayUnitName != null && supportedUnits.Any(u => u.Name == displayUnitName)
+                    ? supportedUnits.First(u => u.Name == displayUnitName)
                     : standardUnit;
 
                 // Fetch records
@@ -80,9 +80,9 @@ namespace BiermanTech.CriticalDog.Analytics
                     {
                         SubjectName = subject.Name,
                         ObservationTypeName = observationDefinitionName,
-                        StandardUnitName = standardUnit.UnitName,
+                        StandardUnitName = standardUnit.Name,
                         StandardUnitSymbol = standardUnit.UnitSymbol,
-                        DisplayUnitName = selectedDisplayUnit.UnitName,
+                        DisplayUnitName = selectedDisplayUnit.Name,
                         DisplayUnitSymbol = selectedDisplayUnit.UnitSymbol,
                         TrendDescription = $"No {observationDefinitionName} observations available."
                     };
@@ -137,9 +137,9 @@ namespace BiermanTech.CriticalDog.Analytics
                 {
                     SubjectName = subject.Name,
                     ObservationTypeName = observationDefinitionName,
-                    StandardUnitName = standardUnit.UnitName,
+                    StandardUnitName = standardUnit.Name,
                     StandardUnitSymbol = standardUnit.UnitSymbol,
-                    DisplayUnitName = selectedDisplayUnit.UnitName,
+                    DisplayUnitName = selectedDisplayUnit.Name,
                     DisplayUnitSymbol = selectedDisplayUnit.UnitSymbol,
                     Records = observations,
                     AverageWeeklyRate = averageWeeklyRate,
@@ -157,26 +157,26 @@ namespace BiermanTech.CriticalDog.Analytics
         {
             return observationDefinitionName switch
             {
-                "WeighIn" => supportedUnits.FirstOrDefault(u => u.UnitName == "Pounds") ?? supportedUnits.First(),
-                "TempCheck" => supportedUnits.FirstOrDefault(u => u.UnitName == "DegreesFahrenheit") ?? supportedUnits.First(),
-                "HeartRate" or "RespiratoryRate" => supportedUnits.FirstOrDefault(u => u.UnitName == "BeatsPerMinute") ?? supportedUnits.First(),
+                "WeighIn" => supportedUnits.FirstOrDefault(u => u.Name == "Pounds") ?? supportedUnits.First(),
+                "TempCheck" => supportedUnits.FirstOrDefault(u => u.Name == "DegreesFahrenheit") ?? supportedUnits.First(),
+                "HeartRate" or "RespiratoryRate" => supportedUnits.FirstOrDefault(u => u.Name == "BeatsPerMinute") ?? supportedUnits.First(),
                 _ => supportedUnits.First()
             };
         }
 
         private async Task<decimal> ConvertValueAsync(decimal value, Unit? sourceUnit, Unit targetUnit, string observationDefinitionName)
         {
-            if (sourceUnit == null || sourceUnit.UnitName == targetUnit.UnitName)
+            if (sourceUnit == null || sourceUnit.Name == targetUnit.Name)
                 return value;
 
             try
             {
-                double convertedValue = await _unitConverter.ConvertAsync(sourceUnit.UnitName, targetUnit.UnitName, (double)value);
+                double convertedValue = await _unitConverter.ConvertAsync(sourceUnit.Name, targetUnit.Name, (double)value);
                 return (decimal)convertedValue;
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning($"No conversion rule for {sourceUnit.UnitName} to {targetUnit.UnitName} for {observationDefinitionName}. Returning original value. Error: {ex.Message}");
+                _logger.LogWarning($"No conversion rule for {sourceUnit.Name} to {targetUnit.Name} for {observationDefinitionName}. Returning original value. Error: {ex.Message}");
                 return value;
             }
         }

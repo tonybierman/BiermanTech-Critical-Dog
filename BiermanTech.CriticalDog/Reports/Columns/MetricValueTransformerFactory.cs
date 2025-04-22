@@ -27,7 +27,7 @@ namespace BiermanTech.CriticalDog.Reports.Columns
         /// <returns>An IMetricValueTransformProvider or null if no matching provider is found.</returns>
         public static IMetricValueTransformProvider? GetProvider(ObservationDefinition? observationDefinition)
         {
-            if (observationDefinition?.ObservationType?.TypeName is not string typeName)
+            if (observationDefinition?.ObservationType?.Name is not string typeName)
             {
                 return null;
             }

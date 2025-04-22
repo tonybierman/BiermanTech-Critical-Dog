@@ -63,7 +63,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 // Add more providers
             };
 
-            var typeName = observationDefinition.DefinitionName ?? "Unknown";
+            var typeName = observationDefinition.Name ?? "Unknown";
             var targetPage = providers.FirstOrDefault(p => p.CanHandle(dog, typeName))?.GetRoute() ?? "CreateStep2";
 
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(Observation);

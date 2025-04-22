@@ -16,7 +16,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Definitions[0].DefinitionName)
+                @Html.DisplayNameFor(model => model.Definitions[0].Name)
             </th>
             <th>
                 Observation Type
@@ -38,7 +38,7 @@
         {
             <tr>
                 <td>
-                    @(StringHelper.SplitPascalCase(item.DefinitionName))
+                    @(StringHelper.SplitPascalCase(item.Name))
                 </td>
                 <td>
                     @(StringHelper.SplitPascalCase(Model.ObservationTypeNames[item.Id]))

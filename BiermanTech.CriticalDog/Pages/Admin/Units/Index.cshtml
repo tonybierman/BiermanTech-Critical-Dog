@@ -16,7 +16,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Units[0].UnitName)
+                @Html.DisplayNameFor(model => model.Units[0].Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Units[0].UnitSymbol)
@@ -35,7 +35,7 @@
         {
             <tr>
                 <td>
-                    @(StringHelper.SplitPascalCase(item.UnitName))
+                    @(StringHelper.SplitPascalCase(item.Name))
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.UnitSymbol)

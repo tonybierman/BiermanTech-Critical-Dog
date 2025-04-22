@@ -46,7 +46,9 @@ namespace BiermanTech.CriticalDog.Helpers
                 // Add a space if current char is uppercase and either:
                 // 1. Previous char is lowercase (e.g., "lW" in "HelloWorld")
                 // 2. Previous char is uppercase and next char (if exists) is lowercase (e.g., "L" in "XMLParser")
+                // 3. Previous char is not a space to avoid double spaces
                 if (char.IsUpper(input[i]) &&
+                    input[i - 1] != ' ' &&
                     (char.IsLower(input[i - 1]) ||
                      (i + 1 < input.Length && char.IsLower(input[i + 1]))))
                 {
@@ -56,6 +58,18 @@ namespace BiermanTech.CriticalDog.Helpers
             }
 
             return result.ToString();
+        }
+
+        public static string Slugify(string? input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            // Use SplitPascalCase to get space-separated string
+            string splitResult = SplitPascalCase(input);
+
+            // Replace spaces with hyphens and convert to lowercase
+            return splitResult.Replace(" ", "-").ToLower();
         }
     }
 }

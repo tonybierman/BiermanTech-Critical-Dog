@@ -15,7 +15,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.SubjectTypes[0].TypeName)
+                @Html.DisplayNameFor(model => model.SubjectTypes[0].Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SubjectTypes[0].Description)
@@ -28,7 +28,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TypeName)
+                    @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)

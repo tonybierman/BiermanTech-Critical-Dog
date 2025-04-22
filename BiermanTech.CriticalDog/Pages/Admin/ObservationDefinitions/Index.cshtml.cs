@@ -31,12 +31,12 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
             foreach (var definition in Definitions)
             {
                 var entity = await _definitionService.GetDefinitionByIdAsync(definition.Id);
-                ObservationTypeNames[definition.Id] = entity.ObservationType?.TypeName ?? "Unknown";
+                ObservationTypeNames[definition.Id] = entity.ObservationType?.Name ?? "Unknown";
                 ScientificDisciplineNames[definition.Id] = entity.ScientificDisciplines.Any()
-                    ? string.Join(", ", entity.ScientificDisciplines.Select(sd => sd.DisciplineName))
+                    ? string.Join(", ", entity.ScientificDisciplines.Select(sd => sd.Name))
                     : "None";
                 MetricTypeNames[definition.Id] = entity.MetricTypes.Any()
-                    ? string.Join(", ", entity.MetricTypes.Select(mt => mt.Description))
+                    ? string.Join(", ", entity.MetricTypes.Select(mt => mt.Name))
                     : "None";
             }
         }
@@ -54,7 +54,7 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
                 // Create a cloned view model with a unique name
                 var clonedDefinition = new ObservationDefinitionInputViewModel
                 {
-                    DefinitionName = $"{definition.DefinitionName}_Copy_{DateTime.UtcNow:yyyyMMddHHmmss}",
+                    Name = $"{definition.Name}_Copy_{DateTime.UtcNow:yyyyMMddHHmmss}",
                     Description = definition.Description,
                     MinimumValue = definition.MinimumValue,
                     MaximumValue = definition.MaximumValue,

@@ -26,8 +26,8 @@ namespace BiermanTech.CriticalDog.Pages.Admin.SubjectRecords
             {
                 var entity = await _recordService.GetSubjectRecordByIdAsync(record.Id);
                 SubjectNames[record.Id] = entity.Subject?.Name ?? "Unknown";
-                ObservationDefinitionNames[record.Id] = entity.ObservationDefinition?.DefinitionName ?? "Unknown";
-                MetaTagNames[record.Id] = entity.MetaTags.Select(m => m.TagName).ToList();
+                ObservationDefinitionNames[record.Id] = entity.ObservationDefinition?.Name ?? "Unknown";
+                MetaTagNames[record.Id] = entity.MetaTags.Select(m => m.Name).ToList();
             }
         }
     }

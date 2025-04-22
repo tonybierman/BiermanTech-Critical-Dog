@@ -19,7 +19,7 @@
                 Unit
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MetricTypes[0].Description)
+                @Html.DisplayNameFor(model => model.MetricTypes[0].Name)
             </th>
             <th>
                 Status
@@ -38,7 +38,7 @@
                     @(StringHelper.SplitPascalCase(Model.UnitNames[item.Id]))
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
+                    @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
                     @(item.IsActive ? (item.IsActive ? "Active" : "Inactive") : "Not Set")

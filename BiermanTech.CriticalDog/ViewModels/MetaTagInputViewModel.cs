@@ -8,7 +8,7 @@ namespace BiermanTech.CriticalDog.ViewModels
 
         [Required]
         [StringLength(100)]
-        public string TagName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         [StringLength(500)]
         public string? Description { get; set; }

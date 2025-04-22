@@ -8,7 +8,7 @@ namespace BiermanTech.CriticalDog.ViewModels
 
         [Required]
         [StringLength(100)]
-        public string UnitName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]

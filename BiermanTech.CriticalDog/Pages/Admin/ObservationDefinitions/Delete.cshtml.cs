@@ -31,9 +31,9 @@ namespace BiermanTech.CriticalDog.Pages.Admin.ObservationDefinitions
             }
 
             DefinitionVM = _mapper.Map<ObservationDefinitionInputViewModel>(definition);
-            ObservationTypeName = definition.ObservationType?.TypeName ?? "Unknown";
+            ObservationTypeName = definition.ObservationType?.Name ?? "Unknown";
             ScientificDisciplineNames = definition.ScientificDisciplines
-                .Select(d => d.DisciplineName)
+                .Select(d => d.Name)
                 .ToList();
 
             return Page();

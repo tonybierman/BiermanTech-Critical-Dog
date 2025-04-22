@@ -33,9 +33,9 @@ namespace BiermanTech.CriticalDog.Pages.Admin.MetricTypes
 
             MetricTypeVM = _mapper.Map<MetricTypeInputViewModel>(metricType);
             ObservationDefinitionNames = metricType.ObservationDefinitions.Any()
-                ? string.Join(", ", metricType.ObservationDefinitions.Select(od => od.DefinitionName))
+                ? string.Join(", ", metricType.ObservationDefinitions.Select(od => od.Name))
                 : "None";
-            UnitName = metricType.Unit?.UnitName ?? "Unknown";
+            UnitName = metricType.Unit?.Name ?? "Unknown";
 
             return Page();
         }

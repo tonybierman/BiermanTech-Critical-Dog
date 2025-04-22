@@ -26,7 +26,7 @@ namespace BiermanTech.CriticalDog.Services
                 .Include(s => s.MetricType)
                 .ThenInclude(mt => mt.Unit)
                 .Include(s => s.MetaTags)
-                .Where(s => s.SubjectId == subjectId && s.ObservationDefinition.DefinitionName == definitionName)
+                .Where(s => s.SubjectId == subjectId && s.ObservationDefinition.Name == definitionName)
                 .OrderByDescending(s => s.CreatedAt)
                 .FirstOrDefaultAsync();
         }

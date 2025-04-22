@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Composition;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using BiermanTech.CriticalDog.Helpers;
 
 namespace BiermanTech.CriticalDog.Data
 {
@@ -208,14 +209,30 @@ namespace BiermanTech.CriticalDog.Data
 
         public override int SaveChanges()
         {
+            ApplyMetaTagNameTransformation();
             ApplyUserIdOnSave();
             return base.SaveChanges();
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            ApplyMetaTagNameTransformation();
             ApplyUserIdOnSave();
             return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void ApplyMetaTagNameTransformation()
+        {
+            var metaTagEntries = ChangeTracker.Entries<MetaTag>()
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+            foreach (var entry in metaTagEntries)
+            {
+                if (!string.IsNullOrEmpty(entry.Entity.Name))
+                {
+                    entry.Entity.Name = StringHelper.Slugify(entry.Entity.Name);
+                }
+            }
         }
 
         private void ApplyUserIdOnSave()

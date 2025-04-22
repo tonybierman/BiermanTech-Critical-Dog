@@ -5,7 +5,7 @@ namespace BiermanTech.CriticalDog.Data
     public class MetricType
     {
         public int Id { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; }
         public bool IsActive { get; set; }
         public int UnitId { get; set; }
         public Unit Unit { get; set; }

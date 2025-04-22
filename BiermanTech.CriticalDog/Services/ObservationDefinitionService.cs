@@ -43,7 +43,7 @@ namespace BiermanTech.CriticalDog.Services
                 .Include(d => d.ObservationType)
                 .Include(d => d.ScientificDisciplines)
                 .Include(d => d.MetricTypes)
-                .OrderBy(d => d.DefinitionName)
+                .OrderBy(d => d.Name)
                 .ToListAsync();
 
             return _mapper.Map<List<ObservationDefinitionInputViewModel>>(definitions);

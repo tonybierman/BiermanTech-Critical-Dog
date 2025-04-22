@@ -60,7 +60,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 return NotFound();
             }
 
-            ObservationDefinitionName = observationDefinition.DefinitionName;
+            ObservationDefinitionName = observationDefinition.Name;
             ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
             ObservationVM.SubjectId = dogId;
             ObservationVM.SubjectName = dog.Name ?? "Unknown";

@@ -71,7 +71,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
             // Set SubjectTypeName
             var subjectEntity = await _subjectService.GetSubjectByIdAsync(id);
-            SubjectTypeName = subjectEntity?.SubjectType?.TypeName ?? "Unknown";
+            SubjectTypeName = subjectEntity?.SubjectType?.Name ?? "Unknown";
 
             // Map SubjectVM to Subject for authorization
             var subject = _mapper.Map<Subject>(SubjectVM);
