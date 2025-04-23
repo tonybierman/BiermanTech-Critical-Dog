@@ -32,9 +32,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
         [BindProperty]
         public SubjectInputViewModel SubjectVM { get; set; } = new SubjectInputViewModel();
-
         public SelectList SubjectTypes { get; set; }
-
         public string SubjectTypeName { get; set; }
         public List<string> MetaTagNames { get; set; } = new List<string>();
 
@@ -60,30 +58,23 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         // TODO: Wasted trips to DB
         protected async Task<bool> RetrieveAndAuthorizeSubjectAsync(int id, string permission)
         {
-            _logger.LogInformation($"RetrieveAndAuthorizeSubjectAsync: Attempting to retrieve Subject with ID {id} for {permission}. User: {User.Identity.Name}, IsAdmin: {User.IsInRole("Admin")}");
-
-            SubjectVM = await _subjectService.GetSubjectViewModelByIdAsync(id);
-            if (SubjectVM == null)
+            var entity = await _subjectService.GetSubjectByIdAsync(id);
+            if (entity == null)
             {
                 _logger.LogWarning($"RetrieveAndAuthorizeSubjectAsync: Subject with ID {id} not found or user lacks view permissions.");
                 return false;
             }
 
-            _logger.LogInformation($"RetrieveAndAuthorizeSubjectAsync: Subject retrieved: ID={SubjectVM.Id}, Permissions={SubjectVM.Permissions}, UserId={SubjectVM.UserId}");
+            SubjectVM = await _subjectService.GetSubjectViewModelByIdAsync(id);
+            SubjectTypeName = entity?.SubjectType?.Name ?? "Unknown";
+            MetaTagNames = entity?.MetaTags?.Select(m => m.Name)?.ToList();
 
-            // Set SubjectTypeName
-            var subjectEntity = await _subjectService.GetSubjectByIdAsync(id);
-            SubjectTypeName = subjectEntity?.SubjectType?.Name ?? "Unknown";
-            MetaTagNames = subjectEntity?.MetaTags?.Select(m => m.Name)?.ToList();
-
-            // Map SubjectVM to Subject for authorization
-            var subject = _mapper.Map<Subject>(SubjectVM);
-
-            // Perform authorization check
+            // Map SubjectVM to tmp for authorization check
+            var tmp = _mapper.Map<Subject>(SubjectVM);
             var policyName = $"Subject{permission}";
             var authorizationResult = await _authorizationService.AuthorizeAsync(
                 User,
-                subject,
+                tmp,
                 policyName);
             if (!authorizationResult.Succeeded)
             {

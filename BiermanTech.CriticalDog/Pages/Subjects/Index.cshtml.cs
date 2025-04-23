@@ -13,18 +13,20 @@ namespace BiermanTech.CriticalDog.Pages.Dogs
 {
     public class IndexModel : SubjectBasePageModel
     {
+        public Dictionary<int, List<string>> MetaTagNames { get; set; } = new Dictionary<int, List<string>>();
+
         public IndexModel(ISubjectService subjectService, IMapper mapper, IAuthorizationService authorizationService, ILogger<IndexModel> logger) : 
             base(subjectService, mapper, authorizationService, logger) { }
 
-        public IList<SubjectViewModel> Dogs { get; set; } = new List<SubjectViewModel>();
+        public IList<SubjectViewModel> Subjects { get; set; } = new List<SubjectViewModel>();
 
         public async Task OnGetAsync()
         {
-            _logger.LogInformation($"IndexModel.OnGetAsync: Retrieving filtered subjects for user: {User.Identity.Name}, IsAdmin: {User.IsInRole("Admin")}");
-
-            Dogs = await _subjectService.GetFilteredSubjectViewModelsAsync();
-
-            _logger.LogInformation($"IndexModel.OnGetAsync: Retrieved {Dogs.Count} subjects.");
+            Subjects = await _subjectService.GetFilteredSubjectViewModelsAsync();
+            foreach (var item in Subjects)
+            {
+                MetaTagNames[item.Id] = item.SelectedMetaTagNames;
+            }
         }
     }
 

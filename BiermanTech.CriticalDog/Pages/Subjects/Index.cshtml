@@ -21,14 +21,14 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var dog in Model.Dogs)
+        @foreach (var dog in Model.Subjects)
         {
             <tr>
                 <td>@dog.Name</td>
                 <td>@(dog.Sex == 1 ? "Male" : dog.Sex == 2 ? "Female" : "Unknown")</td>
                 <td>@dog.ArrivalDate?.ToShortDateString()</td>
                 <td>
-                    @(dog.SelectedMetaTagIds.Any() && Model.MetaTagNames.Any() ? string.Join(", ", Model.MetaTagNames[dog.Id]) : "None")
+                    @(dog.SelectedMetaTagNames.Any() ? string.Join(", ", dog.SelectedMetaTagNames) : "None")
                 </td>
                 <td>
                     <div class="d-inline-flex align-items-center me-2 non-printable" role="toolbar" aria-label="Toolbar with button groups">
