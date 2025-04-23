@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BiermanTech.CriticalDog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250422211537_InitialCreate")]
+    [Migration("20250423092744_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -38,7 +38,6 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool?>("IsActive")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
@@ -65,7 +64,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
@@ -101,12 +100,12 @@ namespace BiermanTech.CriticalDog.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<bool>("IsSingular")
+                    b.Property<bool?>("IsSingular")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'0'");
@@ -151,7 +150,6 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool?>("IsActive")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
@@ -183,7 +181,6 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool?>("IsActive")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
@@ -368,7 +365,6 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool?>("IsActive")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'1'");
@@ -497,6 +493,23 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasIndex(new[] { "UnitId" }, "FK_ObservationDefinitionUnit_Unit");
 
                     b.ToTable("ObservationDefinitionUnit", (string)null);
+                });
+
+            modelBuilder.Entity("SubjectMetaTag", b =>
+                {
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int(11)");
+
+                    b.Property<int>("MetaTagId")
+                        .HasColumnType("int(11)");
+
+                    b.HasKey("SubjectId", "MetaTagId")
+                        .HasName("PRIMARY")
+                        .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                    b.HasIndex(new[] { "MetaTagId" }, "FK_SubjectMetaTag_MetaTag");
+
+                    b.ToTable("SubjectMetaTag", (string)null);
                 });
 
             modelBuilder.Entity("SubjectRecordMetaTag", b =>
@@ -635,6 +648,23 @@ namespace BiermanTech.CriticalDog.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_ObservationDefinitionUnit_Unit");
+                });
+
+            modelBuilder.Entity("SubjectMetaTag", b =>
+                {
+                    b.HasOne("BiermanTech.CriticalDog.Data.MetaTag", null)
+                        .WithMany()
+                        .HasForeignKey("MetaTagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_SubjectMetaTag_MetaTag");
+
+                    b.HasOne("BiermanTech.CriticalDog.Data.Subject", null)
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_SubjectMetaTag_Subject");
                 });
 
             modelBuilder.Entity("SubjectRecordMetaTag", b =>

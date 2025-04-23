@@ -14,4 +14,5 @@ public partial class MetaTag
     public bool? IsActive { get; set; }
 
     public virtual ICollection<SubjectRecord> SubjectRecords { get; set; } = new List<SubjectRecord>();
+    public virtual ICollection<Subject> Subjects { get; set; } = new List<Subject>();
 }

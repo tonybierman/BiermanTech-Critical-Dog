@@ -60,7 +60,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'1'")
                 },
                 constraints: table =>
                 {
@@ -78,7 +78,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'1'")
                 },
                 constraints: table =>
                 {
@@ -96,7 +96,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'1'")
                 },
                 constraints: table =>
                 {
@@ -133,7 +133,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'1'")
                 },
                 constraints: table =>
                 {
@@ -151,8 +151,8 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "text", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
-                    IsSingular = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'0'"),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'1'"),
+                    IsSingular = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'0'"),
                     MaximumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
                     MinimumValue = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
                     ObservationTypeId = table.Column<int>(type: "int(11)", nullable: false)
@@ -218,7 +218,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'1'"),
                     UnitId = table.Column<int>(type: "int(11)", nullable: false)
                 },
                 constraints: table =>
@@ -279,6 +279,32 @@ namespace BiermanTech.CriticalDog.Migrations
                         name: "FK_ObservationDefinitionUnit_Unit",
                         column: x => x.UnitId,
                         principalTable: "Unit",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "SubjectMetaTag",
+                columns: table => new
+                {
+                    SubjectId = table.Column<int>(type: "int(11)", nullable: false),
+                    MetaTagId = table.Column<int>(type: "int(11)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => new { x.SubjectId, x.MetaTagId })
+                        .Annotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                    table.ForeignKey(
+                        name: "FK_SubjectMetaTag_MetaTag",
+                        column: x => x.MetaTagId,
+                        principalTable: "MetaTag",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SubjectMetaTag_Subject",
+                        column: x => x.SubjectId,
+                        principalTable: "Subject",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -457,6 +483,11 @@ namespace BiermanTech.CriticalDog.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "FK_SubjectMetaTag_MetaTag",
+                table: "SubjectMetaTag",
+                column: "MetaTagId");
+
+            migrationBuilder.CreateIndex(
                 name: "IDX_SubjectRecord_MetricTypeId",
                 table: "SubjectRecord",
                 column: "MetricTypeId");
@@ -511,6 +542,9 @@ namespace BiermanTech.CriticalDog.Migrations
 
             migrationBuilder.DropTable(
                 name: "ObservationDefinitionUnit");
+
+            migrationBuilder.DropTable(
+                name: "SubjectMetaTag");
 
             migrationBuilder.DropTable(
                 name: "SubjectRecordMetaTag");

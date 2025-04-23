@@ -7,8 +7,8 @@ namespace BiermanTech.CriticalDog.Data
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsSingular { get; set; }
+        public bool? IsActive { get; set; }
+        public bool? IsSingular { get; set; }
         public decimal? MaximumValue { get; set; }
         public decimal? MinimumValue { get; set; }
         public int ObservationTypeId { get; set; }

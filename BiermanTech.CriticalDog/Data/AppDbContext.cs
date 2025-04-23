@@ -32,7 +32,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.Name, "Name").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Made nullable
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
@@ -44,7 +44,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.UnitId, "FK_MetricType_Unit");
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Name).HasColumnType("text");
-            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Already nullable
             entity.Property(e => e.UnitId).HasColumnType("int(11)");
 
             entity.HasOne(d => d.Unit).WithMany(p => p.MetricTypes)
@@ -62,8 +62,8 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
-            entity.Property(e => e.IsSingular).IsRequired().HasDefaultValueSql("'0'");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Already nullable
+            entity.Property(e => e.IsSingular).HasDefaultValueSql("'0'"); // Already nullable
             entity.Property(e => e.MaximumValue).HasPrecision(10, 2);
             entity.Property(e => e.MinimumValue).HasPrecision(10, 2);
             entity.Property(e => e.ObservationTypeId).HasColumnType("int(11)");
@@ -147,7 +147,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.Name, "Name").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Made nullable
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
@@ -159,7 +159,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Made nullable
         });
 
         modelBuilder.Entity<Subject>(entity =>
@@ -189,6 +189,26 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.User).WithMany()
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Subject_AspNetUsers_UserId");
+
+            entity.HasMany(d => d.MetaTags).WithMany(p => p.Subjects)
+                .UsingEntity<Dictionary<string, object>>(
+                    "SubjectMetaTag",
+                    r => r.HasOne<MetaTag>().WithMany()
+                        .HasForeignKey("MetaTagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_SubjectMetaTag_MetaTag"),
+                    l => l.HasOne<Subject>().WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_SubjectMetaTag_Subject"),
+                    j =>
+                    {
+                        j.HasKey("SubjectId", "MetaTagId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        j.ToTable("SubjectMetaTag");
+                        j.HasIndex(new[] { "MetaTagId" }, "FK_SubjectMetaTag_MetaTag");
+                        j.IndexerProperty<int>("SubjectId").HasColumnType("int(11)");
+                        j.IndexerProperty<int>("MetaTagId").HasColumnType("int(11)");
+                    });
         });
 
         modelBuilder.Entity<SubjectRecord>(entity =>
@@ -264,7 +284,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.UnitSymbol, "UnitSymbol").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive).IsRequired().HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Made nullable
             entity.Property(e => e.Name).HasMaxLength(20);
             entity.Property(e => e.UnitSymbol).HasMaxLength(5);
         });
