@@ -30,7 +30,7 @@
                 <td>@(dog.Sex == 1 ? "Male" : dog.Sex == 2 ? "Female" : "Unknown")</td>
                 <td>@dog.ArrivalDate?.ToShortDateString()</td>
                 <td>
-                    @(dog.SelectedMetaTagNames.Any() ? string.Join(", ", dog.SelectedMetaTagNames) : "None")
+                    @await Html.PartialAsync("_TagFieldPartial", dog.SelectedMetaTagNames)
                 </td>
                 <td>
                     <div class="d-inline-flex align-items-center me-2 non-printable" role="toolbar" aria-label="Toolbar with button groups">
