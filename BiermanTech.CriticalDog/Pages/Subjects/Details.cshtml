@@ -32,10 +32,10 @@
                     @Html.DisplayFor(model => model.SubjectVM.ArrivalDate)
                 </dd>
                 <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.SubjectVM.SubjectTypeId)
+                    @Model.SubjectVM?.SubjectType?.Clade
                 </dt>
                 <dd class="col-sm-9">
-                    @Model.SubjectTypeName
+                    @Model.SubjectVM?.SubjectType?.Name (@Model.SubjectVM?.SubjectType?.ScientificName)
                 </dd>
                 <dt class="col-sm-3">
                     Meta Tags

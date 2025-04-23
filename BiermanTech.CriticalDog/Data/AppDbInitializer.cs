@@ -713,6 +713,8 @@ namespace BiermanTech.CriticalDog.Data
 
             public static readonly List<MetaTag> MetaTags = new()
             {
+                new MetaTag { Name = "Rescue", Description = "Rescued animal", IsActive = true },
+                new MetaTag { Name = "Senior", Description = "Senior animal", IsActive = true },
                 new MetaTag { Name = "Feeding", Description = "Related to food or feeding observations", IsActive = true },
                 new MetaTag { Name = "Medication", Description = "Indicates a medication-related record", IsActive = true },
                 new MetaTag { Name = "Exercise", Description = "Pertains to physical activity or exercise", IsActive = true },

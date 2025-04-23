@@ -35,6 +35,7 @@ namespace BiermanTech.CriticalDog.Services
         public async Task<List<SubjectViewModel>> GetFilteredSubjectViewModelsAsync()
         {
             var subjects = await _context.GetFilteredSubjects()
+                .Include(s => s.SubjectType)
                 .Include(s => s.MetaTags)
                 .ToListAsync();
             var viewModels = _mapper.Map<List<SubjectViewModel>>(subjects);
