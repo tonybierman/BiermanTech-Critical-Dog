@@ -135,69 +135,73 @@ var app = builder.Build();
 
 try
 {
-    string regularUserId = null;
-
-    // Seed IdentityDbContext (Admin and Regular User)
-    using (var scope = app.Services.CreateScope())
+    if (false)
     {
-        var services = scope.ServiceProvider;
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Starting IdentityDbContext seeding...");
+        string regularUserId = null;
 
-        // Seed Admin User
-        await IdentityDbInitializer.SeedAdminUser(
-            services,
-            adminEmail: "admin@example.com",
-            adminPassword: "Admin@123!");
-
-        // Seed Regular User and capture UserId
-        regularUserId = await IdentityDbInitializer.SeedRegularUser(
-            services,
-            userEmail: "user@example.com",
-            userPassword: "User@123!");
-
-        logger.LogInformation("Completed IdentityDbContext seeding.");
-    }
-
-    // Apply migrations for AppDbContext
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Starting AppDbContext initialization...");
-
-        var context = services.GetRequiredService<AppDbContext>();
-        await AppDbInitializer.InitializeAsync(services);
-
-        // Explicitly dispose AppDbContext to release connections
-        await context.DisposeAsync();
-        logger.LogInformation("Completed AppDbContext initialization and disposed context.");
-    }
-
-    // Seed sample data for the regular user
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Starting UserDbInitializer...");
-
-        if (string.IsNullOrEmpty(regularUserId))
+        // Seed IdentityDbContext (Admin and Regular User)
+        using (var scope = app.Services.CreateScope())
         {
-            logger.LogError("Regular user ID is null. Skipping UserDbInitializer.");
-            throw new InvalidOperationException("Failed to obtain regular user ID.");
+            var services = scope.ServiceProvider;
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Starting IdentityDbContext seeding...");
+
+            // Seed Admin User
+            await IdentityDbInitializer.SeedAdminUser(
+                services,
+                adminEmail: "admin@example.com",
+                adminPassword: "Admin@123!");
+
+            // Seed Regular User and capture UserId
+            regularUserId = await IdentityDbInitializer.SeedRegularUser(
+                services,
+                userEmail: "user@example.com",
+                userPassword: "User@123!");
+
+            logger.LogInformation("Completed IdentityDbContext seeding.");
         }
 
-        var context = services.GetRequiredService<AppDbContext>();
-        await UserDbInitializer.InitializeAsync(services, regularUserId, true);
-        logger.LogInformation("Completed UserDbInitializer.");
 
-        // Explicitly dispose AppDbContext to release connections
-        await context.DisposeAsync();
-        logger.LogInformation("Completed AppDbContext initialization and disposed context.");
+        // Apply migrations for AppDbContext
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Starting AppDbContext initialization...");
+
+            var context = services.GetRequiredService<AppDbContext>();
+            await AppDbInitializer.InitializeAsync(services);
+
+            // Explicitly dispose AppDbContext to release connections
+            await context.DisposeAsync();
+            logger.LogInformation("Completed AppDbContext initialization and disposed context.");
+        }
+ 
+        // Seed sample data for the regular user
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Starting UserDbInitializer...");
+
+            if (string.IsNullOrEmpty(regularUserId))
+            {
+                logger.LogError("Regular user ID is null. Skipping UserDbInitializer.");
+                throw new InvalidOperationException("Failed to obtain regular user ID.");
+            }
+
+            var context = services.GetRequiredService<AppDbContext>();
+            await UserDbInitializer.InitializeAsync(services, regularUserId, true);
+            logger.LogInformation("Completed UserDbInitializer.");
+
+            // Explicitly dispose AppDbContext to release connections
+            await context.DisposeAsync();
+            logger.LogInformation("Completed AppDbContext initialization and disposed context.");
+
+            var successLogger = app.Services.GetRequiredService<ILogger<Program>>();
+            successLogger.LogInformation("Database initialization and seeding completed successfully.");
+        }
     }
-
-    var successLogger = app.Services.GetRequiredService<ILogger<Program>>();
-    successLogger.LogInformation("Database initialization and seeding completed successfully.");
 }
 catch (Exception ex)
 {
