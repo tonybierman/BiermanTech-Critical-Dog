@@ -76,6 +76,9 @@ namespace BiermanTech.CriticalDog
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Subject
+            CreateMap<Subject, SubjectViewModel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
             CreateMap<Subject, SubjectInputViewModel>()
                 .ForMember(dest => dest.SelectedMetaTagIds,
                     opt => opt.MapFrom(src => src.MetaTags.Select(d => d.Id).ToList()))

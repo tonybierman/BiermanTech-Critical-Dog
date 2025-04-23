@@ -66,6 +66,8 @@ namespace BiermanTech.CriticalDog.Services
                 .ThenInclude(mt => mt.Unit)
                 .ToListAsync();
             var viewModels = _mapper.Map<List<SubjectRecordInputViewModel>>(records);
+
+            // TODO: Move this to mapping profile
             for (int i = 0; i < records.Count; i++)
             {
                 viewModels[i].SelectedMetaTagIds = records[i].MetaTags.Select(m => m.Id).ToList();

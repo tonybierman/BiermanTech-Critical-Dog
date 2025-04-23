@@ -32,6 +32,22 @@ namespace BiermanTech.CriticalDog.Services
             _logger = logger;
         }
 
+        public async Task<List<SubjectViewModel>> GetFilteredSubjectViewModelsAsync()
+        {
+            var subjects = await _context.GetFilteredSubjects()
+                .Include(s => s.MetaTags)
+                .ToListAsync();
+            var viewModels = _mapper.Map<List<SubjectViewModel>>(subjects);
+
+            // TODO: Move this to mapping profile
+            for (int i = 0; i < subjects.Count; i++)
+            {
+                viewModels[i].SelectedMetaTagIds = subjects[i].MetaTags.Select(m => m.Id).ToList();
+            }
+
+            return viewModels;
+        }
+
         public async Task<Subject> GetSubjectByIdAsync(int id)
         {
             _logger.LogInformation($"GetSubjectByIdAsync: Retrieving Subject with ID {id}.");

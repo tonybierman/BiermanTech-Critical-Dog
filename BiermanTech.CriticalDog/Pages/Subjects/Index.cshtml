@@ -15,6 +15,9 @@
             <th>Breed</th>
             <th>Sex</th>
             <th>Arrival Date</th>
+            <th>
+                Meta Tags
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -26,6 +29,9 @@
                 <td>@dog.Breed</td>
                 <td>@(dog.Sex == 1 ? "Male" : dog.Sex == 2 ? "Female" : "Unknown")</td>
                 <td>@dog.ArrivalDate?.ToShortDateString()</td>
+                <td>
+                    @(dog.SelectedMetaTagIds.Any() && Model.MetaTagNames.Any() ? string.Join(", ", Model.MetaTagNames[dog.Id]) : "None")
+                </td>
                 <td>
                     <div class="d-inline-flex align-items-center me-2 non-printable" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group btn-group-sm pe-1" role="group" aria-label="First group">
