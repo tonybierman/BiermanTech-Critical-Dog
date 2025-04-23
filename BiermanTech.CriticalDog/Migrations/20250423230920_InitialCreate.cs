@@ -114,7 +114,7 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Clade = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ScientificName = table.Column<string>(type: "text", nullable: false)
+                    ScientificName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>

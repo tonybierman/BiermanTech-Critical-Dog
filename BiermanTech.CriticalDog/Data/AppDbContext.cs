@@ -274,7 +274,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => new { e.Name, e.ScientificName, e.Clade }, "IX_SubjectType_Name_ScientificName_Clade").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.ScientificName).HasColumnType("text");
+            entity.Property(e => e.ScientificName).HasMaxLength(255).HasColumnType("varchar(255)");
             entity.Property(e => e.Clade).HasMaxLength(100).HasColumnType("varchar(100)");
         });
 

@@ -341,7 +341,8 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.Property<string>("ScientificName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BiermanTech.CriticalDog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250423230256_InitialCreate")]
+    [Migration("20250423230920_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -344,7 +344,8 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.Property<string>("ScientificName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
