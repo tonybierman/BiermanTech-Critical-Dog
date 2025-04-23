@@ -37,6 +37,12 @@
                 <dd class="col-sm-9">
                     @Model.SubjectTypeName
                 </dd>
+                <dt class="col-sm-3">
+                    Meta Tags
+                </dt>
+                <dd class="col-sm-9">
+                    @(Model.MetaTagNames.Any() ? string.Join(", ", Model.MetaTagNames) : "None")
+                </dd>
             </dl>
             <div class="form-group mt-3">
                 <a asp-page="./Edit" asp-route-id="@Model.SubjectVM.Id" class="btn btn-primary">Edit</a>

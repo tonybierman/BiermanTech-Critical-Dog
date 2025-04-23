@@ -46,6 +46,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 return NotFound();
             }
 
+
             WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
 
             var idealWeightRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "IdealWeight");

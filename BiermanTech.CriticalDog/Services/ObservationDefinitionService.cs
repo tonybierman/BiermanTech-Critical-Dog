@@ -150,11 +150,11 @@ namespace BiermanTech.CriticalDog.Services
             {
                 // No SubjectRecords, proceed with deletion
                 _context.ObservationDefinitions.Remove(definition);
-            }
 
-            // Clear many-to-many relationships in both cases
-            definition.ScientificDisciplines.Clear();
-            definition.MetricTypes.Clear();
+                // Clear many-to-many relationships in both cases
+                definition.ScientificDisciplines.Clear();
+                definition.MetricTypes.Clear();
+            }
 
             await _context.SaveChangesAsync();
         }

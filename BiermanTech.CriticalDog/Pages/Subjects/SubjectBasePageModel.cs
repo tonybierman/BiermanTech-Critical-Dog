@@ -36,6 +36,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         public SelectList SubjectTypes { get; set; }
 
         public string SubjectTypeName { get; set; }
+        public List<string> MetaTagNames { get; set; } = new List<string>();
 
         [BindProperty]
         public bool AnonymousCanView { get; set; }
@@ -56,6 +57,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         [BindProperty]
         public bool AdminCanDelete { get; set; } = true;
 
+        // TODO: Wasted trips to DB
         protected async Task<bool> RetrieveAndAuthorizeSubjectAsync(int id, string permission)
         {
             _logger.LogInformation($"RetrieveAndAuthorizeSubjectAsync: Attempting to retrieve Subject with ID {id} for {permission}. User: {User.Identity.Name}, IsAdmin: {User.IsInRole("Admin")}");
@@ -72,6 +74,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             // Set SubjectTypeName
             var subjectEntity = await _subjectService.GetSubjectByIdAsync(id);
             SubjectTypeName = subjectEntity?.SubjectType?.Name ?? "Unknown";
+            MetaTagNames = subjectEntity?.MetaTags?.Select(m => m.Name)?.ToList();
 
             // Map SubjectVM to Subject for authorization
             var subject = _mapper.Map<Subject>(SubjectVM);
