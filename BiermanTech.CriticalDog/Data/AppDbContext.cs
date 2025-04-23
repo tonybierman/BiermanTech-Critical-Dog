@@ -44,7 +44,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.Name, "Name").IsUnique();
             entity.HasIndex(e => e.UnitId, "FK_MetricType_Unit");
             entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.Name).HasColumnType("text");
+            entity.Property(e => e.Name).HasMaxLength(255).HasColumnType("varchar(255)");
             entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
             entity.Property(e => e.UnitId).HasColumnType("int(11)");
 

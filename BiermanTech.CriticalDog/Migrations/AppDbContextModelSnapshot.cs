@@ -68,7 +68,8 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("UnitId")
                         .HasColumnType("int(11)");
