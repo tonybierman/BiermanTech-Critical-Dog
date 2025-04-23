@@ -76,7 +76,7 @@ namespace BiermanTech.CriticalDog.Services
                     weight.Value);
 
                 (double rer, double lowerMer, double upperMer) = CanineMerCalculator.CalculateMer(lifeStage, weightInKgs);
-                double meanMer = CanineMerCalculator.CalculateMeanMer(lifeStage, weight.Value);
+                double meanMer = CanineMerCalculator.CalculateMeanMer(lifeStage, weightInKgs);
 
                 return new EnergyCalculationResult
                 {

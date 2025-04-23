@@ -23,7 +23,7 @@
                     <li>RER @Model.Result.Rer.ToString("F2") kcal/day</li>
                     <li>MER @Model.Result.MeanMer.ToString("F2") kcal/day</li>
                 </ul>
-                <p>A dog who weighs <strong>@Model.Result.WeightInLbs.ToString("F2") lbs.</strong> with a life stage status of <strong>@EnumHelper.GetEnumDisplayName(Model.Result.LifeStage)</strong> has a <strong>RER</strong> of <strong>@Model.Result.Rer.ToString("F2") kcal</strong> per day and an average <strong>MER</strong> of <strong>@Model.Result.MeanMer.ToString("F2") kcal</strong> per day.</p>
+                <p>A dog who @(Model.IdealWeightRecord != null ? "has an ideal weight of" : "weighs") <strong>@Model.Result.WeightInLbs.ToString("F2") lbs.</strong> with a life stage status of <strong>@EnumHelper.GetEnumDisplayName(Model.Result.LifeStage)</strong> has a <strong>RER</strong> of <strong>@Model.Result.Rer.ToString("F2") kcal</strong> per day and an average <strong>MER</strong> of <strong>@Model.Result.MeanMer.ToString("F2") kcal</strong> per day.</p>
             </div>
         }
 

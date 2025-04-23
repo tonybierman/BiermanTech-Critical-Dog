@@ -35,7 +35,7 @@ namespace BiermanTech.CriticalDog.ViewModels
             // Create input record from view model
             var input = new EnergyCalculationInput
             {
-                WeightMetricValue = WeightRecord?.MetricValue,
+                WeightMetricValue = IdealWeightRecord?.MetricValue ?? WeightRecord?.MetricValue,
                 UnitName = WeightRecord?.MetricType?.Unit?.Name,
                 LifeStageMetricValue = LifestageRecord?.MetricValue
             };
