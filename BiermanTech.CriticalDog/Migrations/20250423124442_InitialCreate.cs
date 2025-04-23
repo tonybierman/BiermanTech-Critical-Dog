@@ -112,7 +112,9 @@ namespace BiermanTech.CriticalDog.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "text", nullable: true)
+                    Clade = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ScientificName = table.Column<string>(type: "text", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -175,8 +177,6 @@ namespace BiermanTech.CriticalDog.Migrations
                     Id = table.Column<int>(type: "int(11)", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Breed = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Sex = table.Column<sbyte>(type: "tinyint(4)", nullable: false),
                     ArrivalDate = table.Column<DateOnly>(type: "date", nullable: true),
@@ -479,7 +479,7 @@ namespace BiermanTech.CriticalDog.Migrations
             migrationBuilder.CreateIndex(
                 name: "Name5",
                 table: "Subject",
-                columns: new[] { "Name", "Breed", "ArrivalDate" },
+                columns: new[] { "Name", "ArrivalDate" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -511,6 +511,12 @@ namespace BiermanTech.CriticalDog.Migrations
                 name: "FK_SubjectRecordMetaTag_MetaTag",
                 table: "SubjectRecordMetaTag",
                 column: "MetaTagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubjectType_Name_ScientificName_Clade",
+                table: "SubjectType",
+                columns: new[] { "Name", "ScientificName", "Clade" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "Name6",

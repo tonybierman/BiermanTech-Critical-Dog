@@ -11,8 +11,6 @@ public partial class Subject
 
     public string? Name { get; set; }
 
-    public string? Breed { get; set; }
-
     public sbyte Sex { get; set; }
 
     public DateOnly? ArrivalDate { get; set; }

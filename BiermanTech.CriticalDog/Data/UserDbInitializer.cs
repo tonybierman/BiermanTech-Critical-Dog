@@ -39,11 +39,11 @@ namespace BiermanTech.CriticalDog.Data
         private static async Task SeedUserDataAsync(AppDbContext context, string userId, ILogger logger, bool subjectsOnly)
         {
             // Get SubjectType for "Dog"
-            var dogSubjectType = await context.SubjectTypes.FirstOrDefaultAsync(st => st.Name == "Dog");
+            var dogSubjectType = await context.SubjectTypes.FirstOrDefaultAsync(st => st.Name == "English Shepherd");
             if (dogSubjectType == null)
             {
-                logger.LogError("SubjectType 'Dog' not found. Ensure AppDbInitializer has been run.");
-                throw new InvalidOperationException("SubjectType 'Dog' not found.");
+                logger.LogError("SubjectType 'English Shepherd' not found. Ensure AppDbInitializer has been run.");
+                throw new InvalidOperationException("SubjectType 'English Shepherd' not found.");
             }
 
             // Check for existing subjects
@@ -59,7 +59,6 @@ namespace BiermanTech.CriticalDog.Data
                     new Subject
                     {
                         Name = "Max",
-                        Breed = "Labrador Retriever",
                         Sex = 1, // Male
                         ArrivalDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-3)),
                         Notes = "Friendly and energetic",
@@ -72,7 +71,6 @@ namespace BiermanTech.CriticalDog.Data
                     new Subject
                     {
                         Name = "Bella",
-                        Breed = "German Shepherd",
                         Sex = 2, // Female
                         ArrivalDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-2)),
                         Notes = "Loyal and protective",

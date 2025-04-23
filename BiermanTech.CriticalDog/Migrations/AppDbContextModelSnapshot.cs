@@ -208,10 +208,6 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.Property<DateOnly?>("ArrivalDate")
                         .HasColumnType("date");
 
-                    b.Property<string>("Breed")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
@@ -258,7 +254,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasIndex(new[] { "Name" }, "IDX_Subject_Name");
 
-                    b.HasIndex(new[] { "Name", "Breed", "ArrivalDate" }, "Name")
+                    b.HasIndex(new[] { "Name", "ArrivalDate" }, "Name")
                         .IsUnique()
                         .HasDatabaseName("Name5");
 
@@ -332,16 +328,25 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
+                    b.Property<string>("Clade")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("ScientificName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id")
                         .HasName("PRIMARY");
+
+                    b.HasIndex(new[] { "Name", "ScientificName", "Clade" }, "IX_SubjectType_Name_ScientificName_Clade")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "Name" }, "Name")
                         .IsUnique()

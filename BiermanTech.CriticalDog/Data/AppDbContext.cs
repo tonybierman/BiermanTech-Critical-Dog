@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace BiermanTech.CriticalDog.Data;
@@ -32,7 +33,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.Name, "Name").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Made nullable
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
@@ -44,7 +45,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.UnitId, "FK_MetricType_Unit");
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Name).HasColumnType("text");
-            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Already nullable
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
             entity.Property(e => e.UnitId).HasColumnType("int(11)");
 
             entity.HasOne(d => d.Unit).WithMany(p => p.MetricTypes)
@@ -62,8 +63,8 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Already nullable
-            entity.Property(e => e.IsSingular).HasDefaultValueSql("'0'"); // Already nullable
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
+            entity.Property(e => e.IsSingular).HasDefaultValueSql("'0'");
             entity.Property(e => e.MaximumValue).HasPrecision(10, 2);
             entity.Property(e => e.MinimumValue).HasPrecision(10, 2);
             entity.Property(e => e.ObservationTypeId).HasColumnType("int(11)");
@@ -147,7 +148,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.Name, "Name").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Made nullable
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
@@ -159,7 +160,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Made nullable
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
         });
 
         modelBuilder.Entity<Subject>(entity =>
@@ -168,9 +169,8 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Subject");
             entity.HasIndex(e => e.SubjectTypeId, "FK_Subject_SubjectType");
             entity.HasIndex(e => e.Name, "IDX_Subject_Name");
-            entity.HasIndex(e => new { e.Name, e.Breed, e.ArrivalDate }, "Name").IsUnique();
+            entity.HasIndex(e => new { e.Name, e.ArrivalDate }, "Name").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.Breed).HasMaxLength(50);
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Notes).HasColumnType("text");
             entity.Property(e => e.Sex).HasColumnType("tinyint(4)");
@@ -271,9 +271,11 @@ public partial class AppDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
             entity.ToTable("SubjectType");
             entity.HasIndex(e => e.Name, "Name").IsUnique();
+            entity.HasIndex(e => new { e.Name, e.ScientificName, e.Clade }, "IX_SubjectType_Name_ScientificName_Clade").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.ScientificName).HasColumnType("text");
+            entity.Property(e => e.Clade).HasMaxLength(100).HasColumnType("varchar(100)");
         });
 
         modelBuilder.Entity<Unit>(entity =>
@@ -284,7 +286,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.UnitSymbol, "UnitSymbol").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'"); // Made nullable
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
             entity.Property(e => e.Name).HasMaxLength(20);
             entity.Property(e => e.UnitSymbol).HasMaxLength(5);
         });

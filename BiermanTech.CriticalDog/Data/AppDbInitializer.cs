@@ -266,7 +266,7 @@ namespace BiermanTech.CriticalDog.Data
                     }
                     else
                     {
-                        existingSt.Description = st.Description;
+                        existingSt.ScientificName = st.ScientificName;
                         context.SubjectTypes.Update(existingSt);
                         logger.LogDebug($"Updating SubjectType: {st.Name}");
                     }
@@ -727,7 +727,7 @@ namespace BiermanTech.CriticalDog.Data
 
             public static readonly List<SubjectType> SubjectTypes = new()
             {
-                new SubjectType { Name = "Dog", Description = "The dog (Canis familiaris or Canis lupus familiaris) is a domesticated descendant of the gray wolf." }
+                new SubjectType { Clade = "Breed", Name = "English Shepherd", ScientificName = "Canis Familiaris" }
             };
         }
 
