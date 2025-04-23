@@ -16,20 +16,23 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class DetailsModel : SubjectBasePageModel
     {
+        private readonly IEnergyCalculationService _energyCalculationService;
         private readonly IObservationAnalyticsProvider _analyticsProvider;
         private readonly ISubjectRecordService _subjectRecordService;
 
-        public NutritionSciencePartialViewModel NutritionPartialViewModel { get; set; }
+        public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
 
         public DetailsModel(
             ISubjectService subjectService,
             ISubjectRecordService subjectRecordService,
+            IEnergyCalculationService energyCalculationService,
             IMapper mapper,
             IAuthorizationService authorizationService,
             ILogger<DetailsModel> logger,
             IObservationAnalyticsProvider analyticsProvider)
             : base(subjectService, mapper, authorizationService, logger)
         {
+            _energyCalculationService = energyCalculationService;
             _analyticsProvider = analyticsProvider;
             _subjectRecordService = subjectRecordService;
         }
@@ -49,7 +52,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             var weightRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "WeighIn");
             var lifeStageRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "CanineLifeStageFactor");
 
-            NutritionPartialViewModel = new NutritionSciencePartialViewModel()
+            NutritionPartialViewModel = new NutritionScienceCardViewModel(_energyCalculationService)
             {
                 IdealWeightRecord = idealWeightRecord,
                 WeightRecord = weightRecord,
@@ -57,7 +60,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 WeightReport = WeightReport,
                 AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = WeightReport }
             };
-
+            await NutritionPartialViewModel.Init();
+            
             return Page();
         }
     }

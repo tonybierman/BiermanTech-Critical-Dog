@@ -1,0 +1,40 @@
+﻿@using BiermanTech.CanineHealth
+@using BiermanTech.CriticalDog.Helpers
+@using BiermanTech.CriticalDog.ViewModels
+@using BiermanTech.CriticalDog.Services
+@inject IEnergyCalculationService EnergyCalculator
+
+@model NutritionScienceCardViewModel
+
+@{
+    
+}
+
+<div class="card">
+    @* <img src="image.jpg" class="card-img-top" alt="Card image"> *@
+    <div class="card-body bg-dark">
+        <h3 class="card-title">@Model.Title</h3>
+        @* <p class="card-text">This is a sample card with some text content. You can add more details here.</p> *@
+        @if (Model.Result != null && Model.Result.IsValid)
+        {
+            <div class="section">
+                <p class="lead">Energy Requirements</p>
+                <ul>
+                    <li>RER @Model.Result.Rer.ToString("F2") kcal/day</li>
+                    <li>MER @Model.Result.MeanMer.ToString("F2") kcal/day</li>
+                </ul>
+                <p>A dog who weighs <strong>@Model.Result.WeightInLbs.ToString("F2") lbs.</strong> with a life stage status of <strong>@EnumHelper.GetEnumDisplayName(Model.Result.LifeStage)</strong> has a <strong>RER</strong> of <strong>@Model.Result.Rer.ToString("F2") kcal</strong> per day and an average <strong>MER</strong> of <strong>@Model.Result.MeanMer.ToString("F2") kcal</strong> per day.</p>
+            </div>
+        }
+
+        @if (Model.WeightReport != null && Model.WeightReport.Records.Any() == true)
+        {
+            <div class="section">
+                <p class="lead">Weight History</p>
+                @await Html.PartialAsync("_AnalyticsChartPartial", new AnalyticsReportPartialViewModel { Report = Model.WeightReport })
+                @await Html.PartialAsync("_AnalyticsReportPartial", new AnalyticsReportPartialViewModel { Report = Model.WeightReport })
+            </div>
+        }
+    </div>
+</div>
+

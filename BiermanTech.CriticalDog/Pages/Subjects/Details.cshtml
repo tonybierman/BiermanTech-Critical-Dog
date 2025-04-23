@@ -43,9 +43,11 @@
                 <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
             </div>
         </div>
-        <div class="mt-3 col-md-12 border border-light rounded p-3 overflow-auto">
-            <h2>Nutrition</h2>
-            @await Html.PartialAsync("_NutritionSciencePartial", @Model.NutritionPartialViewModel)
-        </div>
+        @if (Model.NutritionPartialViewModel != null && Model.NutritionPartialViewModel.CanHandle())
+        {
+            <div class="mt-3 col-md-12 overflow-auto">
+                @await Html.PartialAsync("_NutritionScienceCardPartial", @Model.NutritionPartialViewModel)
+            </div>
+        }
     </div>
 </div>
