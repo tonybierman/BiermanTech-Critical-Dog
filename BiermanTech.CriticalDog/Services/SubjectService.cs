@@ -37,6 +37,7 @@ namespace BiermanTech.CriticalDog.Services
             _logger.LogInformation($"GetSubjectByIdAsync: Retrieving Subject with ID {id}.");
             var subject = await _context.GetFilteredSubjects()
                 .Include(s => s.SubjectType)
+                .Include(s => s.MetaTags)
                 .FirstOrDefaultAsync(s => s.Id == id);
             if (subject == null)
             {
@@ -52,7 +53,14 @@ namespace BiermanTech.CriticalDog.Services
         public async Task<SubjectInputViewModel> GetSubjectViewModelByIdAsync(int id)
         {
             var subject = await GetSubjectByIdAsync(id);
-            return subject == null ? null : _mapper.Map<SubjectInputViewModel>(subject);
+            if (subject == null)
+            {
+                return null;
+            }
+
+            var viewModel = _mapper.Map<SubjectInputViewModel>(subject);
+
+            return viewModel;
         }
 
         public async Task<IList<Subject>> GetFilteredSubjectsAsync()
@@ -72,6 +80,10 @@ namespace BiermanTech.CriticalDog.Services
             }
 
             var entity = _mapper.Map<Subject>(viewModel);
+            entity.MetaTags = await _context.MetaTags
+                .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id))
+                .ToListAsync();
+
             // UserId and default Permissions are set in AppDbContext.ApplyUserIdOnSave
 
             _context.Add(entity);
@@ -81,6 +93,7 @@ namespace BiermanTech.CriticalDog.Services
         public async Task<int> UpdateSubjectAsync(SubjectInputViewModel viewModel)
         {
             var subject = await _context.Subjects
+                .Include(s => s.MetaTags)
                 .FirstOrDefaultAsync(s => s.Id == viewModel.Id);
             if (subject == null)
             {
@@ -102,6 +115,10 @@ namespace BiermanTech.CriticalDog.Services
                                      SubjectPermissions.AdminCanDelete;
 
             _mapper.Map(viewModel, subject);
+            subject.MetaTags.Clear();
+            subject.MetaTags = await _context.MetaTags
+                .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id))
+                .ToListAsync();
             _context.Update(subject);
             return await _context.SaveChangesAsync();
         }

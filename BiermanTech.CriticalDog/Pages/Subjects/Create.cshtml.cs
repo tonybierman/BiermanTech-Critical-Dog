@@ -1,8 +1,10 @@
 using AutoMapper;
+using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
@@ -12,6 +14,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
     public class CreateModel : SubjectBasePageModel
     {
         private readonly ISelectListService _selectListService;
+        public SelectList MetaTags { get; set; }
 
         public CreateModel(ISubjectService subjectService, ISelectListService selectListService, IMapper mapper, IAuthorizationService authorizationService, ILogger<CreateModel> logger) :
             base(subjectService, mapper, authorizationService, logger) 
@@ -21,7 +24,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
         public async Task<IActionResult> OnGetAsync()
         {
-            SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+            await EnsureSelectLists();
             return Page();
         }
 
@@ -40,7 +43,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
             if (!ModelState.IsValid)
             {
-                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+                await EnsureSelectLists();
                 return this.SetModelStateErrorMessage();
             }
 
@@ -65,16 +68,22 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                     return RedirectToPage("./Index");
                 }
 
-                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+                await EnsureSelectLists();
                 return Page();
             }
             catch (UnauthorizedAccessException ex)
             {
                 _logger.LogWarning(ex, "Unauthorized attempt to create subject.");
                 TempData["WarningMessage"] = "You are not authorized to create a subject.";
-                SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+                await EnsureSelectLists();
                 return Page();
             }
+        }
+
+        private async Task EnsureSelectLists()
+        {
+            SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+            MetaTags = await _selectListService.GetMetaTagsSelectListAsync();
         }
     }
 

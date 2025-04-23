@@ -50,9 +50,8 @@ namespace BiermanTech.CriticalDog.Services
             {
                 return null;
             }
-
             var viewModel = _mapper.Map<SubjectRecordInputViewModel>(record);
-            viewModel.SelectedMetaTagIds = record.MetaTags.Select(m => m.Id).ToList();
+
             return viewModel;
         }
 

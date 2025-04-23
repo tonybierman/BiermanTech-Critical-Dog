@@ -75,4 +75,10 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Enable multi-select with a library like Select2 for better UX
+        $(document).ready(function() {
+            $('select[multiple]').select2();
+        });
+    </script>
 }

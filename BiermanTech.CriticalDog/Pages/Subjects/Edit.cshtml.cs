@@ -3,6 +3,7 @@ using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
     public class EditModel : SubjectBasePageModel
     {
         private readonly ISelectListService _selectListService;
+        public SelectList MetaTags { get; set; }
 
         public EditModel(
             ISubjectService subjectService,
@@ -32,6 +34,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
             SetPermissionCheckboxes();
             SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+            MetaTags = await _selectListService.GetMetaTagsSelectListAsync();
+
             return Page();
         }
 
@@ -51,6 +55,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             if (!ModelState.IsValid)
             {
                 SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+                MetaTags = await _selectListService.GetMetaTagsSelectListAsync();
+
                 return this.SetModelStateErrorMessage();
             }
 
@@ -76,6 +82,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 }
 
                 SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+                MetaTags = await _selectListService.GetMetaTagsSelectListAsync();
+
                 return Page();
             }
             catch (KeyNotFoundException)
@@ -87,6 +95,8 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 _logger.LogWarning(ex, "Unauthorized attempt to edit subject.");
                 TempData["WarningMessage"] = "You are not authorized to edit this subject.";
                 SubjectTypes = await _selectListService.GetSubjectTypesSelectListAsync();
+                MetaTags = await _selectListService.GetMetaTagsSelectListAsync();
+
                 return Page();
             }
         }

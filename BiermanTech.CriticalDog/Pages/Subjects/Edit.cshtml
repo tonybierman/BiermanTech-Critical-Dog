@@ -88,6 +88,12 @@
                 <input type="hidden" asp-for="SubjectVM.Permissions" />
             </div>
 
+            <div class="form-group">
+                <label asp-for="SubjectVM.SelectedMetaTagIds" class="control-label">Meta Tags</label>
+                <select asp-for="SubjectVM.SelectedMetaTagIds" class="form-control" multiple asp-items="Model.MetaTags"></select>
+                <span asp-validation-for="SubjectVM.SelectedMetaTagIds" class="text-danger"></span>
+            </div>
+
             <div class="form-group mt-3">
                 <input type="submit" value="Save" class="btn btn-primary" />
                 <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
@@ -100,6 +106,12 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Enable multi-select with a library like Select2 for better UX
+        $(document).ready(function() {
+            $('select[multiple]').select2();
+        });
+    </script>
     <script>
         // Update hidden Permissions field based on checkbox states
         document.querySelector('form').addEventListener('submit', function () {
