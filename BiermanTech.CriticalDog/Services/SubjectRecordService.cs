@@ -17,6 +17,49 @@ namespace BiermanTech.CriticalDog.Services
             _mapper = mapper;
         }
 
+        public async Task<IEnumerable<SubjectRecord>> GetMostRecentSubjectRecordsByDisciplineAsync(int subjectId, string? scientificDisciplineNameFilter = null)
+        {
+            try
+            {
+                var query = _context.GetFilteredSubjectRecords()
+                    .Include(s => s.Subject)
+                        .ThenInclude(s => s.SubjectType)
+                    .Include(s => s.ObservationDefinition)
+                        .ThenInclude(od => od.ObservationType)
+                    .Include(s => s.ObservationDefinition)
+                        .ThenInclude(od => od.ScientificDisciplines)
+                    .Include(s => s.MetricType)
+                        .ThenInclude(mt => mt.Unit)
+                    .Include(s => s.MetaTags)
+                    .Where(s => s.SubjectId == subjectId);
+
+                // Apply optional filter for scientificDisciplineNameFilter
+                if (!string.IsNullOrWhiteSpace(scientificDisciplineNameFilter))
+                {
+                    // Use ToLower() for case-insensitive comparison
+                    var filterLower = scientificDisciplineNameFilter.ToLower();
+                    query = query.Where(s => s.ObservationDefinition.ScientificDisciplines
+                        .Any(sd => sd.Name.ToLower().Contains(filterLower)));
+                }
+
+                // Use a subquery to get the most recent record per ObservationDefinition.Name
+                var records = await query
+                    .Where(sr => sr.Id == _context.GetFilteredSubjectRecords()
+                        .Where(inner => inner.SubjectId == sr.SubjectId
+                                     && inner.ObservationDefinition.Name == sr.ObservationDefinition.Name)
+                        .OrderByDescending(inner => inner.CreatedAt)
+                        .Select(inner => inner.Id)
+                        .FirstOrDefault())
+                    .ToListAsync();
+
+                return records;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to retrieve subject records for subjectId {subjectId}.", ex);
+            }
+        }
+
         public async Task<IEnumerable<SubjectRecord>> GetMostRecentSubjectRecordsAsync(int subjectId)
         {
             var records = await _context.GetFilteredSubjectRecords()

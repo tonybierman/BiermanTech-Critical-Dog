@@ -47,7 +47,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 return NotFound();
             }
 
-            var records = await _subjectRecordService.GetMostRecentSubjectRecordsAsync(id);
+            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(id, "NutritionScience");
             WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
             NutritionPartialViewModel = new NutritionScienceCardViewModel(_energyCalculationService)
             {

@@ -1,14 +1,20 @@
 ﻿@page "{id:int}"
 @using BiermanTech.CriticalDog.Helpers
 @using BiermanTech.CriticalDog.ViewModels
-@model BiermanTech.CriticalDog.Pages.Subjects.DetailsModel
+@model BiermanTech.CriticalDog.Pages.Subjects.DisciplinesModel
 
 @{
     ViewData["Title"] = "Subject Discipline";
 }
 <div class="container">
-    <h1>Subject Details</h1>
+    <h1>Subject Disciplines</h1>
     <hr />
+    <dl class="row">
+        @foreach (var record in Model.Records)
+        {
+            @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
+        }
+    </dl>
     @if (Model.NutritionPartialViewModel != null && Model.NutritionPartialViewModel.CanHandle())
     {
         <div class="mt-3 col-md-12 overflow-auto">
