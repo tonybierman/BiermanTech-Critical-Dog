@@ -1,9 +1,8 @@
 using AutoMapper;
 using AutoMapper.Configuration.Annotations;
 using BiermanTech.CanineHealth;
-using BiermanTech.CriticalDog.Analytics;
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +18,12 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         private readonly IEnergyCalculationService _energyCalculationService;
         private readonly IObservationAnalyticsProvider _analyticsProvider;
         private readonly ISubjectRecordService _subjectRecordService;
+        [BindProperty(SupportsGet = true)]
+        public string? slug { get; set; }
 
-        public TrendReport WeightReport { get; private set; }
+        public TrendReportViewModel WeightReport { get; private set; }
         public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
         public List<SubjectRecordViewModel> Records { get; } = new List<SubjectRecordViewModel>();
-        public IEnumerable<IGrouping<string, SubjectRecordViewModel>> GroupedRecords { get; private set; }
 
         public DisciplinesModel(
             ISubjectService subjectService,
@@ -42,12 +42,12 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (!await RetrieveAndAuthorizeSubjectAsync(id, "CanView"))
+            if (slug == null || !await RetrieveAndAuthorizeSubjectAsync(id, "CanView"))
             {
                 return NotFound();
             }
 
-            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(id, "NutritionScience");
+            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(id, slug);
             WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
             NutritionPartialViewModel = new NutritionScienceCardViewModel(_energyCalculationService)
             {
@@ -61,11 +61,6 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
             var viewModels = _mapper.Map<List<SubjectRecordViewModel>>(records);
             Records.AddRange(viewModels);
-
-            GroupedRecords = Records
-                .SelectMany(record => record.ObservationDefinition.ScientificDisciplines
-                    .Select(discipline => new { Discipline = discipline.Name, Record = record }))
-                .GroupBy(x => x.Discipline, x => x.Record);
 
             return Page();
         }

@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BiermanTech.CriticalDog.Services.Interfaces;
+using BiermanTech.CriticalDog.ViewModels;
 
-namespace BiermanTech.CriticalDog.Analytics
+namespace BiermanTech.CriticalDog.Services.Analytics
 {
     public class ObservationAnalyticsProvider : IObservationAnalyticsProvider
     {
@@ -20,7 +22,7 @@ namespace BiermanTech.CriticalDog.Analytics
             _unitConverter = unitConverter;
         }
 
-        public async Task<TrendReport> GetObservationChangeReportAsync(int subjectId, string observationDefinitionName, string? displayUnitName = null)
+        public async Task<TrendReportViewModel> GetObservationChangeReportAsync(int subjectId, string observationDefinitionName, string? displayUnitName = null)
         {
             _logger.LogInformation($"Generating observation change report for SubjectId: {subjectId}, Observation: {observationDefinitionName}, DisplayUnit: {displayUnitName ?? "default"}");
 
@@ -76,7 +78,7 @@ namespace BiermanTech.CriticalDog.Analytics
                 if (!records.Any())
                 {
                     _logger.LogInformation($"No {observationDefinitionName} records found for Subject: {subject.Name}");
-                    return new TrendReport
+                    return new TrendReportViewModel
                     {
                         SubjectName = subject.Name,
                         ObservationTypeName = observationDefinitionName,
@@ -89,7 +91,7 @@ namespace BiermanTech.CriticalDog.Analytics
                 }
 
                 // Process records
-                var observations = new List<TrendReportRecord>();
+                var observations = new List<TrendReportRecordViewModel>();
                 for (int i = 0; i < records.Count; i++)
                 {
                     double? percentChangePerWeek = null;
@@ -106,12 +108,12 @@ namespace BiermanTech.CriticalDog.Analytics
                             var prevValue = await ConvertValueAsync(prev.MetricValue ?? 0, prev.MetricType?.Unit, standardUnit, observationDefinitionName);
                             var currValue = await ConvertValueAsync(curr.MetricValue ?? 0, curr.MetricType?.Unit, standardUnit, observationDefinitionName);
                             amountChange = currValue - prevValue;
-                            var percentChange = (amountChange / prevValue);
+                            var percentChange = amountChange / prevValue;
                             percentChangePerWeek = (double)(percentChange * (7m / (decimal)days));
                         }
                     }
 
-                    observations.Add(new TrendReportRecord
+                    observations.Add(new TrendReportRecordViewModel
                     {
                         RecordTime = records[i].RecordTime,
                         Value = await ConvertValueAsync(records[i].MetricValue ?? 0, records[i].MetricType?.Unit, selectedDisplayUnit, observationDefinitionName),
@@ -133,7 +135,7 @@ namespace BiermanTech.CriticalDog.Analytics
                     averageWeeklyRate = validObservations.Average(a => a.PercentChangePerWeek.Value);
                 }
 
-                return new TrendReport
+                return new TrendReportViewModel
                 {
                     SubjectName = subject.Name,
                     ObservationTypeName = observationDefinitionName,
@@ -181,7 +183,7 @@ namespace BiermanTech.CriticalDog.Analytics
             }
         }
 
-        private async Task<double?> CalculateAverageRateAsync(List<TrendReportRecord> observations, Unit standardUnit, Unit displayUnit, string observationDefinitionName)
+        private async Task<double?> CalculateAverageRateAsync(List<TrendReportRecordViewModel> observations, Unit standardUnit, Unit displayUnit, string observationDefinitionName)
         {
             if (observations.Count < 2)
                 return null;
@@ -210,7 +212,7 @@ namespace BiermanTech.CriticalDog.Analytics
             return intervals > 0 ? totalRate / intervals : null;
         }
 
-        private string DetermineTrend(List<TrendReportRecord> observations, double? averageRate, Unit unit)
+        private string DetermineTrend(List<TrendReportRecordViewModel> observations, double? averageRate, Unit unit)
         {
             if (observations.Count < 2)
                 return "Insufficient data to determine trend.";

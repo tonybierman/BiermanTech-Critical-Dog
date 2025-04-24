@@ -1,5 +1,5 @@
 using AutoMapper;
-using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BiermanTech.CriticalDog.Analytics;
 using System;
 using System.Threading.Tasks;
+using BiermanTech.CriticalDog.Services.Interfaces;
+using BiermanTech.CriticalDog.ViewModels;
 
 namespace BiermanTech.CriticalDog.Pages.Analytics
 {
@@ -19,7 +20,7 @@ namespace BiermanTech.CriticalDog.Pages.Analytics
             _logger = logger;
         }
 
-        public TrendReport Report { get; set; } = new TrendReport();
+        public TrendReportViewModel Report { get; set; } = new TrendReportViewModel();
 
         [BindProperty(SupportsGet = true)]
         public int SubjectId { get; set; }

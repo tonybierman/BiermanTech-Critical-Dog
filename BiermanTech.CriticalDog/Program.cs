@@ -1,10 +1,12 @@
 using AutoMapper;
 using BiermanTech.CriticalDog;
-using BiermanTech.CriticalDog.Analytics;
 using BiermanTech.CriticalDog.Authorization;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Reports;
 using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.Services.Analytics;
+using BiermanTech.CriticalDog.Services.EntityServices;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

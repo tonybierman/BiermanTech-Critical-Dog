@@ -7,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using BiermanTech.CriticalDog.Services.Interfaces;
 
-namespace BiermanTech.CriticalDog.Services
+namespace BiermanTech.CriticalDog.Services.EntityServices
 {
     public class SubjectService : ISubjectService
     {

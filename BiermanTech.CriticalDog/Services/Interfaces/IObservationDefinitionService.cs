@@ -2,7 +2,7 @@
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BiermanTech.CriticalDog.Services
+namespace BiermanTech.CriticalDog.Services.Interfaces
 {
     public interface IObservationDefinitionService
     {

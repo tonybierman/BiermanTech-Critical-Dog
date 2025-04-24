@@ -1,5 +1,5 @@
 using AutoMapper;
-using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Markdig;
 using Microsoft.AspNetCore.Mvc;

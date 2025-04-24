@@ -1,6 +1,6 @@
-namespace BiermanTech.CriticalDog.Analytics
+namespace BiermanTech.CriticalDog.ViewModels
 {
-    public class TrendReport
+    public class TrendReportViewModel
     {
         public string SubjectName { get; set; }
         public string ObservationTypeName { get; set; }
@@ -8,12 +8,12 @@ namespace BiermanTech.CriticalDog.Analytics
         public string StandardUnitSymbol { get; set; }
         public string DisplayUnitName { get; set; }
         public string DisplayUnitSymbol { get; set; }
-        public List<TrendReportRecord> Records { get; set; } = new List<TrendReportRecord>();
+        public List<TrendReportRecordViewModel> Records { get; set; } = new List<TrendReportRecordViewModel>();
         public double? AverageWeeklyRate { get; set; }
         public string TrendDescription { get; set; }
     }
 
-    public class TrendReportRecord
+    public class TrendReportRecordViewModel
     {
         public DateTime RecordTime { get; set; }
         public decimal Value { get; set; }

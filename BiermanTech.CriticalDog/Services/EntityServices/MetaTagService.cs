@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace BiermanTech.CriticalDog.Services
+namespace BiermanTech.CriticalDog.Services.EntityServices
 {
     public class MetaTagService : IMetaTagService
     {

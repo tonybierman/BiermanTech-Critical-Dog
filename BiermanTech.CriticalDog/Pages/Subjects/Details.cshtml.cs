@@ -1,9 +1,8 @@
 using AutoMapper;
 using AutoMapper.Configuration.Annotations;
 using BiermanTech.CanineHealth;
-using BiermanTech.CriticalDog.Analytics;
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +19,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         private readonly IObservationAnalyticsProvider _analyticsProvider;
         private readonly ISubjectRecordService _subjectRecordService;
 
-        public TrendReport WeightReport { get; private set; }
+        public TrendReportViewModel WeightReport { get; private set; }
         public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
         public List<SubjectRecordViewModel> Records { get; } = new List<SubjectRecordViewModel>();
         public IEnumerable<IGrouping<string, SubjectRecordViewModel>> GroupedRecords { get; private set; }

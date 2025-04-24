@@ -1,5 +1,4 @@
 using AutoMapper;
-using BiermanTech.CriticalDog.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Pages.Subjects;
 using BiermanTech.CriticalDog.ViewModels;
+using BiermanTech.CriticalDog.Services.Interfaces;
 
 namespace BiermanTech.CriticalDog.Pages.Dogs
 {

@@ -1,6 +1,6 @@
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Pages.Shared;
-using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

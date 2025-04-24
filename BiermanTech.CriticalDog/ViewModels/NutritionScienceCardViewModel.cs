@@ -1,7 +1,6 @@
 ﻿using BiermanTech.CanineHealth;
-using BiermanTech.CriticalDog.Analytics;
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Services;
+using BiermanTech.CriticalDog.Services.Interfaces;
 
 namespace BiermanTech.CriticalDog.ViewModels
 {
@@ -12,7 +11,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         private readonly IEnergyCalculationService _calcService;
 
         public EnergyCalculationResult? Result { get; private set; } = default!;
-        public TrendReport WeightReport { get; set; } = new TrendReport();
+        public TrendReportViewModel WeightReport { get; set; } = new TrendReportViewModel();
         public AnalyticsReportPartialViewModel AnalyticPartialVM { get; set; } = new AnalyticsReportPartialViewModel();
         public SubjectRecord? WeightRecord { get; internal set; }
         public SubjectRecord? LifestageRecord { get; internal set; }

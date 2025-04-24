@@ -1,7 +1,7 @@
 ﻿using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.ViewModels;
 
-namespace BiermanTech.CriticalDog.Services
+namespace BiermanTech.CriticalDog.Services.Interfaces
 {
     public interface IUnitService
     {

@@ -1,7 +1,7 @@
 ﻿// Services/EnergyCalculationService.cs
 using BiermanTech.CriticalDog.ViewModels;
 
-namespace BiermanTech.CriticalDog.Services
+namespace BiermanTech.CriticalDog.Services.Interfaces
 {
     public interface IEnergyCalculationService
     {

@@ -1,5 +1,6 @@
 ﻿// Services/EnergyCalculationService.cs
 using BiermanTech.CanineHealth;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using System;
 using System.Threading.Tasks;
