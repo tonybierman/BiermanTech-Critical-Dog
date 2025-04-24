@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 
-namespace BiermanTech.CriticalDog.Services.Analytics
+namespace BiermanTech.CriticalDog.Services.Factories
 {
-    public class ObservationAnalyticsProvider : IObservationAnalyticsProvider
+    public class ObservationAnalyticsFactory : IObservationAnalyticsProvider
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<ObservationAnalyticsProvider> _logger;
+        private readonly ILogger<ObservationAnalyticsFactory> _logger;
         private readonly IUnitConverter _unitConverter;
 
-        public ObservationAnalyticsProvider(AppDbContext context, ILogger<ObservationAnalyticsProvider> logger, IUnitConverter unitConverter)
+        public ObservationAnalyticsFactory(AppDbContext context, ILogger<ObservationAnalyticsFactory> logger, IUnitConverter unitConverter)
         {
             _context = context;
             _logger = logger;

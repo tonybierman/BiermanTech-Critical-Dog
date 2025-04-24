@@ -15,8 +15,6 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class DetailsModel : SubjectBasePageModel
     {
-        private readonly IEnergyCalculationService _energyCalculationService;
-        private readonly IObservationAnalyticsProvider _analyticsProvider;
         private readonly ISubjectRecordService _subjectRecordService;
 
         public TrendReportViewModel WeightReport { get; private set; }
@@ -27,15 +25,12 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         public DetailsModel(
             ISubjectService subjectService,
             ISubjectRecordService subjectRecordService,
-            IEnergyCalculationService energyCalculationService,
             IMapper mapper,
             IAuthorizationService authorizationService,
-            ILogger<DetailsModel> logger,
-            IObservationAnalyticsProvider analyticsProvider)
+            ILogger<DetailsModel> logger
+            )
             : base(subjectService, mapper, authorizationService, logger)
         {
-            _energyCalculationService = energyCalculationService;
-            _analyticsProvider = analyticsProvider;
             _subjectRecordService = subjectRecordService;
         }
 
@@ -48,16 +43,17 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             }
 
             var records = await _subjectRecordService.GetMostRecentSubjectRecordsAsync(id);
-            WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
-            NutritionPartialViewModel = new NutritionScienceCardViewModel(_energyCalculationService)
-            {
-                IdealWeightRecord = records?.Where(r => r.ObservationDefinition.Name == "IdealWeight")?.FirstOrDefault(),
-                WeightRecord = records?.Where(r => r.ObservationDefinition.Name == "WeighIn")?.FirstOrDefault(),
-                LifestageRecord = records?.Where(r => r.ObservationDefinition.Name == "CanineLifeStageFactor")?.FirstOrDefault(),
-                WeightReport = WeightReport,
-                AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = WeightReport }
-            };
-            await NutritionPartialViewModel.Init();
+
+            //WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
+            //NutritionPartialViewModel = new NutritionScienceCardViewModel(_energyCalculationService)
+            //{
+            //    IdealWeightRecord = records?.Where(r => r.ObservationDefinition.Name == "IdealWeight")?.FirstOrDefault(),
+            //    WeightRecord = records?.Where(r => r.ObservationDefinition.Name == "WeighIn")?.FirstOrDefault(),
+            //    LifestageRecord = records?.Where(r => r.ObservationDefinition.Name == "CanineLifeStageFactor")?.FirstOrDefault(),
+            //    WeightReport = WeightReport,
+            //    AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = WeightReport }
+            //};
+            //await NutritionPartialViewModel.Init();
 
             var viewModels = _mapper.Map<List<SubjectRecordViewModel>>(records);
             Records.AddRange(viewModels);

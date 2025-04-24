@@ -4,43 +4,15 @@ using BiermanTech.CriticalDog.Services.Interfaces;
 
 namespace BiermanTech.CriticalDog.ViewModels
 {
-    public class NutritionScienceCardViewModel : ICardViewModel
+    public class NutritionScienceCardViewModel : IDisciplineCardViewModel
     {
-
-        private EnergyCalculationInput? _input = default!;
-        private readonly IEnergyCalculationService _calcService;
-
-        public EnergyCalculationResult? Result { get; private set; } = default!;
+        public EnergyCalculationResult? Result { get; set; } = default!;
         public TrendReportViewModel WeightReport { get; set; } = new TrendReportViewModel();
         public AnalyticsReportPartialViewModel AnalyticPartialVM { get; set; } = new AnalyticsReportPartialViewModel();
         public SubjectRecord? WeightRecord { get; internal set; }
         public SubjectRecord? LifestageRecord { get; internal set; }
         public SubjectRecord? IdealWeightRecord { get; internal set; }
-
-        public NutritionScienceCardViewModel(IEnergyCalculationService calcService)
-        {
-            _calcService = calcService;
-        }
-
         public string Title => "Nutrition";
-
-        public bool CanHandle()
-        {
-            return (Result != null && Result.IsValid) || (WeightReport != null && WeightReport.Records.Any() == true);
-        }
-
-        public async Task Init()
-        {
-            // Create input record from view model
-            var input = new EnergyCalculationInput
-            {
-                WeightMetricValue = IdealWeightRecord?.MetricValue ?? WeightRecord?.MetricValue,
-                UnitName = WeightRecord?.MetricType?.Unit?.Name,
-                LifeStageMetricValue = LifestageRecord?.MetricValue
-            };
-
-            // Call the service
-            Result = await _calcService.CalculateEnergyRequirementsAsync(input);
-        }
+        public int SubjectId { get; set; }
     }
 }

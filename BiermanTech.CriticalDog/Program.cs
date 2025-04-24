@@ -4,8 +4,8 @@ using BiermanTech.CriticalDog.Authorization;
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Reports;
 using BiermanTech.CriticalDog.Services;
-using BiermanTech.CriticalDog.Services.Analytics;
 using BiermanTech.CriticalDog.Services.EntityServices;
+using BiermanTech.CriticalDog.Services.Factories;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -87,13 +87,14 @@ builder.Services.AddScoped<IObservationTypeService, ObservationTypeService>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<ISubjectRecordService, SubjectRecordService>();
 builder.Services.AddScoped<IEnergyCalculationService, EnergyCalculationService>();
+builder.Services.AddScoped<IDisciplineCardFactory, DisciplineCardFactory>();
 
 // Auth
 builder.Services.AddScoped<IAuthorizationHandler, SubjectPermissionHandler>();
 
 // Analytics
 builder.Services.AddScoped<IUnitConverter, UnitConverter>();
-builder.Services.AddScoped<IObservationAnalyticsProvider, ObservationAnalyticsProvider>();
+builder.Services.AddScoped<IObservationAnalyticsProvider, ObservationAnalyticsFactory>();
 
 // Lob DB
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")

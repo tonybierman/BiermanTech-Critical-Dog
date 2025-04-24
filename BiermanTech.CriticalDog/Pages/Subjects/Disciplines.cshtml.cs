@@ -15,6 +15,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 {
     public class DisciplinesModel : SubjectBasePageModel
     {
+        private readonly IDisciplineCardFactory _cardFactory;
         private readonly IEnergyCalculationService _energyCalculationService;
         private readonly IObservationAnalyticsProvider _analyticsProvider;
         private readonly ISubjectRecordService _subjectRecordService;
@@ -24,6 +25,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         public TrendReportViewModel WeightReport { get; private set; }
         public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
         public List<SubjectRecordViewModel> Records { get; } = new List<SubjectRecordViewModel>();
+        public IDisciplineCardProvider CardProvider { get; private set; }
 
         public DisciplinesModel(
             ISubjectService subjectService,
@@ -32,9 +34,11 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             IMapper mapper,
             IAuthorizationService authorizationService,
             ILogger<DetailsModel> logger,
-            IObservationAnalyticsProvider analyticsProvider)
+            IObservationAnalyticsProvider analyticsProvider,
+            IDisciplineCardFactory cardFactory)
             : base(subjectService, mapper, authorizationService, logger)
         {
+            _cardFactory = cardFactory;
             _energyCalculationService = energyCalculationService;
             _analyticsProvider = analyticsProvider;
             _subjectRecordService = subjectRecordService;
@@ -47,18 +51,13 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 return NotFound();
             }
 
-            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(id, slug);
-            WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
-            NutritionPartialViewModel = new NutritionScienceCardViewModel(_energyCalculationService)
+            CardProvider = _cardFactory.CreateProvider(id, slug);
+            if (CardProvider != null)
             {
-                IdealWeightRecord = records?.Where(r => r.ObservationDefinition.Name == "IdealWeight")?.FirstOrDefault(),
-                WeightRecord = records?.Where(r => r.ObservationDefinition.Name == "WeighIn")?.FirstOrDefault(),
-                LifestageRecord = records?.Where(r => r.ObservationDefinition.Name == "CanineLifeStageFactor")?.FirstOrDefault(),
-                WeightReport = WeightReport,
-                AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = WeightReport }
-            };
-            await NutritionPartialViewModel.Init();
+                await CardProvider.Init();
+            }
 
+            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(id, slug);
             var viewModels = _mapper.Map<List<SubjectRecordViewModel>>(records);
             Records.AddRange(viewModels);
 

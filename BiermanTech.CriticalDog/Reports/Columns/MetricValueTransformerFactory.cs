@@ -1,5 +1,6 @@
 ﻿using BiermanTech.CanineHealth;
 using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Helpers;
 
 namespace BiermanTech.CriticalDog.Reports.Columns
 {
