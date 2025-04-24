@@ -14,9 +14,9 @@ namespace BiermanTech.CriticalDog.ViewModels
         public EnergyCalculationResult? Result { get; private set; } = default!;
         public TrendReport WeightReport { get; set; } = new TrendReport();
         public AnalyticsReportPartialViewModel AnalyticPartialVM { get; set; } = new AnalyticsReportPartialViewModel();
-        public SubjectRecord WeightRecord { get; internal set; }
-        public SubjectRecord LifestageRecord { get; internal set; }
-        public SubjectRecord IdealWeightRecord { get; internal set; }
+        public SubjectRecord? WeightRecord { get; internal set; }
+        public SubjectRecord? LifestageRecord { get; internal set; }
+        public SubjectRecord? IdealWeightRecord { get; internal set; }
 
         public NutritionScienceCardViewModel(IEnergyCalculationService calcService)
         {

@@ -10,6 +10,7 @@ namespace BiermanTech.CriticalDog.Services
         Task DeleteSubjectRecordAsync(int id);
         Task<List<SubjectRecordInputViewModel>> GetAllSubjectRecordsAsync();
         Task<SubjectRecord> GetMostRecentSubjectRecordAsync(int subjectId, string definitionName);
+        Task<IEnumerable<SubjectRecord>> GetMostRecentSubjectRecordsAsync(int subjectId);
         Task<SubjectRecord> GetSubjectRecordByIdAsync(int id);
         Task<SubjectRecordInputViewModel> GetSubjectRecordViewModelByIdAsync(int id);
         Task UpdateSubjectRecordAsync(SubjectRecordInputViewModel viewModel);

@@ -23,6 +23,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         public TrendReport WeightReport { get; private set; }
         public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
         public List<SubjectRecordViewModel> Records { get; } = new List<SubjectRecordViewModel>();
+        public IEnumerable<IGrouping<string, SubjectRecordViewModel>> GroupedRecords { get; private set; }
 
         public DetailsModel(
             ISubjectService subjectService,
@@ -47,31 +48,25 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 return NotFound();
             }
 
-
+            var records = await _subjectRecordService.GetMostRecentSubjectRecordsAsync(id);
             WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
-
-            var idealWeightRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "IdealWeight");
-            var weightRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "WeighIn");
-            var lifeStageRecord = await _subjectRecordService.GetMostRecentSubjectRecordAsync(id, "CanineLifeStageFactor");
-
             NutritionPartialViewModel = new NutritionScienceCardViewModel(_energyCalculationService)
             {
-                IdealWeightRecord = idealWeightRecord,
-                WeightRecord = weightRecord,
-                LifestageRecord = lifeStageRecord,
+                IdealWeightRecord = records?.Where(r => r.ObservationDefinition.Name == "IdealWeight")?.FirstOrDefault(),
+                WeightRecord = records?.Where(r => r.ObservationDefinition.Name == "WeighIn")?.FirstOrDefault(),
+                LifestageRecord = records?.Where(r => r.ObservationDefinition.Name == "CanineLifeStageFactor")?.FirstOrDefault(),
                 WeightReport = WeightReport,
                 AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = WeightReport }
             };
             await NutritionPartialViewModel.Init();
 
-            if (weightRecord != null)
-                Records.Add(_mapper.Map<SubjectRecordViewModel>(weightRecord));
+            var viewModels = _mapper.Map<List<SubjectRecordViewModel>>(records);
+            Records.AddRange(viewModels);
 
-            if (idealWeightRecord != null)
-                Records.Add(_mapper.Map<SubjectRecordViewModel>(idealWeightRecord));
-
-            if (lifeStageRecord != null)
-                Records.Add(_mapper.Map<SubjectRecordViewModel>(lifeStageRecord));
+            GroupedRecords = Records
+                .SelectMany(record => record.ObservationDefinition.ScientificDisciplines
+                    .Select(discipline => new { Discipline = discipline.Name, Record = record }))
+                .GroupBy(x => x.Discipline, x => x.Record);
 
             return Page();
         }

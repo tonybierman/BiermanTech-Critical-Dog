@@ -17,6 +17,27 @@ namespace BiermanTech.CriticalDog.Services
             _mapper = mapper;
         }
 
+        public async Task<IEnumerable<SubjectRecord>> GetMostRecentSubjectRecordsAsync(int subjectId)
+        {
+            var records = await _context.GetFilteredSubjectRecords()
+                .Include(s => s.Subject)
+                .ThenInclude(s => s.SubjectType)
+                .Include(s => s.ObservationDefinition)
+                .ThenInclude(od => od.ObservationType)
+                .Include(s => s.ObservationDefinition)
+                .ThenInclude(od => od.ScientificDisciplines)
+                .Include(s => s.MetricType)
+                .ThenInclude(mt => mt.Unit)
+                .Include(s => s.MetaTags)
+                .Where(s => s.SubjectId == subjectId)
+                .GroupBy(s => s.ObservationDefinition.Name)
+                .Select(g => g.OrderByDescending(s => s.CreatedAt).First())
+                .ToListAsync();
+
+
+            return records;
+        }
+
         public async Task<SubjectRecord> GetMostRecentSubjectRecordAsync(int subjectId, string definitionName)
         {
             return await _context.GetFilteredSubjectRecords()
@@ -24,6 +45,8 @@ namespace BiermanTech.CriticalDog.Services
                 .ThenInclude(s => s.SubjectType)
                 .Include(s => s.ObservationDefinition)
                 .ThenInclude(od => od.ObservationType)
+                .Include(s => s.ObservationDefinition)
+                .ThenInclude(od => od.ScientificDisciplines)
                 .Include(s => s.MetricType)
                 .ThenInclude(mt => mt.Unit)
                 .Include(s => s.MetaTags)
@@ -39,6 +62,8 @@ namespace BiermanTech.CriticalDog.Services
                 .ThenInclude(s => s.SubjectType)
                 .Include(s => s.ObservationDefinition)
                 .ThenInclude(od => od.ObservationType)
+                .Include(s => s.ObservationDefinition)
+                .ThenInclude(od => od.ScientificDisciplines)
                 .Include(s => s.MetricType)
                 .ThenInclude(mt => mt.Unit)
                 .Include(s => s.MetaTags)

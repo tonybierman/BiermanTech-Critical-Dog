@@ -1,4 +1,5 @@
 ﻿@page "{id:int}"
+@using BiermanTech.CriticalDog.Helpers
 @using BiermanTech.CriticalDog.ViewModels
 @model BiermanTech.CriticalDog.Pages.Subjects.DetailsModel
 
@@ -37,12 +38,6 @@
                 <dd class="col-sm-9">
                     @Model.SubjectVM?.SubjectType?.Name (@Model.SubjectVM?.SubjectType?.ScientificName)
                 </dd>
-
-                @foreach (var record in Model.Records)
-                {
-                    @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
-                }
-              
                 @if (Model.MetaTagNames.Any())
                 {
                     <dt class="col-sm-3">
@@ -58,6 +53,66 @@
                 <a asp-page="./Edit" asp-route-id="@Model.SubjectVM.Id" class="btn btn-primary">Edit</a>
                 <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
             </div>
+        </div>
+
+        <div class="container mt-4">
+            <h1>Recent Observations</h1>
+
+            @if (Model.GroupedRecords?.Any() == true)
+            {
+                <ul class="nav nav-tabs" id="disciplineTabs" role="tablist">
+                    @foreach (var group in Model.GroupedRecords)
+                    {
+                        var tabId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab";
+                        var paneId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab-pane";
+                        var isActive = group.Key == Model.GroupedRecords.First().Key;
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link @(isActive ? "active" : "")"
+                            id="@tabId"
+                            data-bs-toggle="tab"
+                            data-bs-target="#@paneId"
+                            type="button"
+                            role="tab"
+                            aria-controls="@paneId"
+                            aria-selected="@(isActive ? "true" : "false")">
+                                @StringHelper.SplitPascalCase(group.Key)
+                            </button>
+                        </li>
+                    }
+                </ul>
+
+                <div class="tab-content" id="disciplineTabContent">
+                    @foreach (var group in Model.GroupedRecords)
+                    {
+                        var paneId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab-pane";
+                        var tabId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab";
+                        var isActive = group.Key == Model.GroupedRecords.First().Key;
+
+                        <div class="tab-pane fade @(isActive ? "show active" : "")"
+                        id="@paneId"
+                        role="tabpanel"
+                        aria-labelledby="@tabId"
+                        tabindex="0">
+                            <dl class="row">
+                                @foreach (var record in group)
+                                {
+                                    @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
+                                }
+                            </dl>
+                        </div>
+
+                        @if (group.Key == "NutritionScience")
+                        {
+                            <span>Lorem Ipsum</span>
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No records found for the specified subject.</p>
+            }
         </div>
         @if (Model.NutritionPartialViewModel != null && Model.NutritionPartialViewModel.CanHandle())
         {
