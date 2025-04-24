@@ -4,10 +4,11 @@
 @model BiermanTech.CriticalDog.Pages.Subjects.DisciplinesModel
 
 @{
-    ViewData["Title"] = "Subject Discipline";
+    ViewData["Title"] = $"{StringHelper.SplitPascalCase(Model.Slug)} for {Model.SubjectVM.Name}";
 }
 <div class="container">
-    <h1>Subject Disciplines</h1>
+    <h1>@(StringHelper.SplitPascalCase(Model.Slug))</h1>
+    <h3>Subject: @Model.SubjectVM.Name</h3>
     <hr />
     <dl class="row">
         @foreach (var record in Model.Records)

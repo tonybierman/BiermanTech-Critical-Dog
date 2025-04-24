@@ -20,7 +20,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         private readonly IObservationAnalyticsProvider _analyticsProvider;
         private readonly ISubjectRecordService _subjectRecordService;
         [BindProperty(SupportsGet = true)]
-        public string? slug { get; set; }
+        public string? Slug { get; set; }
 
         public TrendReportViewModel WeightReport { get; private set; }
         public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
@@ -46,14 +46,14 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (slug == null || !await RetrieveAndAuthorizeSubjectAsync("CanView"))
+            if (Slug == null || !await RetrieveAndAuthorizeSubjectAsync("CanView"))
             {
                 return NotFound();
             }
 
             try
             {
-                CardProvider = _cardFactory.CreateProvider(this.Id, slug);
+                CardProvider = _cardFactory.CreateProvider(this.Id, Slug);
                 if (CardProvider != null)
                 {
                     await CardProvider.Init();
@@ -64,7 +64,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 return NotFound();
             }
 
-            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(this.Id, slug);
+            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(this.Id, Slug);
             var viewModels = _mapper.Map<List<SubjectRecordViewModel>>(records);
             Records.AddRange(viewModels);
 

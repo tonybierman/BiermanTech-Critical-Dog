@@ -4,7 +4,7 @@
 @model BiermanTech.CriticalDog.Pages.Subjects.DetailsModel
 
 @{
-    ViewData["Title"] = "Subject Details";
+    ViewData["Title"] = $"Subject Details for {Model.SubjectVM.Name}";
 }
 <style>
     #disciplineTabs .nav-link:not(.active) {
@@ -19,6 +19,7 @@
 </style>
 <div class="container">
     <h1>Subject Details</h1>
+    <h3>For: @Model.SubjectVM.Name</h3>
     <hr />
 
     <ul class="nav nav-tabs" id="disciplineTabs" role="tablist">
