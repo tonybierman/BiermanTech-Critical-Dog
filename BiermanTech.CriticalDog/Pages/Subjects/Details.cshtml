@@ -6,7 +6,17 @@
 @{
     ViewData["Title"] = "Subject Details";
 }
+<style>
+    #disciplineTabs .nav-link:not(.active) {
+        background-color: #d3d6da;
+        border: 1px solid #ced4da;
+    }
 
+    #disciplineTabs .nav-link.active {
+        background-color: #ffffff;
+        border: 1px solid #ced4da;
+    }
+</style>
 <div class="container">
     <h1>Subject Details</h1>
     <hr />
@@ -22,7 +32,7 @@
                     role="tab"
                     aria-controls="lorem-ipsum-tab-pane"
                     aria-selected="true">
-                Lorem Ipsum
+                Details
             </button>
         </li>
         <!-- Dynamically generated tabs for disciplines, if any -->
@@ -104,18 +114,13 @@
             @foreach (var group in Model.GroupedRecords)
             {
                 @await Html.PartialAsync("_DisciplineTabContentPartial", new DisciplineTabContentViewModel
-   {
-       DisciplineKey = group.Key,
-       Records = group.ToList()
-   })
+                {
+                    DisciplineKey = group.Key,
+                    Records = group.ToList()
+                })
             }
         }
     </div>
-
-    @if (!(Model.GroupedRecords?.Any() == true))
-    {
-        <p>No records found for the specified subject.</p>
-    }
 </div>
 
 @*         @if (Model.NutritionPartialViewModel != null && Model.NutritionPartialViewModel.CanHandle())
