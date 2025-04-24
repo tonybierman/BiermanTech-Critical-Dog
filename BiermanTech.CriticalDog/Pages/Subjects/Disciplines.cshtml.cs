@@ -44,20 +44,27 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             _subjectRecordService = subjectRecordService;
         }
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync()
         {
-            if (slug == null || !await RetrieveAndAuthorizeSubjectAsync(id, "CanView"))
+            if (slug == null || !await RetrieveAndAuthorizeSubjectAsync("CanView"))
             {
                 return NotFound();
             }
 
-            CardProvider = _cardFactory.CreateProvider(id, slug);
-            if (CardProvider != null)
+            try
             {
-                await CardProvider.Init();
+                CardProvider = _cardFactory.CreateProvider(this.Id, slug);
+                if (CardProvider != null)
+                {
+                    await CardProvider.Init();
+                }
+            }
+            catch (ArgumentException)
+            {
+                return NotFound();
             }
 
-            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(id, slug);
+            var records = await _subjectRecordService.GetMostRecentSubjectRecordsByDisciplineAsync(this.Id, slug);
             var viewModels = _mapper.Map<List<SubjectRecordViewModel>>(records);
             Records.AddRange(viewModels);
 

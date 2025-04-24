@@ -25,9 +25,9 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             _selectListService = selectListService;
         }
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync()
         {
-            if (!await RetrieveAndAuthorizeSubjectAsync(id, "CanEdit"))
+            if (!await RetrieveAndAuthorizeSubjectAsync("CanEdit"))
             {
                 return Forbid();
             }

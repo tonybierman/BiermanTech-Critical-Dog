@@ -16,7 +16,6 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
     public class DetailsModel : SubjectBasePageModel
     {
         private readonly ISubjectRecordService _subjectRecordService;
-
         public TrendReportViewModel WeightReport { get; private set; }
         public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
         public List<SubjectRecordViewModel> Records { get; } = new List<SubjectRecordViewModel>();
@@ -35,26 +34,14 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         }
 
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync()
         {
-            if (!await RetrieveAndAuthorizeSubjectAsync(id, "CanView"))
+            if (!await RetrieveAndAuthorizeSubjectAsync("CanView"))
             {
                 return NotFound();
             }
 
-            var records = await _subjectRecordService.GetMostRecentSubjectRecordsAsync(id);
-
-            //WeightReport = await _analyticsProvider.GetObservationChangeReportAsync(id, "WeighIn");
-            //NutritionPartialViewModel = new NutritionScienceCardViewModel(_energyCalculationService)
-            //{
-            //    IdealWeightRecord = records?.Where(r => r.ObservationDefinition.Name == "IdealWeight")?.FirstOrDefault(),
-            //    WeightRecord = records?.Where(r => r.ObservationDefinition.Name == "WeighIn")?.FirstOrDefault(),
-            //    LifestageRecord = records?.Where(r => r.ObservationDefinition.Name == "CanineLifeStageFactor")?.FirstOrDefault(),
-            //    WeightReport = WeightReport,
-            //    AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = WeightReport }
-            //};
-            //await NutritionPartialViewModel.Init();
-
+            var records = await _subjectRecordService.GetMostRecentSubjectRecordsAsync(Id);
             var viewModels = _mapper.Map<List<SubjectRecordViewModel>>(records);
             Records.AddRange(viewModels);
 

@@ -14,9 +14,9 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             base(subjectService, mapper, authorizationService, logger)
         { }
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync()
         {
-            if (!await RetrieveAndAuthorizeSubjectAsync(id, "CanDelete"))
+            if (!await RetrieveAndAuthorizeSubjectAsync("CanDelete"))
             {
                 return Forbid();
             }

@@ -17,4 +17,5 @@
             @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
         }
     </dl>
+    <a asp-page="/Subjects/Disciplines" asp-route-slug=@Model.DisciplineKey asp-route-id="@Model.SubjectId">More @(StringHelper.SplitPascalCase(Model.DisciplineKey))</a>
 </div>

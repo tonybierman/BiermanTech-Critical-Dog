@@ -30,6 +30,9 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             _logger = logger;
         }
 
+        [BindProperty(SupportsGet = true)]
+        public int Id { get; set; }
+
         [BindProperty]
         public SubjectInputViewModel SubjectVM { get; set; } = new SubjectInputViewModel();
         public SelectList SubjectTypes { get; set; }
@@ -56,16 +59,16 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         public bool AdminCanDelete { get; set; } = true;
 
         // TODO: Wasted trips to DB
-        protected async Task<bool> RetrieveAndAuthorizeSubjectAsync(int id, string permission)
+        protected async Task<bool> RetrieveAndAuthorizeSubjectAsync(string permission)
         {
-            var entity = await _subjectService.GetSubjectByIdAsync(id);
+            var entity = await _subjectService.GetSubjectByIdAsync(this.Id);
             if (entity == null)
             {
-                _logger.LogWarning($"RetrieveAndAuthorizeSubjectAsync: Subject with ID {id} not found or user lacks view permissions.");
+                _logger.LogWarning($"RetrieveAndAuthorizeSubjectAsync: Subject with ID {this.Id} not found or user lacks view permissions.");
                 return false;
             }
 
-            SubjectVM = await _subjectService.GetSubjectViewModelByIdAsync(id);
+            SubjectVM = await _subjectService.GetSubjectViewModelByIdAsync(this.Id);
             SubjectTypeName = entity?.SubjectType?.Name ?? "Unknown";
             MetaTagNames = entity?.MetaTags?.Select(m => m.Name)?.ToList();
 
@@ -78,7 +81,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 policyName);
             if (!authorizationResult.Succeeded)
             {
-                _logger.LogWarning($"RetrieveAndAuthorizeSubjectAsync: Authorization failed for Subject ID {id}. User lacks {permission} permission.");
+                _logger.LogWarning($"RetrieveAndAuthorizeSubjectAsync: Authorization failed for Subject ID {this.Id}. User lacks {permission} permission.");
                 return false;
             }
 
