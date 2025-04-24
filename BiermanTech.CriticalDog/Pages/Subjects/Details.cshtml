@@ -9,10 +9,53 @@
 
 <div class="container">
     <h1>Subject Details</h1>
-
     <hr />
-    <div class="row">
-        <div class="col-md-12">
+
+    <ul class="nav nav-tabs" id="disciplineTabs" role="tablist">
+        <!-- Statically defined first tab: Lorem Ipsum -->
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    id="lorem-ipsum-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#lorem-ipsum-tab-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="lorem-ipsum-tab-pane"
+                    aria-selected="true">
+                Lorem Ipsum
+            </button>
+        </li>
+        <!-- Dynamically generated tabs for disciplines, if any -->
+        @if (Model.GroupedRecords?.Any() == true)
+        {
+            @foreach (var group in Model.GroupedRecords)
+            {
+                var tabId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab";
+                var paneId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab-pane";
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            id="@tabId"
+                            data-bs-toggle="tab"
+                            data-bs-target="#@paneId"
+                            type="button"
+                            role="tab"
+                            aria-controls="@paneId"
+                            aria-selected="false">
+                        @StringHelper.SplitPascalCase(group.Key)
+                    </button>
+                </li>
+            }
+        }
+    </ul>
+
+    <div class="tab-content" id="disciplineTabContent">
+        <!-- First tab content: Lorem Ipsum, defined statically -->
+        <div class="tab-pane fade show active"
+             id="lorem-ipsum-tab-pane"
+             role="tabpanel"
+             aria-labelledby="lorem-ipsum-tab"
+             tabindex="0">
             <dl class="row">
                 <dt class="col-sm-3">
                     @Html.DisplayNameFor(model => model.SubjectVM.Name)
@@ -55,70 +98,29 @@
             </div>
         </div>
 
-        <div class="container mt-4">
-            <h1>Recent Observations</h1>
-
-            @if (Model.GroupedRecords?.Any() == true)
+        <!-- Remaining tabs: Disciplines, rendered via partial view, if any -->
+        @if (Model.GroupedRecords?.Any() == true)
+        {
+            @foreach (var group in Model.GroupedRecords)
             {
-                <ul class="nav nav-tabs" id="disciplineTabs" role="tablist">
-                    @foreach (var group in Model.GroupedRecords)
-                    {
-                        var tabId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab";
-                        var paneId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab-pane";
-                        var isActive = group.Key == Model.GroupedRecords.First().Key;
-
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link @(isActive ? "active" : "")"
-                            id="@tabId"
-                            data-bs-toggle="tab"
-                            data-bs-target="#@paneId"
-                            type="button"
-                            role="tab"
-                            aria-controls="@paneId"
-                            aria-selected="@(isActive ? "true" : "false")">
-                                @StringHelper.SplitPascalCase(group.Key)
-                            </button>
-                        </li>
-                    }
-                </ul>
-
-                <div class="tab-content" id="disciplineTabContent">
-                    @foreach (var group in Model.GroupedRecords)
-                    {
-                        var paneId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab-pane";
-                        var tabId = $"discipline-{group.Key.ToLower().Replace(" ", "-")}-tab";
-                        var isActive = group.Key == Model.GroupedRecords.First().Key;
-
-                        <div class="tab-pane fade @(isActive ? "show active" : "")"
-                        id="@paneId"
-                        role="tabpanel"
-                        aria-labelledby="@tabId"
-                        tabindex="0">
-                            <dl class="row">
-                                @foreach (var record in group)
-                                {
-                                    @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
-                                }
-                            </dl>
-                        </div>
-
-                        @if (group.Key == "NutritionScience")
-                        {
-                            <span>Lorem Ipsum</span>
-                        }
-                    }
-                </div>
+                @await Html.PartialAsync("_DisciplineTabContentPartial", new DisciplineTabContentViewModel
+   {
+       DisciplineKey = group.Key,
+       Records = group.ToList()
+   })
             }
-            else
-            {
-                <p>No records found for the specified subject.</p>
-            }
-        </div>
-        @if (Model.NutritionPartialViewModel != null && Model.NutritionPartialViewModel.CanHandle())
+        }
+    </div>
+
+    @if (!(Model.GroupedRecords?.Any() == true))
+    {
+        <p>No records found for the specified subject.</p>
+    }
+</div>
+
+@*         @if (Model.NutritionPartialViewModel != null && Model.NutritionPartialViewModel.CanHandle())
         {
             <div class="mt-3 col-md-12 overflow-auto">
                 @await Html.PartialAsync("_NutritionScienceCardPartial", @Model.NutritionPartialViewModel)
             </div>
-        }
-    </div>
-</div>
+        } *@

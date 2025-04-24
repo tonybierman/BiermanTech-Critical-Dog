@@ -1,0 +1,20 @@
+﻿@using BiermanTech.CriticalDog.ViewModels
+@model DisciplineTabContentViewModel
+
+@{
+    var paneId = $"discipline-{Model.DisciplineKey.ToLower().Replace(" ", "-")}-tab-pane";
+    var tabId = $"discipline-{Model.DisciplineKey.ToLower().Replace(" ", "-")}-tab";
+}
+
+<div class="tab-pane fade"
+     id="@paneId"
+     role="tabpanel"
+     aria-labelledby="@tabId"
+     tabindex="0">
+    <dl class="row">
+        @foreach (var record in Model.Records)
+        {
+            @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
+        }
+    </dl>
+</div>
