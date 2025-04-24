@@ -40,6 +40,7 @@ namespace BiermanTech.CriticalDog.ViewModels
                 }
             }
         }
+
         public MetricValueTransformFieldViewModel(SubjectRecordViewModel parent, IReportColumnDefinition column, string? slug) : base(parent, column, slug)
         {
             _parent = parent;

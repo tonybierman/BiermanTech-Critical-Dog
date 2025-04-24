@@ -20,7 +20,9 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
         private readonly IObservationAnalyticsProvider _analyticsProvider;
         private readonly ISubjectRecordService _subjectRecordService;
 
+        public TrendReport WeightReport { get; private set; }
         public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
+        public List<SubjectRecordViewModel> Records { get; } = new List<SubjectRecordViewModel>();
 
         public DetailsModel(
             ISubjectService subjectService,
@@ -37,7 +39,6 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
             _subjectRecordService = subjectRecordService;
         }
 
-        public TrendReport WeightReport { get; private set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -62,7 +63,16 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
                 AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = WeightReport }
             };
             await NutritionPartialViewModel.Init();
-            
+
+            if (weightRecord != null)
+                Records.Add(_mapper.Map<SubjectRecordViewModel>(weightRecord));
+
+            if (idealWeightRecord != null)
+                Records.Add(_mapper.Map<SubjectRecordViewModel>(idealWeightRecord));
+
+            if (lifeStageRecord != null)
+                Records.Add(_mapper.Map<SubjectRecordViewModel>(lifeStageRecord));
+
             return Page();
         }
     }

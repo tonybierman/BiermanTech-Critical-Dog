@@ -37,12 +37,22 @@
                 <dd class="col-sm-9">
                     @Model.SubjectVM?.SubjectType?.Name (@Model.SubjectVM?.SubjectType?.ScientificName)
                 </dd>
-                <dt class="col-sm-3">
-                    Meta Tags
-                </dt>
-                <dd class="col-sm-9">
-                    @await Html.PartialAsync("_TagFieldPartial", Model.MetaTagNames)
-                </dd>
+
+                @foreach (var record in Model.Records)
+                {
+                    @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
+                }
+              
+                @if (Model.MetaTagNames.Any())
+                {
+                    <dt class="col-sm-3">
+                        Meta Tags
+                    </dt>
+                    <dd class="col-sm-9">
+                        @await Html.PartialAsync("_TagFieldPartial", Model.MetaTagNames)
+                    </dd>
+                }
+
             </dl>
             <div class="form-group mt-3">
                 <a asp-page="./Edit" asp-route-id="@Model.SubjectVM.Id" class="btn btn-primary">Edit</a>

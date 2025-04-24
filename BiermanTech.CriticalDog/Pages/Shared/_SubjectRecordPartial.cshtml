@@ -1,17 +1,24 @@
-﻿@model BiermanTech.CriticalDog.ViewModels.SubjectRecordPartialViewModel
+﻿@using BiermanTech.CriticalDog.Reports.Columns
 
-<h5>Most Recent Weight</h5>
+@model BiermanTech.CriticalDog.ViewModels.SubjectRecordPartialViewModel
+
+@{
+    int mval = checked((int)Model.RecordVM?.MetricValue.Value);
+    var transformer = MetricValueTransformerFactory.GetProvider(Model.RecordVM?.ObservationDefinition);
+    string? transformed = transformer?.GetTransformedValue(mval);
+}
 <dt class="col-sm-3">
-    @Html.DisplayNameFor(model => model.RecordVM.ObservationName)
-</dt>
-<dd class="col-sm-9">
     @Html.DisplayFor(model => model.RecordVM.ObservationName)
-</dd>
-<dt class="col-sm-3">
-    @Html.DisplayNameFor(model => model.RecordVM.MetricValue)
 </dt>
 <dd class="col-sm-9">
-    @Html.DisplayFor(model => model.RecordVM.MetricValue)
+    @if(string.IsNullOrEmpty(transformed))
+    {
+        @Html.DisplayFor(model => model.RecordVM.MetricValue) @Html.DisplayFor(model => model.RecordVM.UnitSymbol)
+    }
+    else
+    {
+        <span>@transformed</span>
+    }
 </dd>
 
 
