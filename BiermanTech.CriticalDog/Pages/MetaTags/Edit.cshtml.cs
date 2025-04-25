@@ -4,6 +4,8 @@ using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BiermanTech.CriticalDog.Pages.MetaTags
@@ -20,6 +22,8 @@ namespace BiermanTech.CriticalDog.Pages.MetaTags
 
         [BindProperty]
         public MetaTagInputViewModel MetaTagVM { get; set; } = new MetaTagInputViewModel();
+
+        public IList<IdentityUser> Users { get; set; } = new List<IdentityUser>();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -41,6 +45,11 @@ namespace BiermanTech.CriticalDog.Pages.MetaTags
                 return Page();
             }
 
+            if (isAdmin)
+            {
+                Users = await _userManager.Users.ToListAsync();
+            }
+
             return Page();
         }
 
@@ -48,6 +57,11 @@ namespace BiermanTech.CriticalDog.Pages.MetaTags
         {
             if (!ModelState.IsValid)
             {
+                var isAdm = await IsAdminAsync();
+                if (isAdm)
+                {
+                    Users = await _userManager.Users.ToListAsync();
+                }
                 return Page();
             }
 
@@ -55,6 +69,11 @@ namespace BiermanTech.CriticalDog.Pages.MetaTags
             if (!isAdmin && MetaTagVM.IsSystemScoped)
             {
                 ModelState.AddModelError(string.Empty, "Only administrators can set meta tags as system-scoped.");
+                var isAdminReload = await IsAdminAsync();
+                if (isAdminReload)
+                {
+                    Users = await _userManager.Users.ToListAsync();
+                }
                 return Page();
             }
 

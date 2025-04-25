@@ -4,6 +4,8 @@ using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BiermanTech.CriticalDog.Pages.MetaTags
@@ -25,14 +27,21 @@ namespace BiermanTech.CriticalDog.Pages.MetaTags
         [BindProperty]
         public MetaTagInputViewModel MetaTagVM { get; set; } = new MetaTagInputViewModel();
 
+        public IList<IdentityUser> Users { get; set; } = new List<IdentityUser>();
+
         public async Task<IActionResult> OnGetAsync()
         {
-            MetaTagVM.IsSystemScoped = false; // Default to user-scoped
-            MetaTagVM.UserId = await GetCurrentUserIdAsync(); // Set UserId for form
-            if (!await IsAdminAsync())
+            var isAdmin = await IsAdminAsync();
+            if (isAdmin)
             {
-                MetaTagVM.IsSystemScoped = false; // Non-admins cannot create system-scoped tags
+                Users = await _userManager.Users.ToListAsync();
+                MetaTagVM.UserId = null; // Default to system-scoped for admins
             }
+            else
+            {
+                MetaTagVM.UserId = await GetCurrentUserIdAsync(); // Set UserId for non-admins
+            }
+
             return Page();
         }
 
@@ -40,7 +49,15 @@ namespace BiermanTech.CriticalDog.Pages.MetaTags
         {
             if (!ModelState.IsValid)
             {
-                MetaTagVM.UserId = await GetCurrentUserIdAsync(); // Restore UserId if validation fails
+                var isAdm = await IsAdminAsync();
+                if (isAdm)
+                {
+                    Users = await _userManager.Users.ToListAsync();
+                }
+                else
+                {
+                    MetaTagVM.UserId = await GetCurrentUserIdAsync(); // Restore UserId for non-admins
+                }
                 return Page();
             }
 
@@ -48,7 +65,14 @@ namespace BiermanTech.CriticalDog.Pages.MetaTags
             if (!isAdmin && MetaTagVM.IsSystemScoped)
             {
                 ModelState.AddModelError(string.Empty, "Only administrators can create system-scoped meta tags.");
-                MetaTagVM.UserId = await GetCurrentUserIdAsync(); // Restore UserId
+                if (isAdmin)
+                {
+                    Users = await _userManager.Users.ToListAsync();
+                }
+                else
+                {
+                    MetaTagVM.UserId = await GetCurrentUserIdAsync(); // Restore UserId for non-admins
+                }
                 return Page();
             }
 
