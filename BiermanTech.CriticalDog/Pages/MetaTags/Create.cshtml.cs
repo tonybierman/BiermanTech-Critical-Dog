@@ -1,6 +1,7 @@
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace BiermanTech.CriticalDog.Pages.MetaTags
 {
+    [Authorize(Policy = "RequireAuthenticated")]
     public class CreateModel : MetaTagBasePageModel
     {
         private readonly ILogger<CreateModel> _logger;

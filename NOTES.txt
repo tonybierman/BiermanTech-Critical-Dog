@@ -41,3 +41,6 @@ ObservationDefinition,DefinitionName
 Unit,UnitName
 ObservationType,TypeName
 ScientificDiscipline,DisciplineName
+
+TODO
+Secure MetaTag, Subject and SubjectRecord CRUD pages but leave index pages anonymous

@@ -1,4 +1,8 @@
 ﻿@page
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
 @model BiermanTech.CriticalDog.Pages.SubjectRecords.IndexModel
 
 @{
@@ -7,9 +11,12 @@
 
 <h1>Subject Records</h1>
 
-<p>
-    <a asp-page="Create" class="btn btn-primary">Create New</a>
-</p>
+@if ((await AuthorizationService.AuthorizeAsync(User, "RequireAuthenticated")).Succeeded)
+{
+    <p>
+        <a asp-page="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
 
 <table class="table table-striped">
     <thead>

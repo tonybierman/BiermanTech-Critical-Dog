@@ -1,11 +1,13 @@
 using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BiermanTech.CriticalDog.Pages.SubjectRecords
 {
+    [Authorize(Policy = "RequireAuthenticated")]
     public class CreateModel : PageModel
     {
         private readonly ISubjectRecordService _recordService;

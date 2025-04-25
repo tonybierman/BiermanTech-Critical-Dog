@@ -59,7 +59,8 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/"); // Require auth for all pages
     options.Conventions.AllowAnonymousToPage("/Index"); // Allow anonymous for /Pages/Index
-    options.Conventions.AllowAnonymousToPage("/Subjects/Index"); // Allow anonymous for /Pages/Index
+    options.Conventions.AllowAnonymousToPage("/Subjects/Index"); // Allow anonymous for /Subjects/Index
+    options.Conventions.AllowAnonymousToPage("/SubjectRecords/Index"); // Allow anonymous for /SubjectRecords/Index
     options.Conventions.AllowAnonymousToPage("/Privacy"); // Allow anonymous for /Pages/Privacy
     options.Conventions.AllowAnonymousToFolder("/Reports"); // Allow anonymous for /Pages/Reports/*
     options.Conventions.AuthorizeFolder("/Admin", "RequireAdminRole"); // Require Admin role for /Pages/Admin/*
