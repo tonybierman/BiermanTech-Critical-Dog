@@ -2,7 +2,7 @@ using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BiermanTech.CriticalDog.Pages.Admin.SubjectRecords
+namespace BiermanTech.CriticalDog.Pages.SubjectRecords
 {
     public class IndexModel : PageModel
     {

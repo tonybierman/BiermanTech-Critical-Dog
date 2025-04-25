@@ -1,5 +1,5 @@
 ﻿@page
-@model BiermanTech.CriticalDog.Pages.Admin.SubjectRecords.IndexModel
+@model BiermanTech.CriticalDog.Pages.SubjectRecords.IndexModel
 
 @{
     ViewData["Title"] = "Subject Records";
@@ -67,7 +67,7 @@
                     @Html.DisplayFor(modelItem => item.CreatedBy)
                 </td>
                 <td>
-                    @(item.SelectedMetaTagIds.Any() ? string.Join(", ", Model.MetaTagNames[item.Id]) : "None")
+                    @await Html.PartialAsync("_TagFieldPartial", Model.MetaTagNames[item.Id])
                 </td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>

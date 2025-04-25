@@ -1,5 +1,5 @@
 ﻿@page "{id:int}"
-@model BiermanTech.CriticalDog.Pages.Admin.SubjectRecords.DetailsModel
+@model BiermanTech.CriticalDog.Pages.SubjectRecords.DetailsModel
 
 @{
     ViewData["Title"] = "Subject Record Details";
@@ -57,7 +57,7 @@
                 Meta Tags
             </dt>
             <dd class="col-sm-9">
-                @(Model.MetaTagNames.Any() ? string.Join(", ", Model.MetaTagNames) : "None")
+                @await Html.PartialAsync("_TagFieldPartial", Model.MetaTagNames)
             </dd>
         </dl>
         <div class="form-group mt-3">

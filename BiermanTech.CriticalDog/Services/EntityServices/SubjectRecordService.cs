@@ -2,8 +2,10 @@
 using BiermanTech.CriticalDog.Data;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BiermanTech.CriticalDog.Services.EntityServices
 {
@@ -11,11 +13,15 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
-
-        public SubjectRecordService(AppDbContext context, IMapper mapper)
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public SubjectRecordService(AppDbContext context, IAuthorizationService authorizationService,
+            IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            _authorizationService = authorizationService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<SubjectRecord>> GetMostRecentSubjectRecordsByDisciplineAsync(int subjectId, string? scientificDisciplineNameFilter = null)
@@ -166,11 +172,35 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
                 throw new KeyNotFoundException($"SubjectRecord with ID {viewModel.Id} not found or you lack permission to access it.");
             }
 
+            // Get the current user's ID and admin status
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
+            // Map view model properties to the record entity
             _mapper.Map(viewModel, record);
-            record.MetaTags.Clear();
-            record.MetaTags = await _context.MetaTags
-                .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id))
+
+            // Get the IDs of tags the user can edit (UserId matches current user or is null, unless admin)
+            var editableTagIds = await _context.MetaTags
+                .Where(m => isAdmin || m.UserId == currentUserId || m.UserId == null)
+                .Select(m => m.Id)
                 .ToListAsync();
+
+            // Remove editable tags from the record
+            var tagsToRemove = record.MetaTags.Where(mt => editableTagIds.Contains(mt.Id)).ToList();
+            foreach (var tag in tagsToRemove)
+            {
+                record.MetaTags.Remove(tag);
+            }
+
+            // Add the user-selected tags (only those they are allowed to edit)
+            var selectedTags = await _context.MetaTags
+                .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id) && editableTagIds.Contains(m.Id))
+                .ToListAsync();
+            foreach (var tag in selectedTags)
+            {
+                record.MetaTags.Add(tag);
+            }
+
             _context.Update(record);
             await _context.SaveChangesAsync();
         }

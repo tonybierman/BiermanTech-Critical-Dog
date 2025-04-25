@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BiermanTech.CriticalDog.Pages.Admin.SubjectRecords
+namespace BiermanTech.CriticalDog.Pages.SubjectRecords
 {
     public class EditModel : PageModel
     {

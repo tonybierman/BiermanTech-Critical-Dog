@@ -1,18 +1,17 @@
-﻿@page "{id:int}"
-@model BiermanTech.CriticalDog.Pages.Admin.SubjectRecords.EditModel
+﻿@page
+@model BiermanTech.CriticalDog.Pages.SubjectRecords.CreateModel
 
 @{
-    ViewData["Title"] = "Edit Subject Record";
+    ViewData["Title"] = "Create Subject Record";
 }
 
-<h1>Edit Subject Record</h1>
+<h1>Create Subject Record</h1>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="RecordVM.Id" />
 
             <div class="form-group">
                 <label asp-for="RecordVM.SubjectId" class="control-label"></label>
@@ -65,7 +64,7 @@
             </div>
 
             <div class="form-group mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
                 <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
             </div>
         </form>
