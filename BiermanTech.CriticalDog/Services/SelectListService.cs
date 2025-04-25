@@ -52,7 +52,7 @@ namespace BiermanTech.CriticalDog.Services
 
         public async Task<SelectList> GetMetaTagsSelectListAsync(IEnumerable<int>? selectedIds = null, bool filterActive = true)
         {
-            var query = _context.MetaTags.AsQueryable();
+            var query = _context.GetFilteredMetaTags();
 
             if (filterActive)
             {
