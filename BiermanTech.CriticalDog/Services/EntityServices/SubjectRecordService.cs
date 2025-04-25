@@ -28,6 +28,10 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
         {
             try
             {
+                // Get the current user's ID and admin status
+                var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
                 var query = _context.GetFilteredSubjectRecords()
                     .Include(s => s.Subject)
                         .ThenInclude(s => s.SubjectType)
@@ -37,13 +41,14 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
                         .ThenInclude(od => od.ScientificDisciplines)
                     .Include(s => s.MetricType)
                         .ThenInclude(mt => mt.Unit)
-                    .Include(s => s.MetaTags)
-                    .Where(s => s.SubjectId == subjectId);
+                    .Include(s => s.MetaTags
+                        .Where(mt => isAdmin || mt.UserId == currentUserId || mt.UserId == null))
+                    .Where(s => s.SubjectId == subjectId)
+                    .AsNoTracking();
 
                 // Apply optional filter for scientificDisciplineNameFilter
                 if (!string.IsNullOrWhiteSpace(scientificDisciplineNameFilter))
                 {
-                    // Use ToLower() for case-insensitive comparison
                     var filterLower = scientificDisciplineNameFilter.ToLower();
                     query = query.Where(s => s.ObservationDefinition.ScientificDisciplines
                         .Any(sd => sd.Name.ToLower().Contains(filterLower)));
@@ -69,54 +74,71 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
 
         public async Task<IEnumerable<SubjectRecord>> GetMostRecentSubjectRecordsAsync(int subjectId)
         {
+            // Get the current user's ID and admin status
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
             var records = await _context.GetFilteredSubjectRecords()
                 .Include(s => s.Subject)
-                .ThenInclude(s => s.SubjectType)
+                    .ThenInclude(s => s.SubjectType)
                 .Include(s => s.ObservationDefinition)
-                .ThenInclude(od => od.ObservationType)
+                    .ThenInclude(od => od.ObservationType)
                 .Include(s => s.ObservationDefinition)
-                .ThenInclude(od => od.ScientificDisciplines)
+                    .ThenInclude(od => od.ScientificDisciplines)
                 .Include(s => s.MetricType)
-                .ThenInclude(mt => mt.Unit)
-                .Include(s => s.MetaTags)
+                    .ThenInclude(mt => mt.Unit)
+                .Include(s => s.MetaTags
+                    .Where(mt => isAdmin || mt.UserId == currentUserId || mt.UserId == null))
                 .Where(s => s.SubjectId == subjectId)
                 .GroupBy(s => s.ObservationDefinition.Name)
                 .Select(g => g.OrderByDescending(s => s.CreatedAt).First())
+                .AsNoTracking()
                 .ToListAsync();
-
 
             return records;
         }
 
         public async Task<SubjectRecord> GetMostRecentSubjectRecordAsync(int subjectId, string definitionName)
         {
+            // Get the current user's ID and admin status
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
             return await _context.GetFilteredSubjectRecords()
                 .Include(s => s.Subject)
-                .ThenInclude(s => s.SubjectType)
+                    .ThenInclude(s => s.SubjectType)
                 .Include(s => s.ObservationDefinition)
-                .ThenInclude(od => od.ObservationType)
+                    .ThenInclude(od => od.ObservationType)
                 .Include(s => s.ObservationDefinition)
-                .ThenInclude(od => od.ScientificDisciplines)
+                    .ThenInclude(od => od.ScientificDisciplines)
                 .Include(s => s.MetricType)
-                .ThenInclude(mt => mt.Unit)
-                .Include(s => s.MetaTags)
+                    .ThenInclude(mt => mt.Unit)
+                .Include(s => s.MetaTags
+                    .Where(mt => isAdmin || mt.UserId == currentUserId || mt.UserId == null))
                 .Where(s => s.SubjectId == subjectId && s.ObservationDefinition.Name == definitionName)
                 .OrderByDescending(s => s.CreatedAt)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
 
         public async Task<SubjectRecord> GetSubjectRecordByIdAsync(int id)
         {
+            // Get the current user's ID and admin status
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
             return await _context.GetFilteredSubjectRecords()
                 .Include(s => s.Subject)
-                .ThenInclude(s => s.SubjectType)
+                    .ThenInclude(s => s.SubjectType)
                 .Include(s => s.ObservationDefinition)
-                .ThenInclude(od => od.ObservationType)
+                    .ThenInclude(od => od.ObservationType)
                 .Include(s => s.ObservationDefinition)
-                .ThenInclude(od => od.ScientificDisciplines)
+                    .ThenInclude(od => od.ScientificDisciplines)
                 .Include(s => s.MetricType)
-                .ThenInclude(mt => mt.Unit)
-                .Include(s => s.MetaTags)
+                    .ThenInclude(mt => mt.Unit)
+                .Include(s => s.MetaTags
+                    .Where(mt => isAdmin || mt.UserId == currentUserId || mt.UserId == null))
+                .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
@@ -134,21 +156,28 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
 
         public async Task<List<SubjectRecordInputViewModel>> GetAllSubjectRecordsAsync()
         {
+            // Get the current user's ID and admin status
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
             var records = await _context.GetFilteredSubjectRecords()
-                .Include(s => s.MetaTags)
+                .Include(s => s.MetaTags
+                    .Where(mt => isAdmin || mt.UserId == currentUserId || mt.UserId == null))
                 .Include(s => s.Subject)
-                .ThenInclude(s => s.SubjectType)
+                    .ThenInclude(s => s.SubjectType)
                 .Include(s => s.ObservationDefinition)
                 .Include(s => s.MetricType)
-                .ThenInclude(mt => mt.Unit)
+                    .ThenInclude(mt => mt.Unit)
+                .AsNoTracking()
                 .ToListAsync();
+
             var viewModels = _mapper.Map<List<SubjectRecordInputViewModel>>(records);
 
-            // TODO: Move this to mapping profile
             for (int i = 0; i < records.Count; i++)
             {
                 viewModels[i].SelectedMetaTagIds = records[i].MetaTags.Select(m => m.Id).ToList();
             }
+
             return viewModels;
         }
 

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BiermanTech.CriticalDog.Services.EntityServices
 {
@@ -36,17 +37,22 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
 
         public async Task<List<SubjectViewModel>> GetFilteredSubjectViewModelsAsync()
         {
+            _logger.LogInformation("GetFilteredSubjectViewModelsAsync: Retrieving filtered subjects.");
+
+            // Get the current user's ID and admin status
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
             var subjects = await _context.GetFilteredSubjects()
                 .Include(s => s.SubjectType)
-                .Include(s => s.MetaTags)
+                .Include(s => s.MetaTags
+                    .Where(mt => isAdmin || mt.UserId == currentUserId || mt.UserId == null))
+                .AsNoTracking()
                 .ToListAsync();
+
             var viewModels = _mapper.Map<List<SubjectViewModel>>(subjects);
 
-            // TODO: Move this to mapping profile
-            for (int i = 0; i < subjects.Count; i++)
-            {
-                viewModels[i].SelectedMetaTagIds = subjects[i].MetaTags.Select(m => m.Id).ToList();
-            }
+            _logger.LogInformation($"GetFilteredSubjectViewModelsAsync: Retrieved {subjects.Count} subjects.");
 
             return viewModels;
         }
@@ -54,18 +60,28 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
         public async Task<Subject> GetSubjectByIdAsync(int id)
         {
             _logger.LogInformation($"GetSubjectByIdAsync: Retrieving Subject with ID {id}.");
-            var subject = await _context.GetFilteredSubjects()
+
+            // Get the current user's ID and admin status
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
+            var query = _context.GetFilteredSubjects()
                 .Include(s => s.SubjectType)
-                .Include(s => s.MetaTags)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .Include(s => s.MetaTags
+                    .Where(mt => isAdmin || mt.UserId == currentUserId || mt.UserId == null))
+                .AsNoTracking(); // Optional: Use if read-only to improve performance
+
+            var subject = await query.FirstOrDefaultAsync(s => s.Id == id);
+
             if (subject == null)
             {
                 _logger.LogWarning($"GetSubjectByIdAsync: Subject with ID {id} not found or user lacks view permissions.");
             }
             else
             {
-                _logger.LogInformation($"GetSubjectByIdAsync: Retrieved Subject ID={id}, Permissions={subject.Permissions}, UserId={subject.UserId}.");
+                _logger.LogInformation($"GetSubjectByIdAsync: Retrieved Subject ID={id}, Permissions={subject.Permissions}, UserId={subject.UserId}, MetaTagsCount={subject.MetaTags.Count}.");
             }
+
             return subject;
         }
 
