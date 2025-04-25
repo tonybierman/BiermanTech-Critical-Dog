@@ -485,6 +485,96 @@ namespace BiermanTech.CriticalDog.Data
                 },
                 new ObservationDefinitionData
                 {
+                    Name = "AntibioticDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of antibiotic medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "AntihelminticDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of antihelmintic (dewormer) medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "FleaTickPreventativeDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of flea and tick preventative medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "HeartwormPreventativeDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of heartworm preventative medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "NSAIDDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of non-steroidal anti-inflammatory drug (NSAID) administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "SteroidDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of steroid medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "AntihistamineDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of antihistamine medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "AntifungalDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of antifungal medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "AntiepilepticDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of antiepileptic medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
+                    Name = "AnxiolyticDose",
+                    ObservationTypeName = "Medication",
+                    MinimumValue = 0m,
+                    MaximumValue = 1000m,
+                    Description = "Quantitative record of anxiolytic or behavior-modifying medication administered",
+                    IsActive = true
+                },
+                new ObservationDefinitionData
+                {
                     Name = "LitterSize",
                     ObservationTypeName = "Cohort",
                     MinimumValue = 0m,
@@ -654,6 +744,16 @@ namespace BiermanTech.CriticalDog.Data
                 ("TempCheck", "VeterinaryMedicine"),
                 ("BehaviorNote", "Ethology"),
                 ("MedicationDose", "VeterinaryMedicine"),
+                ("AntibioticDose", "VeterinaryMedicine"),
+                ("AntihelminticDose", "VeterinaryMedicine"),
+                ("FleaTickPreventativeDose", "VeterinaryMedicine"),
+                ("HeartwormPreventativeDose", "VeterinaryMedicine"),
+                ("NSAIDDose", "VeterinaryMedicine"),
+                ("SteroidDose", "VeterinaryMedicine"),
+                ("AntihistamineDose", "VeterinaryMedicine"),
+                ("AntifungalDose", "VeterinaryMedicine"),
+                ("AntiepilepticDose", "VeterinaryMedicine"),
+                ("AnxiolyticDose", "VeterinaryMedicine"),
                 ("LitterSize", "Biology"),
                 ("HeartRate", "VeterinaryMedicine"),
                 ("RespiratoryRate", "VeterinaryMedicine"),
@@ -692,6 +792,46 @@ namespace BiermanTech.CriticalDog.Data
                 ("MedicationDose", "Milligrams"),
                 ("MedicationDose", "Grams"),
                 ("MedicationDose", "Count"),
+                ("AntibioticDose", "Milliliters"),
+                ("AntibioticDose", "Milligrams"),
+                ("AntibioticDose", "Grams"),
+                ("AntibioticDose", "Count"),
+                ("AntihelminticDose", "Milliliters"),
+                ("AntihelminticDose", "Milligrams"),
+                ("AntihelminticDose", "Grams"),
+                ("AntihelminticDose", "Count"),
+                ("FleaTickPreventativeDose", "Milliliters"),
+                ("FleaTickPreventativeDose", "Milligrams"),
+                ("FleaTickPreventativeDose", "Grams"),
+                ("FleaTickPreventativeDose", "Count"),
+                ("HeartwormPreventativeDose", "Milliliters"),
+                ("HeartwormPreventativeDose", "Milligrams"),
+                ("HeartwormPreventativeDose", "Grams"),
+                ("HeartwormPreventativeDose", "Count"),
+                ("NSAIDDose", "Milliliters"),
+                ("NSAIDDose", "Milligrams"),
+                ("NSAIDDose", "Grams"),
+                ("NSAIDDose", "Count"),
+                ("SteroidDose", "Milliliters"),
+                ("SteroidDose", "Milligrams"),
+                ("SteroidDose", "Grams"),
+                ("SteroidDose", "Count"),
+                ("AntihistamineDose", "Milliliters"),
+                ("AntihistamineDose", "Milligrams"),
+                ("AntihistamineDose", "Grams"),
+                ("AntihistamineDose", "Count"),
+                ("AntifungalDose", "Milliliters"),
+                ("AntifungalDose", "Milligrams"),
+                ("AntifungalDose", "Grams"),
+                ("AntifungalDose", "Count"),
+                ("AntiepilepticDose", "Milliliters"),
+                ("AntiepilepticDose", "Milligrams"),
+                ("AntiepilepticDose", "Grams"),
+                ("AntiepilepticDose", "Count"),
+                ("AnxiolyticDose", "Milliliters"),
+                ("AnxiolyticDose", "Milligrams"),
+                ("AnxiolyticDose", "Grams"),
+                ("AnxiolyticDose", "Count"),
                 ("LitterSize", "Count"),
                 ("HeartRate", "BeatsPerMinute"),
                 ("RespiratoryRate", "BeatsPerMinute"),
