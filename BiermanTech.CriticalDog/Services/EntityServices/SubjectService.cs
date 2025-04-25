@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using BiermanTech.CriticalDog.Services.Interfaces;
+using System.Security.Claims;
 
 namespace BiermanTech.CriticalDog.Services.EntityServices
 {
@@ -132,11 +133,35 @@ namespace BiermanTech.CriticalDog.Services.EntityServices
                                      SubjectPermissions.AdminCanEdit |
                                      SubjectPermissions.AdminCanDelete;
 
+            // Map view model properties to the subject entity
             _mapper.Map(viewModel, subject);
-            subject.MetaTags.Clear();
-            subject.MetaTags = await _context.MetaTags
-                .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id))
+
+            // Get the current user's ID and admin status
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _httpContextAccessor.HttpContext.User.IsInRole("Admin");
+
+            // Get the IDs of tags the user can edit (UserId matches current user or is null, unless admin)
+            var editableTagIds = await _context.MetaTags
+                .Where(m => isAdmin || m.UserId == currentUserId || m.UserId == null)
+                .Select(m => m.Id)
                 .ToListAsync();
+
+            // Remove editable tags from the subject
+            var tagsToRemove = subject.MetaTags.Where(mt => editableTagIds.Contains(mt.Id)).ToList();
+            foreach (var tag in tagsToRemove)
+            {
+                subject.MetaTags.Remove(tag);
+            }
+
+            // Add the user-selected tags (only those they are allowed to edit)
+            var selectedTags = await _context.MetaTags
+                .Where(m => viewModel.SelectedMetaTagIds.Contains(m.Id) && editableTagIds.Contains(m.Id))
+                .ToListAsync();
+            foreach (var tag in selectedTags)
+            {
+                subject.MetaTags.Add(tag);
+            }
+
             _context.Update(subject);
             return await _context.SaveChangesAsync();
         }
