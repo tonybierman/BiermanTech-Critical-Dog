@@ -33,8 +33,9 @@
                                     Actions
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="actionsDropdown">
-                                    <li><a asp-page="/Subjects/Index" class="dropdown-item">Manage Dogs</a></li>
-                                    <li><a asp-page="/Reports/Index" asp-route-slug="Kennel" class="dropdown-item">Manage Observations</a></li>
+                                    <li><a asp-page="/Subjects/Index" class="dropdown-item">My Dogs</a></li>
+                                    <li><a asp-page="/Reports/Index" asp-route-slug="Kennel" class="dropdown-item">My Observations</a></li>
+                                    <li><a class="dropdown-item" href="/MetaTags/Index">My Meta Tags</a></li>
                                 </ul>
                             </li>
                         }
@@ -45,7 +46,6 @@
                                     Admin Menu
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                    <li><a class="dropdown-item" href="/Admin/MetaTags/Index">Meta Tags</a></li>
                                     <li><a class="dropdown-item" href="/Admin/MetricTypes/Index">Metric Types</a></li>
                                     <li><a class="dropdown-item" href="/Admin/ObservationDefinitions/Index">Observation Definitions</a></li>
                                     <li><a class="dropdown-item" href="/Admin/ObservationTypes/Index">Observation Types</a></li>

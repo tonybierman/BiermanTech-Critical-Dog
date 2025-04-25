@@ -14,14 +14,21 @@ namespace BiermanTech.CriticalDog
             CreateMap<ICollection<MetricType>, SelectList>()
                 .ConvertUsing<MetricTypesConverter>();
 
-            // MetaTag
+            // MetaTag to MetaTagInputViewModel
             CreateMap<MetaTag, MetaTagInputViewModel>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForMember(dest => dest.IsSystemScoped, opt => opt.MapFrom(src => src.UserId == null))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.Name, opt => opt.NullSubstitute(string.Empty))
+                .ForMember(dest => dest.Description, opt => opt.NullSubstitute(string.Empty));
 
-            // MetaTagInputViewModel
+            // MetaTagInputViewModel to MetaTag
             CreateMap<MetaTagInputViewModel, MetaTag>()
                 .ForMember(dest => dest.SubjectRecords, opt => opt.Ignore())
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom((src, dest, _, context) =>
+                    src.IsSystemScoped ? null : dest.UserId ?? src.UserId ?? (context.Items["CurrentUserId"] as string)))
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Name, opt => opt.NullSubstitute(string.Empty))
+                .ForMember(dest => dest.Description, opt => opt.NullSubstitute(string.Empty));
 
             // MetricType
             CreateMap<MetricType, MetricTypeInputViewModel>()

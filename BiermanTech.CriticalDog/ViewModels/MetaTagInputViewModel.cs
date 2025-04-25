@@ -14,5 +14,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public string? Description { get; set; }
 
         public bool? IsActive { get; set; }
+        public bool IsSystemScoped { get; set; }
+        public string UserId { get; set; }
     }
 }
