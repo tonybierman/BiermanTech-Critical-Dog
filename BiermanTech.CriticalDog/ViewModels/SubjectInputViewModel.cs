@@ -26,7 +26,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        public List<int> SelectedMetaTagIds { get; set; } = new List<int>();
+        public List<int>? SelectedMetaTagIds { get; set; } = new List<int>();
 
         public int Permissions { get; set; }
     }

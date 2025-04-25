@@ -14,7 +14,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public DateTime? RecordTime { get; set; }
         public decimal? MinimumValue { get; set; }
         public decimal? MaximumValue { get; set; }
-        public List<int> SelectedMetaTagIds { get; set; } = new List<int>();
+        public List<int>? SelectedMetaTagIds { get; set; } = new List<int>();
         public SelectList ObservationDefinitions { get; set; }
         public SelectList MetricTypes { get; set; }
         public SelectList MetaTags { get; set; }
