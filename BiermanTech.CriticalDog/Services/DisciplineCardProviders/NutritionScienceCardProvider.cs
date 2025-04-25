@@ -42,7 +42,7 @@ namespace BiermanTech.CriticalDog.Services.DisciplineCardProviders
             {
                 IdealWeightRecord = records?.Where(r => r.ObservationDefinition.Name == "IdealWeight")?.FirstOrDefault(),
                 WeightRecord = records?.Where(r => r.ObservationDefinition.Name == "WeighIn")?.FirstOrDefault(),
-                LifestageRecord = records?.Where(r => r.ObservationDefinition.Name == "CanineLifeStageFactor")?.FirstOrDefault(),
+                LifestageRecord = records?.Where(r => r.ObservationDefinition.Name == "LifeStage")?.FirstOrDefault(),
                 WeightReport = weightReport,
                 AnalyticPartialVM = new AnalyticsReportPartialViewModel() { Report = weightReport }
             };

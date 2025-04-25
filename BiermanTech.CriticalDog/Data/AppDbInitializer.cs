@@ -399,10 +399,10 @@ namespace BiermanTech.CriticalDog.Data
 
             public static readonly List<ScientificDiscipline> ScientificDisciplines = new()
             {
-                new ScientificDiscipline { Name = "CanineBiology", Description = "Study of dog anatomy, physiology, and genetics", IsActive = true },
-                new ScientificDiscipline { Name = "NutritionScience", Description = "Study of dietary needs for canine health", IsActive = true },
-                new ScientificDiscipline { Name = "VeterinaryMedicine", Description = "Diagnosis and treatment of canine diseases", IsActive = true },
-                new ScientificDiscipline { Name = "Ethology", Description = "Study of animal behavior", IsActive = true },
+                new ScientificDiscipline { Name = "Biology", Description = "Study of anatomy, physiology, and genetics", IsActive = true },
+                new ScientificDiscipline { Name = "NutritionScience", Description = "Study of dietary needs for health", IsActive = true },
+                new ScientificDiscipline { Name = "VeterinaryMedicine", Description = "Diagnosis and treatment of diseases", IsActive = true },
+                new ScientificDiscipline { Name = "Ethology", Description = "Study of natural behavior", IsActive = true }
             };
 
             public static readonly List<ObservationDefinitionData> ObservationDefinitions = new()
@@ -423,7 +423,7 @@ namespace BiermanTech.CriticalDog.Data
                 },
                 new ObservationDefinitionData
                 {
-                    Name = "CanineGeneticHealthConditionStatus",
+                    Name = "GeneticHealthCondition",
                     ObservationTypeName = "GeneticHealthConditionStatus",
                     MinimumValue = 1m,
                     MaximumValue = 4m,
@@ -432,7 +432,7 @@ namespace BiermanTech.CriticalDog.Data
                 },
                 new ObservationDefinitionData
                 {
-                    Name = "CanineOfaHipGrade",
+                    Name = "HipsScoreOFA",
                     ObservationTypeName = "OfaHipsGrade",
                     MinimumValue = 1m,
                     MaximumValue = 7m,
@@ -546,7 +546,7 @@ namespace BiermanTech.CriticalDog.Data
                 },
                 new ObservationDefinitionData
                 {
-                    Name = "CanineLifeStageFactor",
+                    Name = "LifeStage",
                     ObservationTypeName = "LifeStageFactor",
                     MinimumValue = 1m,
                     MaximumValue = 10m,
@@ -573,7 +573,7 @@ namespace BiermanTech.CriticalDog.Data
                 },
                 new ObservationDefinitionData
                 {
-                    Name = "SocializationBehavior",
+                    Name = "Socialization",
                     ObservationTypeName = "Behavior",
                     Description = "Qualitative note on socialization with dogs or humans",
                     IsActive = true
@@ -645,35 +645,33 @@ namespace BiermanTech.CriticalDog.Data
 
             public static readonly List<(string ObservationDefinitionName, string ScientificDisciplineName)> ObservationDefinitionDisciplines = new()
             {
-                ("mtDNA", "CanineBiology"),
-                ("Y-DNA", "CanineBiology"),
-                ("CanineGeneticHealthConditionStatus", "CanineBiology"),
-                ("CanineOfaHipGrade", "CanineBiology"),
-                ("WeighIn", "CanineBiology"),
+                ("mtDNA", "Biology"),
+                ("Y-DNA", "Biology"),
+                ("GeneticHealthCondition", "Biology"),
+                ("HipsScoreOFA", "Biology"),
                 ("WeighIn", "NutritionScience"),
-                ("IdealWeight", "CanineBiology"),
                 ("IdealWeight", "NutritionScience"),
                 ("TempCheck", "VeterinaryMedicine"),
                 ("BehaviorNote", "Ethology"),
                 ("MedicationDose", "VeterinaryMedicine"),
-                ("LitterSize", "CanineBiology"),
+                ("LitterSize", "Biology"),
                 ("HeartRate", "VeterinaryMedicine"),
                 ("RespiratoryRate", "VeterinaryMedicine"),
                 ("HydrationStatus", "VeterinaryMedicine"),
-                ("ExerciseDuration", "CanineBiology"),
+                ("ExerciseDuration", "Biology"),
                 ("ExerciseIntensity", "Ethology"),
                 ("AppetiteLevel", "NutritionScience"),
                 ("StoolQuality", "VeterinaryMedicine"),
                 ("DailyCaloricIntake", "NutritionScience"),
-                ("CanineLifeStageFactor", "NutritionScience"),
-                ("SocializationBehavior", "Ethology"),
+                ("LifeStage", "NutritionScience"),
+                ("Socialization", "Ethology"),
                 ("TrainingProgress", "Ethology"),
-                ("EstrusCycleStage", "CanineBiology"),
-                ("GestationProgress", "CanineBiology"),
+                ("EstrusCycleStage", "Biology"),
+                ("GestationProgress", "Biology"),
                 ("CoatCondition", "VeterinaryMedicine"),
                 ("DentalHealth", "VeterinaryMedicine"),
                 ("PainAssessment", "VeterinaryMedicine"),
-                ("AmbientHumidity", "CanineBiology")
+                ("AmbientHumidity", "Biology")
             };
 
             public static readonly List<(string ObservationDefinitionName, string UnitName)> ObservationDefinitionUnits = new()
@@ -712,17 +710,7 @@ namespace BiermanTech.CriticalDog.Data
             public static readonly List<MetaTag> MetaTags = new()
             {
                 new MetaTag { Name = "Rescue", Description = "Rescued animal", IsActive = true },
-                new MetaTag { Name = "Senior", Description = "Senior animal", IsActive = true },
-                new MetaTag { Name = "Feeding", Description = "Related to food or feeding observations", IsActive = true },
-                new MetaTag { Name = "Medication", Description = "Indicates a medication-related record", IsActive = true },
-                new MetaTag { Name = "Exercise", Description = "Pertains to physical activity or exercise", IsActive = true },
-                new MetaTag { Name = "Grooming", Description = "Related to grooming or hygiene", IsActive = true },
-                new MetaTag { Name = "HealthCheck", Description = "General health or veterinary check-up", IsActive = true },
-                new MetaTag { Name = "Behavior", Description = "Observations about behavior or temperament", IsActive = true },
-                new MetaTag { Name = "VitalSigns", Description = "Related to physiological measurements", IsActive = true },
-                new MetaTag { Name = "Reproduction", Description = "Related to reproductive observations", IsActive = true },
-                new MetaTag { Name = "Training", Description = "Related to training or obedience observations", IsActive = true },
-                new MetaTag { Name = "Environment", Description = "Related to environmental conditions", IsActive = true }
+                new MetaTag { Name = "Senior", Description = "Senior animal", IsActive = true }
             };
 
             public static readonly List<SubjectType> SubjectTypes = new()

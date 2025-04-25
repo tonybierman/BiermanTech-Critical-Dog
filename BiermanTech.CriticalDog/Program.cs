@@ -137,7 +137,7 @@ var app = builder.Build();
 
 try
 {
-    if (false)
+    if (true)
     {
         string regularUserId = null;
 
