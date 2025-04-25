@@ -51,24 +51,6 @@ namespace BiermanTech.CriticalDog.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "MetaTag",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int(11)", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'1'")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PRIMARY", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "ObservationType",
                 columns: table => new
                 {
@@ -140,6 +122,32 @@ namespace BiermanTech.CriticalDog.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "MetaTag",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int(11)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'1'"),
+                    UserId = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MetaTag_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -407,9 +415,14 @@ namespace BiermanTech.CriticalDog.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "Name",
+                name: "IX_MetaTag_UserId",
                 table: "MetaTag",
-                column: "Name",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "Name_UserId",
+                table: "MetaTag",
+                columns: new[] { "Name", "UserId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -418,7 +431,7 @@ namespace BiermanTech.CriticalDog.Migrations
                 column: "UnitId");
 
             migrationBuilder.CreateIndex(
-                name: "Name1",
+                name: "Name",
                 table: "MetricType",
                 column: "Name",
                 unique: true);
@@ -429,7 +442,7 @@ namespace BiermanTech.CriticalDog.Migrations
                 column: "ObservationTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "Name2",
+                name: "Name1",
                 table: "ObservationDefinition",
                 column: "Name",
                 unique: true);
@@ -450,13 +463,13 @@ namespace BiermanTech.CriticalDog.Migrations
                 column: "UnitId");
 
             migrationBuilder.CreateIndex(
-                name: "Name3",
+                name: "Name2",
                 table: "ObservationType",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "Name4",
+                name: "Name3",
                 table: "ScientificDiscipline",
                 column: "Name",
                 unique: true);
@@ -477,7 +490,7 @@ namespace BiermanTech.CriticalDog.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "Name5",
+                name: "Name4",
                 table: "Subject",
                 columns: new[] { "Name", "ArrivalDate" },
                 unique: true);
@@ -519,13 +532,13 @@ namespace BiermanTech.CriticalDog.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "Name6",
+                name: "Name5",
                 table: "SubjectType",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "Name7",
+                name: "Name6",
                 table: "Unit",
                 column: "Name",
                 unique: true);

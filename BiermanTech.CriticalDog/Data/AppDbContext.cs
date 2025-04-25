@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +30,16 @@ public partial class AppDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
             entity.ToTable("MetaTag");
-            entity.HasIndex(e => e.Name, "Name").IsUnique();
+            entity.HasIndex(e => new { e.Name, e.UserId }, "Name_UserId").IsUnique();
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
             entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.UserId).HasMaxLength(450).IsRequired(false); // Explicitly nullable
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_MetaTag_AspNetUsers_UserId");
         });
 
         modelBuilder.Entity<MetricType>(entity =>

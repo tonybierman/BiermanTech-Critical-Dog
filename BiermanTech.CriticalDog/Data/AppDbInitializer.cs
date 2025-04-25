@@ -225,28 +225,29 @@ namespace BiermanTech.CriticalDog.Data
                 {
                     // Apply the same slugification as ApplyMetaTagNameTransformation
                     var slugifiedName = StringHelper.Slugify(mt.Name);
-                    // Query for the slugified name, as that's what will be saved
+                    // Query for the slugified name and UserId = null (system-scoped)
                     var existingMt = await context.MetaTags
-                        .FirstOrDefaultAsync(m => m.Name == slugifiedName);
+                        .FirstOrDefaultAsync(m => m.Name == slugifiedName && m.UserId == null);
                     if (existingMt == null)
                     {
-                        // Create a new MetaTag with the slugified name
+                        // Create a new system-scoped MetaTag with UserId = null
                         var newMt = new MetaTag
                         {
                             Name = slugifiedName,
                             Description = mt.Description,
-                            IsActive = mt.IsActive
+                            IsActive = mt.IsActive,
+                            UserId = null // System-scoped
                         };
                         context.MetaTags.Add(newMt);
-                        logger.LogDebug($"Adding MetaTag: {newMt.Name} (original: {mt.Name})");
+                        logger.LogDebug($"Adding system-scoped MetaTag: {newMt.Name} (original: {mt.Name})");
                     }
                     else
                     {
-                        // Update the existing MetaTag
+                        // Update the existing system-scoped MetaTag
                         existingMt.Description = mt.Description;
                         existingMt.IsActive = mt.IsActive;
                         context.MetaTags.Update(existingMt);
-                        logger.LogDebug($"Updating MetaTag: {existingMt.Name} (original: {mt.Name})");
+                        logger.LogDebug($"Updating system-scoped MetaTag: {existingMt.Name} (original: {mt.Name})");
                     }
                 }
                 await context.SaveChangesAsync();

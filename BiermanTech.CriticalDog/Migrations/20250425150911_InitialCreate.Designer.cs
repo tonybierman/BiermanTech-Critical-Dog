@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BiermanTech.CriticalDog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250423230920_InitialCreate")]
+    [Migration("20250425150911_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -47,10 +47,16 @@ namespace BiermanTech.CriticalDog.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "Name" }, "Name")
+                    b.HasIndex("UserId");
+
+                    b.HasIndex(new[] { "Name", "UserId" }, "Name_UserId")
                         .IsUnique();
 
                     b.ToTable("MetaTag", (string)null);
@@ -83,8 +89,7 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasIndex(new[] { "UnitId" }, "FK_MetricType_Unit");
 
                     b.HasIndex(new[] { "Name" }, "Name")
-                        .IsUnique()
-                        .HasDatabaseName("Name1");
+                        .IsUnique();
 
                     b.ToTable("MetricType", (string)null);
                 });
@@ -134,7 +139,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasIndex(new[] { "Name" }, "Name")
                         .IsUnique()
-                        .HasDatabaseName("Name2");
+                        .HasDatabaseName("Name1");
 
                     b.ToTable("ObservationDefinition", (string)null);
                 });
@@ -165,7 +170,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasIndex(new[] { "Name" }, "Name")
                         .IsUnique()
-                        .HasDatabaseName("Name3");
+                        .HasDatabaseName("Name2");
 
                     b.ToTable("ObservationType", (string)null);
                 });
@@ -196,7 +201,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasIndex(new[] { "Name" }, "Name")
                         .IsUnique()
-                        .HasDatabaseName("Name4");
+                        .HasDatabaseName("Name3");
 
                     b.ToTable("ScientificDiscipline", (string)null);
                 });
@@ -260,7 +265,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasIndex(new[] { "Name", "ArrivalDate" }, "Name")
                         .IsUnique()
-                        .HasDatabaseName("Name5");
+                        .HasDatabaseName("Name4");
 
                     b.ToTable("Subject", (string)null);
                 });
@@ -355,7 +360,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasIndex(new[] { "Name" }, "Name")
                         .IsUnique()
-                        .HasDatabaseName("Name6");
+                        .HasDatabaseName("Name5");
 
                     b.ToTable("SubjectType", (string)null);
                 });
@@ -391,7 +396,7 @@ namespace BiermanTech.CriticalDog.Migrations
 
                     b.HasIndex(new[] { "Name" }, "Name")
                         .IsUnique()
-                        .HasDatabaseName("Name7");
+                        .HasDatabaseName("Name6");
 
                     b.HasIndex(new[] { "UnitSymbol" }, "UnitSymbol")
                         .IsUnique();
@@ -534,6 +539,17 @@ namespace BiermanTech.CriticalDog.Migrations
                     b.HasIndex(new[] { "MetaTagId" }, "FK_SubjectRecordMetaTag_MetaTag");
 
                     b.ToTable("SubjectRecordMetaTag", (string)null);
+                });
+
+            modelBuilder.Entity("BiermanTech.CriticalDog.Data.MetaTag", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_MetaTag_AspNetUsers_UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BiermanTech.CriticalDog.Data.MetricType", b =>

@@ -4,6 +4,7 @@ using System.Composition;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using BiermanTech.CriticalDog.Helpers;
+using System.Threading;
 
 namespace BiermanTech.CriticalDog.Data
 {
@@ -207,6 +208,134 @@ namespace BiermanTech.CriticalDog.Data
             }
         }
 
+        public IQueryable<MetaTag> GetFilteredMetaTags()
+        {
+            try
+            {
+                var user = _httpContextAccessor?.HttpContext?.User;
+                if (user == null)
+                {
+                    _logger?.LogWarning("GetFilteredMetaTags: User is null, returning no meta tags.");
+                    Debug.WriteLine("GetFilteredMetaTags: User is null.");
+                    return MetaTags.Where(m => false);
+                }
+
+                if (!user.Identity.IsAuthenticated)
+                {
+                    _logger?.LogWarning("GetFilteredMetaTags: User is not authenticated, returning no meta tags.");
+                    Debug.WriteLine("GetFilteredMetaTags: User is not authenticated.");
+                    return MetaTags.Where(m => false);
+                }
+
+                string userId = _userManager.GetUserId(user);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    _logger?.LogWarning("GetFilteredMetaTags: UserId is null or empty, returning no meta tags.");
+                    Debug.WriteLine("GetFilteredMetaTags: UserId is null or empty.");
+                    return MetaTags.Where(m => false);
+                }
+
+                bool isAdmin = user.IsInRole("Admin");
+                _logger?.LogInformation($"GetFilteredMetaTags: UserId={userId}, IsAdmin={isAdmin}");
+                Debug.WriteLine($"GetFilteredMetaTags: UserId={userId}, IsAdmin={isAdmin}");
+
+                if (isAdmin)
+                {
+                    return MetaTags;
+                }
+
+                return MetaTags.Where(m => m.UserId == userId || m.UserId == null);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Error in GetFilteredMetaTags");
+                Debug.WriteLine($"Error in GetFilteredMetaTags: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<IQueryable<MetaTag>> GetFilteredMetaTags(string userId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(userId))
+                {
+                    _logger?.LogWarning("GetFilteredMetaTags: Provided UserId is null or empty, returning no meta tags.");
+                    Debug.WriteLine("GetFilteredMetaTags: Provided UserId is null or empty.");
+                    return MetaTags.Where(m => false);
+                }
+
+                var identityUser = await _userManager.FindByIdAsync(userId);
+                if (identityUser == null)
+                {
+                    _logger?.LogWarning($"GetFilteredMetaTags: No user found for UserId={userId}, returning no meta tags.");
+                    Debug.WriteLine($"GetFilteredMetaTags: No user found for UserId={userId}.");
+                    return MetaTags.Where(m => false);
+                }
+
+                bool isAdmin = await _userManager.IsInRoleAsync(identityUser, "Admin");
+                _logger?.LogInformation($"GetFilteredMetaTags: UserId={userId}, IsAdmin={isAdmin}");
+                Debug.WriteLine($"GetFilteredMetaTags: UserId={userId}, IsAdmin={isAdmin}");
+
+                if (isAdmin)
+                {
+                    return MetaTags;
+                }
+
+                return MetaTags.Where(m => m.UserId == userId || m.UserId == null);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, $"Error in GetFilteredMetaTags for UserId={userId}");
+                Debug.WriteLine($"Error in GetFilteredMetaTags for UserId={userId}: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<MetaTag> CreateSystemMetaTag(string name, string description = null)
+        {
+            try
+            {
+                var user = _httpContextAccessor?.HttpContext?.User;
+                if (user == null || !user.Identity.IsAuthenticated)
+                {
+                    _logger?.LogWarning("CreateSystemMetaTag: User is null or not authenticated, cannot create system meta tag.");
+                    Debug.WriteLine("CreateSystemMetaTag: User is null or not authenticated.");
+                    throw new UnauthorizedAccessException("User must be authenticated to create a system meta tag.");
+                }
+
+                string userId = _userManager.GetUserId(user);
+                bool isAdmin = user.IsInRole("Admin");
+                if (!isAdmin)
+                {
+                    _logger?.LogWarning($"CreateSystemMetaTag: UserId={userId} is not an admin, cannot create system meta tag.");
+                    Debug.WriteLine($"CreateSystemMetaTag: UserId={userId} is not an admin.");
+                    throw new UnauthorizedAccessException("Only administrators can create system meta tags.");
+                }
+
+                var metaTag = new MetaTag
+                {
+                    Name = StringHelper.Slugify(name),
+                    Description = description,
+                    IsActive = true,
+                    UserId = null // System-scoped
+                };
+
+                MetaTags.Add(metaTag);
+                await SaveChangesAsync();
+
+                _logger?.LogInformation($"CreateSystemMetaTag: System meta tag created with Name={name} by UserId={userId}.");
+                Debug.WriteLine($"CreateSystemMetaTag: System meta tag created with Name={name} by UserId={userId}.");
+                return metaTag;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, $"Error in CreateSystemMetaTag for Name={name}");
+                Debug.WriteLine($"Error in CreateSystemMetaTag for Name={name}: {ex.Message}");
+                throw;
+            }
+        }
+
         public override int SaveChanges()
         {
             ApplyMetaTagNameTransformation();
@@ -226,11 +355,31 @@ namespace BiermanTech.CriticalDog.Data
             var metaTagEntries = ChangeTracker.Entries<MetaTag>()
                 .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
+            var user = _httpContextAccessor?.HttpContext?.User;
+            string userId = null;
+            bool isAdmin = false;
+
+            if (user != null && user.Identity.IsAuthenticated)
+            {
+                userId = _userManager.GetUserId(user);
+                isAdmin = user.IsInRole("Admin");
+            }
+
             foreach (var entry in metaTagEntries)
             {
                 if (!string.IsNullOrEmpty(entry.Entity.Name))
                 {
                     entry.Entity.Name = StringHelper.Slugify(entry.Entity.Name);
+                }
+
+                if (entry.State == EntityState.Added && !string.IsNullOrEmpty(userId))
+                {
+                    // Admins can create system-scoped tags (UserId = null) if explicitly set
+                    // Non-admins always get their UserId
+                    if (!isAdmin && entry.Entity.UserId != null)
+                    {
+                        entry.Entity.UserId = userId;
+                    }
                 }
             }
         }
