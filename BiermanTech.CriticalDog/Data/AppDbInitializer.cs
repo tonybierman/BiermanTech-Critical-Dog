@@ -403,7 +403,6 @@ namespace BiermanTech.CriticalDog.Data
                 new ScientificDiscipline { Name = "NutritionScience", Description = "Study of dietary needs for canine health", IsActive = true },
                 new ScientificDiscipline { Name = "VeterinaryMedicine", Description = "Diagnosis and treatment of canine diseases", IsActive = true },
                 new ScientificDiscipline { Name = "Ethology", Description = "Study of animal behavior", IsActive = true },
-                new ScientificDiscipline { Name = "Pharmacology", Description = "Study of drug effects on dogs", IsActive = true }
             };
 
             public static readonly List<ObservationDefinitionData> ObservationDefinitions = new()
@@ -657,7 +656,6 @@ namespace BiermanTech.CriticalDog.Data
                 ("TempCheck", "VeterinaryMedicine"),
                 ("BehaviorNote", "Ethology"),
                 ("MedicationDose", "VeterinaryMedicine"),
-                ("MedicationDose", "Pharmacology"),
                 ("LitterSize", "CanineBiology"),
                 ("HeartRate", "VeterinaryMedicine"),
                 ("RespiratoryRate", "VeterinaryMedicine"),
