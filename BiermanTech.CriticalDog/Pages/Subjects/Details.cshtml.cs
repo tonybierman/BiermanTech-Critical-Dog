@@ -16,6 +16,7 @@ namespace BiermanTech.CriticalDog.Pages.Subjects
     public class DetailsModel : SubjectBasePageModel
     {
         private readonly ISubjectRecordService _subjectRecordService;
+
         public TrendReportViewModel WeightReport { get; private set; }
         public NutritionScienceCardViewModel NutritionPartialViewModel { get; set; }
         public List<SubjectRecordViewModel> Records { get; } = new List<SubjectRecordViewModel>();

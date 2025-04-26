@@ -1,6 +1,9 @@
 ﻿@page "{id:int}"
 @using BiermanTech.CriticalDog.Helpers
+@using BiermanTech.CriticalDog.Services.Interfaces
 @using BiermanTech.CriticalDog.ViewModels
+@inject IDisciplineTabFormatFactory TabFormatFactory
+
 @model BiermanTech.CriticalDog.Pages.Subjects.DetailsModel
 
 @{
@@ -118,7 +121,8 @@
                 {
                     SubjectId = Model.Id,
                     DisciplineKey = group.Key,
-                    Records = group.ToList()
+                    Records = group.ToList(),
+                    TabFormatPartialName = TabFormatFactory.GetPartialName(group.Key)
                 })
             }
         }

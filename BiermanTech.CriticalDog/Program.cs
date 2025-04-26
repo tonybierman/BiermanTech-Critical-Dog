@@ -89,6 +89,7 @@ builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<ISubjectRecordService, SubjectRecordService>();
 builder.Services.AddScoped<IEnergyCalculationService, EnergyCalculationService>();
 builder.Services.AddScoped<IDisciplineCardFactory, DisciplineCardFactory>();
+builder.Services.AddScoped<IDisciplineTabFormatFactory, DisciplineTabFormatFactory>();
 
 // Auth
 builder.Services.AddScoped<IAuthorizationHandler, SubjectPermissionHandler>();

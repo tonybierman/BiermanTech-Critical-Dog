@@ -1,0 +1,10 @@
+﻿@using BiermanTech.CriticalDog.ViewModels
+
+@model IList<SubjectRecordViewModel>
+
+<dl class="row">
+    @foreach (var record in Model)
+    {
+        @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
+    }
+</dl>
