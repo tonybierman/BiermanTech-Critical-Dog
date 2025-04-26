@@ -7,15 +7,43 @@
 }
 
 <div class="tab-pane fade"
-     id="@paneId"
-     role="tabpanel"
-     aria-labelledby="@tabId"
-     tabindex="0">
-    <dl class="row">
-        @foreach (var record in Model.Records)
-        {
-            @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
-        }
-    </dl>
+id="@paneId"
+role="tabpanel"
+aria-labelledby="@tabId"
+tabindex="0">
+
+    @if(Model.DisciplineKey == "VeterinaryMedicine")
+    {
+        <div class="small d-flex flex-column w-100">
+            <!-- Header Row -->
+            <div class="d-flex border-bottom fw-bold p-2 gap-3">
+                <div class="col-3 flex-fill text-start">Date</div>
+                <div class="col-3 flex-fill text-start">Name</div>
+                <div class="col-3 flex-fill text-start">Value</div>
+                <div class="col-3 flex-fill text-start">Note</div>
+            </div>
+            <!-- Data Rows -->
+            @foreach (var record in Model.Records)
+            {
+                <div class="d-flex border-bottom p-2 gap-3">
+                    <div class="col-3 flex-fill text-start">@record.CreatedAt</div>
+                    <div class="col-3 flex-fill text-start">@StringHelper.SplitPascalCase(record.ObservationDefinition.Name)</div>
+                    <div class="col-3 flex-fill text-start">@record.MetricValueWithSymbol</div>
+                    <div class="col-3 flex-fill text-start">@record.Note</div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <dl class="row">
+            @foreach (var record in Model.Records)
+            {
+                @await Html.PartialAsync("_SubjectRecordPartial", new SubjectRecordPartialViewModel() { RecordVM = record })
+            }
+        </dl>
+    }
+
+
     <a asp-page="/Subjects/Disciplines" asp-route-slug=@Model.DisciplineKey asp-route-id="@Model.SubjectId">More @(StringHelper.SplitPascalCase(Model.DisciplineKey))</a>
 </div>
