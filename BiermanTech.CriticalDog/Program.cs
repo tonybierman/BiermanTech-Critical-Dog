@@ -7,13 +7,10 @@ using BiermanTech.CriticalDog.Services;
 using BiermanTech.CriticalDog.Services.EntityServices;
 using BiermanTech.CriticalDog.Services.Factories;
 using BiermanTech.CriticalDog.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
 using Serilog;
-using System.Runtime.Intrinsics.X86;
 
 var options = new WebApplicationOptions
 {

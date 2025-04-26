@@ -856,6 +856,7 @@ namespace BiermanTech.CriticalDog.Data
 
             public static readonly List<SubjectType> SubjectTypes = new()
             {
+                new SubjectType { Clade = "Breed", Name = "Mixed Breed", ScientificName = "Canis lupus familiaris" },
                 new SubjectType { Clade = "Breed", Name = "Affenpinscher", ScientificName = "Canis lupus familiaris" },
                 new SubjectType { Clade = "Breed", Name = "Afghan Hound", ScientificName = "Canis lupus familiaris" },
                 new SubjectType { Clade = "Breed", Name = "Aidi", ScientificName = "Canis lupus familiaris" },
