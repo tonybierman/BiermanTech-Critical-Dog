@@ -1,4 +1,5 @@
 ﻿using BiermanTech.CriticalDog.Reports.Columns;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using UniversalReportCore;
 
 namespace BiermanTech.CriticalDog.Reports.CityPop
@@ -77,6 +78,11 @@ namespace BiermanTech.CriticalDog.Reports.CityPop
                     DisplayName = "Note",
                     PropertyName = "Note",
                     IsSortable = true
+                },
+                new EntityToolbarColumn
+                {
+                    EntityBaseRoute = "/SubjectRecords",
+                    SecurityPolicy = "RequireAuthenticated"
                 }
             };
         }

@@ -1,0 +1,40 @@
+﻿@using BiermanTech.CriticalDog.Reports.Columns
+@using UniversalReportCore.Ui.ViewModels
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@model EntityFieldViewModel
+@{
+    string basePath = null;
+    string securityPolicy = null;
+    if (Model.Column != null && Model.Column is EntityToolbarColumn column)
+    {
+        basePath = column.EntityBaseRoute;
+        securityPolicy = column.SecurityPolicy;
+    }
+}
+
+@if (basePath != null && securityPolicy != null && (await AuthorizationService.AuthorizeAsync(User, "RequireAuthenticated")).Succeeded)
+{
+    <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Entity Toolbar">
+        <div class="btn-group me-2" role="group" aria-label="Primary group">
+            <a class="btn btn-primary" title="Edit"
+               asp-route-id="@Model.Parent.Id"
+               asp-page=@($"{basePath}/Edit")>
+                Edit
+            </a>
+            <a class="btn btn-secondary" title="Details"
+               asp-route-id="@Model.Parent.Id"
+               asp-page=@($"{basePath}/Details")>
+                Details
+            </a>
+            <a class="btn btn-danger" title="Delete"
+               asp-route-id="@Model.Parent.Id"
+               asp-page=@($"{basePath}/Delete")>
+                Delete
+            </a>
+        </div>
+    </div>
+}
+
+
