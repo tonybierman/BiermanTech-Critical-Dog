@@ -4,17 +4,17 @@
     ViewData["Title"] = "Add Observation - Step 1";
 }
 
-<h1>Add Observation for @Model.Observation.SubjectName - Step 1: Select Observation Type</h1>
+<h1>Add Observation for @Model.ObservationVM.SubjectName - Step 1: Select Observation Type</h1>
 
 <form method="post">
-    <input type="hidden" asp-for="Observation.SubjectId" />
+    <input type="hidden" asp-for="ObservationVM.SubjectId" />
 
     <div class="form-group">
-        <label asp-for="Observation.ObservationDefinitionId">Observation Type</label>
-        <select asp-for="Observation.ObservationDefinitionId" asp-items="Model.Observation.ObservationDefinitions" class="form-control">
+        <label asp-for="ObservationVM.ObservationDefinitionId">Observation Type</label>
+        <select asp-for="ObservationVM.ObservationDefinitionId" asp-items="Model.ObservationVM.ObservationDefinitions" class="form-control">
             <option value="">-- Select Observation --</option>
         </select>
-        <span asp-validation-for="Observation.ObservationDefinitionId" class="text-danger"></span>
+        <span asp-validation-for="ObservationVM.ObservationDefinitionId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary mt-3">Next</button>

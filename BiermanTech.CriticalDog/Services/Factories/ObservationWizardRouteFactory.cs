@@ -9,7 +9,7 @@ namespace BiermanTech.CriticalDog.Services.Factories
         {
         }
 
-        public ISteppedWizardRouteProvider GetStep2Route(string? slug)
+        public ISteppedWizardRouteProvider GetRouter(string? slug)
         {
             if (slug == null)
                 return null;

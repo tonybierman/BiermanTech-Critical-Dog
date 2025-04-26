@@ -2,6 +2,6 @@
 {
     public interface IObservationWizardRouteFactory
     {
-        ISteppedWizardRouteProvider GetStep2Route(string? slug);
+        ISteppedWizardRouteProvider GetRouter(string? slug);
     }
 }

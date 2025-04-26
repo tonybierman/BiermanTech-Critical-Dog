@@ -1,24 +1,22 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Data;
+using BiermanTech.CriticalDog.Pages.Subjects.Observations;
+using BiermanTech.CriticalDog.Services;
 using BiermanTech.CriticalDog.Services.Factories;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
-    public class CreateStep2Model : PageModel
+    public class CreateStep2Model : CreateStepPageModelBase
     {
         private readonly IMetricValueTransformerFactory _metricValueTransformFactory;
-        private readonly ISelectListService _selectListService;
-        private readonly ISubjectObservationService _observationService;
-        private readonly ILogger<CreateStep2Model> _logger;
         private readonly IMapper _mapper;
 
         public IEnumerable<SelectListItem> SelectedListItems { get; set; }
+
         [BindProperty]
         public int SelectedItem { get; set; }
 
@@ -27,46 +25,39 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             ISubjectObservationService observationService,
             ISelectListService selectListService,
             ILogger<CreateStep2Model> logger,
+            IObservationWizardRouteFactory routeFactory,
             IMapper mapper)
+            : base(observationService, routeFactory, selectListService, logger)
         {
             _metricValueTransformFactory = metricValueTransformerFactory;
-            _selectListService = selectListService;
-            _observationService = observationService;
-            _logger = logger;
             _mapper = mapper;
         }
 
-        [BindProperty]
-        public CreateObservationViewModel ObservationVM { get; set; } = new CreateObservationViewModel();
-        public string ObservationDefinitionName { get; set; }
-
         public async Task<IActionResult> OnGetAsync(int dogId, int? observationDefinitionId = null)
         {
-            int definitionId = observationDefinitionId ?? GetDefinitionIdFromTempData(dogId);
+            int definitionId = observationDefinitionId ?? (GetObservationFromTempData()?.ObservationDefinitionId ?? 0);
             if (definitionId == 0)
             {
                 _logger.LogInformation("No observation definition ID provided. Redirecting to CreateStep1 for DogId {DogId}.", dogId);
                 return RedirectToPage("CreateStep1", new { dogId });
             }
 
-            var dog = await _observationService.GetByIdAsync(dogId);
-            if (dog == null)
+            var notFound = await LoadDogAsync(dogId);
+            if (notFound != null)
             {
-                _logger.LogError("Dog with ID {DogId} not found.", dogId);
-                return NotFound();
+                return notFound;
+            }
+
+            var validationResult = await ValidateObservationDefinitionAsync(definitionId);
+            if (validationResult != null)
+            {
+                return validationResult;
             }
 
             var observationDefinition = await _observationService.GetObservationDefinitionByIdAsync(definitionId);
-            if (observationDefinition == null)
-            {
-                _logger.LogError("ObservationDefinition with ID {ObservationDefinitionId} not found.", definitionId);
-                return NotFound();
-            }
-
-            ObservationDefinitionName = observationDefinition.Name;
             ObservationVM = _mapper.Map<CreateObservationViewModel>(observationDefinition);
             ObservationVM.SubjectId = dogId;
-            ObservationVM.SubjectName = dog.Name ?? "Unknown";
+            ObservationVM.SubjectName = ObservationVM.SubjectName ?? "Unknown";
             ObservationVM.RecordTime = DateTime.Now;
 
             SelectedListItems = GetSelectListItems(observationDefinition);
@@ -75,25 +66,27 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 _logger.LogWarning("Failed to populate select list items for ObservationDefinition {DefinitionId}.", definitionId);
             }
 
+            await EnsureObservationDefinitionName(definitionId);
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int dogId)
         {
-            var observationDefinition = await _observationService.GetObservationDefinitionByIdAsync(ObservationVM.ObservationDefinitionId);
-            if (observationDefinition == null)
+            var validationResult = await ValidateObservationDefinitionAsync(ObservationVM.ObservationDefinitionId);
+            if (validationResult != null)
             {
-                _logger.LogError("ObservationDefinition with ID {ObservationDefinitionId} not found.", ObservationVM.ObservationDefinitionId);
-                return NotFound();
+                return validationResult;
             }
 
+            var observationDefinition = await _observationService.GetObservationDefinitionByIdAsync(ObservationVM.ObservationDefinitionId);
             SelectedListItems = GetSelectListItems(observationDefinition);
             ObservationVM.ObservationDefinitionId = observationDefinition.Id;
+            ObservationDefinitionName = observationDefinition.Name;
 
-            var validationResult = await ValidateAsync(ObservationVM, observationDefinition, SelectedItem, SelectedListItems);
-            if (!validationResult.IsValid)
+            var validationErrors = await ValidateAsync(ObservationVM, observationDefinition, SelectedItem, SelectedListItems);
+            if (validationErrors.Any())
             {
-                foreach (var error in validationResult.Errors)
+                foreach (var error in validationErrors)
                 {
                     ModelState.AddModelError($"ObservationVM.{error.Key}", error.Value);
                 }
@@ -101,29 +94,17 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 return Page();
             }
 
-            TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(ObservationVM);
-            return RedirectToPage("CreateStep3", new { dogId });
+            await EnsureObservationDefinitionName(ObservationVM.ObservationDefinitionId);
+            return RedirectToNextStep("CreateStep2", dogId);
         }
 
-        private int GetDefinitionIdFromTempData(int dogId)
-        {
-            if (TempData["Observation"] == null)
-            {
-                return 0;
-            }
-
-            var vm = System.Text.Json.JsonSerializer.Deserialize<CreateObservationViewModel>(TempData["Observation"].ToString());
-            TempData.Keep("Observation");
-            return vm?.ObservationDefinitionId ?? 0;
-        }
-
-        private async Task<ValidationResult> ValidateAsync(
+        private async Task<Dictionary<string, string>> ValidateAsync(
             CreateObservationViewModel vm,
             ObservationDefinition definition,
             int selectedItem,
             IEnumerable<SelectListItem> selectedListItems)
         {
-            var result = new ValidationResult();
+            var errors = new Dictionary<string, string>();
 
             if (!vm.MetricTypeId.HasValue && definition.MetricTypes.Any())
             {
@@ -133,7 +114,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
                 }
                 else
                 {
-                    result.Errors.Add("MetricTypeId", "Please select a metric type for quantitative observations.");
+                    errors.Add("MetricTypeId", "Please select a metric type for quantitative observations.");
                 }
             }
 
@@ -152,10 +133,10 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             if (vm.MetricValue.HasValue &&
                 (vm.MetricValue < definition.MinimumValue || vm.MetricValue > definition.MaximumValue))
             {
-                result.Errors.Add("MetricValue", $"Value must be between {definition.MinimumValue} and {definition.MaximumValue}.");
+                errors.Add("MetricValue", $"Value must be between {definition.MinimumValue} and {definition.MaximumValue}.");
             }
 
-            return result;
+            return errors;
         }
 
         private IEnumerable<SelectListItem> GetSelectListItems(ObservationDefinition observationDefinition)
@@ -172,14 +153,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             }
             catch (NotSupportedException)
             {
-                return null; // Fallback to input field
+                return null;
             }
-        }
-
-        private class ValidationResult
-        {
-            public Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
-            public bool IsValid => Errors.Count == 0;
         }
     }
 }

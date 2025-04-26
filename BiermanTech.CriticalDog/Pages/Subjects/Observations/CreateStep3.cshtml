@@ -4,15 +4,15 @@
     ViewData["Title"] = "Add Observation - Step 3";
 }
 
-<h1>Add Observation for @Model.Observation.SubjectName - Step 3: Add Meta Tags and Finalize</h1>
+<h1>Add Observation for @Model.ObservationVM.SubjectName - Step 3: Add Meta Tags and Finalize</h1>
 
 <form method="post">
-    <input type="hidden" asp-for="Observation.SubjectId" />
-    <input type="hidden" asp-for="Observation.ObservationDefinitionId" />
-    <input type="hidden" asp-for="Observation.MetricTypeId" />
-    <input type="hidden" asp-for="Observation.MetricValue" />
-    <input type="hidden" asp-for="Observation.Note" />
-    <input type="hidden" asp-for="Observation.RecordTime" />
+    <input type="hidden" asp-for="ObservationVM.SubjectId" />
+    <input type="hidden" asp-for="ObservationVM.ObservationDefinitionId" />
+    <input type="hidden" asp-for="ObservationVM.MetricTypeId" />
+    <input type="hidden" asp-for="ObservationVM.MetricValue" />
+    <input type="hidden" asp-for="ObservationVM.Note" />
+    <input type="hidden" asp-for="ObservationVM.RecordTime" />
 
     <h3>Review Observation Details</h3>
     <div class="form-group">
@@ -29,33 +29,33 @@
         <p>
             @if (Model.MetricValueTransformer != null)
             {
-                @Model.MetricValueTransformer.GetTransformedValue((int)Model.Observation.MetricValue)
+                @Model.MetricValueTransformer.GetTransformedValue((int)Model.ObservationVM.MetricValue)
             }
             else
             {
-                @Model.Observation.MetricValue
+                @Model.ObservationVM.MetricValue
             }
         </p>
     </div>
 
     <div class="form-group">
         <label>Note</label>
-        <p>@Model.Observation.Note</p>
+        <p>@Model.ObservationVM.Note</p>
     </div>
 
     <div class="form-group">
         <label>Record Time</label>
-        <p>@Model.Observation.RecordTime</p>
+        <p>@Model.ObservationVM.RecordTime</p>
     </div>
 
     <div class="form-group">
-        <label asp-for="Observation.SelectedMetaTagIds">Meta Tags</label>
-        <select asp-for="Observation.SelectedMetaTagIds" multiple class="form-control" asp-items="Model.Observation.MetaTags"></select>
-        <span asp-validation-for="Observation.SelectedMetaTagIds" class="text-danger"></span>
+        <label asp-for="ObservationVM.SelectedMetaTagIds">Meta Tags</label>
+        <select asp-for="ObservationVM.SelectedMetaTagIds" multiple class="form-control" asp-items="Model.ObservationVM.MetaTags"></select>
+        <span asp-validation-for="ObservationVM.SelectedMetaTagIds" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary mt-3">Save</button>
-    <a asp-page="CreateStep2" asp-route-dogId="@Model.Observation.SubjectId" class="btn btn-secondary mt-3">Back</a>
+    <a asp-page="CreateStep2" asp-route-dogId="@Model.ObservationVM.SubjectId" class="btn btn-secondary mt-3">Back</a>
     <a asp-page="../Index" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 

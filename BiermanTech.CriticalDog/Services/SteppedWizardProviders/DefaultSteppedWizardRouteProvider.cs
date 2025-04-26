@@ -6,6 +6,11 @@ namespace BiermanTech.CriticalDog.Services.SteppedWizardProviders
     {
         private readonly string[] _steps = { "CreateStep1", "CreateStep2", "CreateStep3" };
 
+        public string GetFirstStep()
+        {
+            return _steps[0]; // Returns the first step, "CreateStep1"
+        }
+
         public string GetNextStep(string currentStep)
         {
             int currentIndex = Array.IndexOf(_steps, currentStep);
@@ -14,6 +19,11 @@ namespace BiermanTech.CriticalDog.Services.SteppedWizardProviders
                 return null; // No next step if current step is invalid or last
             }
             return _steps[currentIndex + 1];
+        }
+
+        public string GetOutStep()
+        {
+            return "/Subjects/Index";
         }
 
         public string GetPreviousStep(string currentStep)
