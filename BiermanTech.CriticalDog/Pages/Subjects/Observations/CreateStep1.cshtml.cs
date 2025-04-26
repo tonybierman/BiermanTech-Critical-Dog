@@ -1,20 +1,23 @@
 using AutoMapper;
-using BiermanTech.CriticalDog.Pages.Subjects.Observations.RouteProviders;
+using AutoMapper.Configuration.Annotations;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Reflection;
 
 namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep1Model : PageModel
     {
+        private readonly IObservationWizardRouteFactory _routeFactory;
         private readonly ISelectListService _selectListService;
         private readonly ISubjectObservationService _observationService;
         private readonly ILogger<CreateStep1Model> _logger;
 
-        public CreateStep1Model(ISubjectObservationService observationService, ISelectListService selectListService, ILogger<CreateStep1Model> logger)
+        public CreateStep1Model(ISubjectObservationService observationService, IObservationWizardRouteFactory routeFactory, ISelectListService selectListService, ILogger<CreateStep1Model> logger)
         {
+            _routeFactory = routeFactory;
             _selectListService = selectListService;
             _observationService = observationService;
             _logger = logger;
@@ -55,16 +58,8 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             }
 
             var observationDefinition = await _observationService.GetObservationDefinitionByIdAsync(Observation.ObservationDefinitionId);
-
-            // Resolve providers (injected via DI or instantiated)
-            var providers = new List<IObservationRouteProvider>
-            {
-                new DailyCaloricIntakeObservationRouteProvider()
-                // Add more providers
-            };
-
-            var typeName = observationDefinition.Name ?? "Unknown";
-            var targetPage = providers.FirstOrDefault(p => p.CanHandle(dog, typeName))?.GetRoute() ?? "CreateStep2";
+            var router = _routeFactory.GetStep2Route(observationDefinition?.Name);
+            var targetPage = router.GetNextStep("CreateStep1");
 
             TempData["Observation"] = System.Text.Json.JsonSerializer.Serialize(Observation);
 

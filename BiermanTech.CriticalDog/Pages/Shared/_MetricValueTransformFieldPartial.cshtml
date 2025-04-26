@@ -1,6 +1,7 @@
-﻿@using BiermanTech.CriticalDog.ViewModels
+﻿@inject IMetricValueTransformerFactory TransformerFactory 
+
 @model MetricValueTransformFieldViewModel
 
-<span>@Model.TransformedValue</span>
+<span>@Model.GetTransformedValue(TransformerFactory)</span>
 
 

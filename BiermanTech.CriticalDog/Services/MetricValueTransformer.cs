@@ -1,8 +1,9 @@
 ﻿using BiermanTech.CriticalDog.Helpers;
+using BiermanTech.CriticalDog.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
-namespace BiermanTech.CriticalDog.Reports.Columns
+namespace BiermanTech.CriticalDog.Services
 {
     public class MetricValueTransformer<T> : IMetricValueTransformProvider where T : struct, Enum
     {

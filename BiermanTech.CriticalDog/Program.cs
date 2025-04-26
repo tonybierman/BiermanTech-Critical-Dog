@@ -90,13 +90,13 @@ builder.Services.AddScoped<ISubjectRecordService, SubjectRecordService>();
 builder.Services.AddScoped<IEnergyCalculationService, EnergyCalculationService>();
 builder.Services.AddScoped<IDisciplineCardFactory, DisciplineCardFactory>();
 builder.Services.AddScoped<IDisciplineTabFormatFactory, DisciplineTabFormatFactory>();
+builder.Services.AddScoped<IObservationWizardRouteFactory, ObservationWizardRouteFactory>();
+builder.Services.AddScoped<IObservationAnalyticsProvider, ObservationAnalyticsFactory>();
+builder.Services.AddScoped<IUnitConverter, UnitConverter>();
+builder.Services.AddScoped<IMetricValueTransformerFactory, MetricValueTransformerFactory>();
 
 // Auth
 builder.Services.AddScoped<IAuthorizationHandler, SubjectPermissionHandler>();
-
-// Analytics
-builder.Services.AddScoped<IUnitConverter, UnitConverter>();
-builder.Services.AddScoped<IObservationAnalyticsProvider, ObservationAnalyticsFactory>();
 
 // Lob DB
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")

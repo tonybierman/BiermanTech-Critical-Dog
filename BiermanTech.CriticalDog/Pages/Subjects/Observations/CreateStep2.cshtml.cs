@@ -1,6 +1,6 @@
 using AutoMapper;
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Reports.Columns;
+using BiermanTech.CriticalDog.Services.Factories;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +12,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 {
     public class CreateStep2Model : PageModel
     {
+        private readonly IMetricValueTransformerFactory _metricValueTransformFactory;
         private readonly ISelectListService _selectListService;
         private readonly ISubjectObservationService _observationService;
         private readonly ILogger<CreateStep2Model> _logger;
@@ -22,11 +23,13 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         public int SelectedItem { get; set; }
 
         public CreateStep2Model(
+            IMetricValueTransformerFactory metricValueTransformerFactory,
             ISubjectObservationService observationService,
             ISelectListService selectListService,
             ILogger<CreateStep2Model> logger,
             IMapper mapper)
         {
+            _metricValueTransformFactory = metricValueTransformerFactory;
             _selectListService = selectListService;
             _observationService = observationService;
             _logger = logger;
@@ -157,7 +160,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
 
         private IEnumerable<SelectListItem> GetSelectListItems(ObservationDefinition observationDefinition)
         {
-            var transformer = MetricValueTransformerFactory.GetProvider(observationDefinition);
+            var transformer = _metricValueTransformFactory.GetProvider(observationDefinition);
             if (transformer == null)
             {
                 return null;

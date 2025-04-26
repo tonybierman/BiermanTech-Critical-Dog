@@ -16,7 +16,7 @@ namespace BiermanTech.CriticalDog.Services.Factories
 
             return slug switch
             {
-                "VeterinaryMedicine" => "_DisciplineTabFormatTablePartial",
+                "VeterinaryMedicine" or "Biology" => "_DisciplineTabFormatTablePartial",
                 _ => "_DisciplineTabFormatListPartial"
             };
         }

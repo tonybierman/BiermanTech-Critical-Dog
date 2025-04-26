@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BiermanTech.CriticalDog.Reports.Columns
+namespace BiermanTech.CriticalDog.Services.Interfaces
 {
     public interface IMetricValueTransformProvider
     {

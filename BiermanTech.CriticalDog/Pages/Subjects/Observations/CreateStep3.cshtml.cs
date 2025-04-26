@@ -1,5 +1,5 @@
 using BiermanTech.CriticalDog.Data;
-using BiermanTech.CriticalDog.Reports.Columns;
+using BiermanTech.CriticalDog.Services.Factories;
 using BiermanTech.CriticalDog.Services.Interfaces;
 using BiermanTech.CriticalDog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +12,11 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
         private readonly ISelectListService _selectListService;
         private readonly ISubjectObservationService _observationService;
         private readonly ILogger<CreateStep3Model> _logger;
+        private readonly IMetricValueTransformerFactory _metricValueTransformFactory;
 
-        public CreateStep3Model(ISubjectObservationService observationService, ISelectListService selectListService, ILogger<CreateStep3Model> logger)
+        public CreateStep3Model(IMetricValueTransformerFactory metricValueTransformerFactory, ISubjectObservationService observationService, ISelectListService selectListService, ILogger<CreateStep3Model> logger)
         {
+            _metricValueTransformFactory = metricValueTransformerFactory;
             _selectListService = selectListService;
             _observationService = observationService;
             _logger = logger;
@@ -55,7 +57,7 @@ namespace BiermanTech.CriticalDog.Pages.Dogs.Observations
             var metricType = await _observationService.GetMetricTypeByIdAsync(Observation.MetricTypeId);
             MetricTypeDescription = metricType?.Name ?? "Unknown";
 
-            MetricValueTransformer = MetricValueTransformerFactory.GetProvider(observationDefinition);
+            MetricValueTransformer = _metricValueTransformFactory.GetProvider(observationDefinition);
 
             Observation.MetaTags = await _selectListService.GetMetaTagsSelectListAsync(Observation.SelectedMetaTagIds);
             TempData.Keep("Observation");

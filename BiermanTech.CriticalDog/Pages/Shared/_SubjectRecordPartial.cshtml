@@ -1,12 +1,14 @@
 ﻿@using BiermanTech.CriticalDog.Reports.Columns
+@inject IMetricValueTransformerFactory TransformFactory
 
 @model BiermanTech.CriticalDog.ViewModels.SubjectRecordPartialViewModel
 
 @{
     int mval = checked((int)Model.RecordVM?.MetricValue.Value);
-    var transformer = MetricValueTransformerFactory.GetProvider(Model.RecordVM?.ObservationDefinition);
+    var transformer = TransformFactory.GetProvider(Model.RecordVM?.ObservationDefinition);
     string? transformed = transformer?.GetTransformedValue(mval);
 }
+
 <dt class="col-sm-3">
     @Html.DisplayFor(model => model.RecordVM.ObservationName)
 </dt>
