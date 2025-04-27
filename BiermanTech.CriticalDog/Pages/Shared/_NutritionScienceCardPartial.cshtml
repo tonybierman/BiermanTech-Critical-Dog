@@ -8,7 +8,7 @@
 @model NutritionScienceCardViewModel
 
 @{
-    
+
 }
 
 <div class="card">
@@ -35,6 +35,11 @@
                 @await Html.PartialAsync("_AnalyticsChartPartial", new AnalyticsReportPartialViewModel { Report = Model.WeightReport })
                 @await Html.PartialAsync("_AnalyticsReportPartial", new AnalyticsReportPartialViewModel { Report = Model.WeightReport })
             </div>
+
+            if (Model.IdealProjectedWhen != null)
+            {
+                <p><strong>Projection Outcome: </strong>If the current trend holds, expect the subject to reach ideal weight on or around @Model.IdealProjectedWhen?.ToShortDateString().</p>   
+            }
         }
     </div>
 </div>

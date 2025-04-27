@@ -11,6 +11,7 @@ namespace BiermanTech.CriticalDog.ViewModels
         public List<TrendReportRecordViewModel> Records { get; set; } = new List<TrendReportRecordViewModel>();
         public double? AverageWeeklyRate { get; set; }
         public string TrendDescription { get; set; }
+        public double? AverageAmountPerDay { get; internal set; }
     }
 
     public class TrendReportRecordViewModel

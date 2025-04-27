@@ -16,6 +16,39 @@ namespace BiermanTech.CriticalDog.Services
             _units = units ?? throw new ArgumentNullException(nameof(units));
         }
 
+        // Projects the date when the ideal weight will be achieved based on daily weight gain or loss
+        public DateTime? ProjectIdealWeightDate(decimal idealWeight, decimal lastRecordedWeight, DateTime lastRecordedDate, decimal dailyWeightChange)
+        {
+            // Validate inputs
+            if (dailyWeightChange == 0)
+                return null; // Cannot achieve ideal weight with zero weight change
+
+            // Check if already at ideal weight
+            if (lastRecordedWeight == idealWeight)
+                return lastRecordedDate;
+
+            // Determine if weight loss or gain is needed
+            bool isWeightLoss = idealWeight < lastRecordedWeight;
+
+            // Check if ideal weight is achievable based on dailyWeightChange direction
+            if (isWeightLoss && dailyWeightChange >= 0) // Need loss, but change is positive or zero
+                return null;
+            if (!isWeightLoss && dailyWeightChange <= 0) // Need gain, but change is negative or zero
+                return null;
+
+            // Calculate total weight to change
+            decimal weightToChange = Math.Abs(lastRecordedWeight - idealWeight);
+
+            // Calculate days needed
+            decimal daysNeeded = weightToChange / Math.Abs(dailyWeightChange);
+
+            // Calculate projected date
+            int daysToAdd = (int)Math.Ceiling(daysNeeded);
+            DateTime projectedDate = lastRecordedDate.AddDays(daysToAdd);
+
+            return projectedDate;
+        }
+
         public async Task<EnergyCalculationResult> CalculateEnergyRequirementsAsync(EnergyCalculationInput input)
         {
             var defaultResult = new EnergyCalculationResult

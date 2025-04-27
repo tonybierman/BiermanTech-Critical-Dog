@@ -123,10 +123,10 @@ namespace BiermanTech.CriticalDog.Services.Factories
                 }
 
                 // Calculate average rate
-                double? averageRatePerDay = await CalculateAverageRateAsync(observations, standardUnit, selectedDisplayUnit, observationDefinitionName);
+                double? averageAmountPerDay = await CalculateAverageRateAsync(observations, standardUnit, selectedDisplayUnit, observationDefinitionName);
 
                 // Determine trend
-                string trendDescription = DetermineTrend(observations, averageRatePerDay, selectedDisplayUnit);
+                string trendDescription = DetermineTrend(observations, averageAmountPerDay, selectedDisplayUnit);
 
                 double? averageWeeklyRate = null;
                 var validObservations = observations.Where(a => a.PercentChangePerWeek.HasValue).ToList();
@@ -145,6 +145,7 @@ namespace BiermanTech.CriticalDog.Services.Factories
                     DisplayUnitSymbol = selectedDisplayUnit.UnitSymbol,
                     Records = observations,
                     AverageWeeklyRate = averageWeeklyRate,
+                    AverageAmountPerDay = averageAmountPerDay,
                     TrendDescription = trendDescription
                 };
             }

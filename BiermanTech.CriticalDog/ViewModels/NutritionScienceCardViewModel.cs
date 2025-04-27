@@ -14,5 +14,6 @@ namespace BiermanTech.CriticalDog.ViewModels
         public SubjectRecord? IdealWeightRecord { get; internal set; }
         public string Title => "Nutrition";
         public int SubjectId { get; set; }
+        public DateTime? IdealProjectedWhen { get; internal set; }
     }
 }

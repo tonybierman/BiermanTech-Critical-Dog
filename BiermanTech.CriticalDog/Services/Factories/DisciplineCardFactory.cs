@@ -8,12 +8,14 @@ namespace BiermanTech.CriticalDog.Services.Factories
         private readonly ISubjectRecordService _recordService;
         private readonly IEnergyCalculationService _calcService;
         private readonly IObservationAnalyticsProvider _analyticsProvider;
+        private readonly IUnitConverter _unitConverter;
 
-        public DisciplineCardFactory(ISubjectRecordService recordService, IEnergyCalculationService calcService, IObservationAnalyticsProvider analyticsProvider) 
+        public DisciplineCardFactory(ISubjectRecordService recordService, IUnitConverter unitConverter, IEnergyCalculationService calcService, IObservationAnalyticsProvider analyticsProvider) 
         {
             _recordService = recordService;
             _calcService = calcService;
             _analyticsProvider = analyticsProvider;
+            _unitConverter = unitConverter;
         }
 
         public IDisciplineCardProvider? CreateProvider(int subjectId, string slug)
@@ -23,7 +25,7 @@ namespace BiermanTech.CriticalDog.Services.Factories
 
             return slug switch
             {
-                "NutritionScience" => new NutritionScienceCardProvider(subjectId, _recordService, _calcService, _analyticsProvider),
+                "NutritionScience" => new NutritionScienceCardProvider(subjectId, _recordService, _unitConverter, _calcService, _analyticsProvider),
                 _ => throw new ArgumentException($"Unsupported provider type: {slug}")
             };
         }
